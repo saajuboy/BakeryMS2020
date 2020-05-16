@@ -3,12 +3,14 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using BakeryMS.API.Data;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 
 namespace BakeryMS.API.Controllers
 {
+    [Authorize]
     [ApiController]
     [Route("[controller]")]
     public class WeatherForecastController : ControllerBase
@@ -21,7 +23,7 @@ namespace BakeryMS.API.Controllers
         private readonly ILogger<WeatherForecastController> _logger;
         private readonly DataContext _context;
 
-        public WeatherForecastController(ILogger<WeatherForecastController> logger,DataContext Context)
+        public WeatherForecastController(ILogger<WeatherForecastController> logger, DataContext Context)
         {
             _context = Context;
             _logger = logger;
@@ -38,8 +40,19 @@ namespace BakeryMS.API.Controllers
             //     Summary = Summaries[rng.Next(Summaries.Length)]
             // })
             // .ToArray();
-            var values = await _context.Items.Select(a=> new{a.Id,a.Name,a.Code,a.Description,}).ToListAsync();
+            var values = await _context.Items.Select(a => new { a.Id, a.Name, a.Code, a.Description, }).ToListAsync();
             return Ok(values);
+        }
+
+        [AllowAnonymous]
+        [HttpGet("{id}")]
+        public async Task<IActionResult> GetValue(int id)
+        {
+            var value = await _context.Items
+                    .Select(a => new { a.Id, a.Name, a.Code, a.Description, })
+                    .FirstOrDefaultAsync(x => x.Id == id);
+
+            return Ok(value);
         }
     }
 }
