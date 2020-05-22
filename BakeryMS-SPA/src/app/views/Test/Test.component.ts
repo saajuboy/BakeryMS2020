@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
+import { AlertifyService } from '../../_services/alertify.service';
 
 @Component({
   // tslint:disable-next-line: component-selector
@@ -11,10 +12,12 @@ export class TestComponent implements OnInit {
 
   testValues: any;
 
-  constructor(private http: HttpClient) { }
+  constructor(private http: HttpClient, private alerify: AlertifyService) { }
 
   ngOnInit() {
+    // this.alerify.success('success');
     this.getTestValues();
+
   }
 
   getTestValues() {
