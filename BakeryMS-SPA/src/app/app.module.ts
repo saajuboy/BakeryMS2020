@@ -36,6 +36,7 @@ import {
 // Import routing module
 import { AppRoutingModule } from './app.routing';
 
+import { JwtModule } from '@auth0/angular-jwt';
 import { HttpClientModule } from '@angular/common/http';
 
 // Import 3rd party components
@@ -44,10 +45,23 @@ import { TabsModule } from 'ngx-bootstrap/tabs';
 import { ChartsModule } from 'ng2-charts';
 import { TestComponent } from './views/Test/Test.component';
 
+// Import services, guards
+import { AuthService } from './_services/auth.service';
+import { AlertifyService } from './_services/alertify.service';
+import { AuthGuard } from './_guards/auth.guard';
+import { FormsModule } from '@angular/forms';
+import { environment } from '../environments/environment';
+
+// token getter function to automatically intercept http requests
+export function tokenGetter() {
+  console.log(localStorage.getItem('token'));
+  return localStorage.getItem('token');
+}
 
 @NgModule({
   imports: [
     BrowserModule,
+    FormsModule,
     BrowserAnimationsModule,
     AppRoutingModule,
     AppAsideModule,
@@ -59,7 +73,14 @@ import { TestComponent } from './views/Test/Test.component';
     BsDropdownModule.forRoot(),
     TabsModule.forRoot(),
     ChartsModule,
-    HttpClientModule
+    HttpClientModule,
+    JwtModule.forRoot({
+      config: {
+        tokenGetter: tokenGetter,
+        whitelistedDomains: [environment.whiteListedDomains],
+        blacklistedRoutes: [environment.blackListedDomains]
+      },
+    })
   ],
   declarations: [
     AppComponent,
@@ -73,7 +94,11 @@ import { TestComponent } from './views/Test/Test.component';
   providers: [{
     provide: LocationStrategy,
     useClass: HashLocationStrategy
-  }],
-  bootstrap: [ AppComponent ]
+  },
+    AuthService,
+    AlertifyService,
+    AuthGuard
+  ],
+  bootstrap: [AppComponent]
 })
 export class AppModule { }
