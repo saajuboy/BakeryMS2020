@@ -9,6 +9,7 @@ import { P500Component } from './views/error/500.component';
 import { LoginComponent } from './views/login/login.component';
 import { RegisterComponent } from './views/register/register.component';
 import { TestComponent } from './views/Test/Test.component';
+import { AuthGuard } from './_guards/auth.guard';
 
 export const routes: Routes = [
   {
@@ -46,6 +47,8 @@ export const routes: Routes = [
   },
   {
     path: '',
+    runGuardsAndResolvers: 'always',
+    canActivate: [AuthGuard],
     component: DefaultLayoutComponent,
     data: {
       title: 'Home'
@@ -96,7 +99,7 @@ export const routes: Routes = [
 ];
 
 @NgModule({
-  imports: [ RouterModule.forRoot(routes) ],
-  exports: [ RouterModule ]
+  imports: [RouterModule.forRoot(routes)],
+  exports: [RouterModule]
 })
-export class AppRoutingModule {}
+export class AppRoutingModule { }
