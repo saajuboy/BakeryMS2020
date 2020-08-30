@@ -1,4 +1,6 @@
 using System.Text;
+using BakeryMS.API.Business.Component;
+using BakeryMS.API.Business.Interfaces;
 using BakeryMS.API.Data;
 using BakeryMS.API.Data.Interfaces;
 using BakeryMS.API.Data.Repositories;
@@ -25,13 +27,20 @@ namespace BakeryMS.API
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddControllers();
+            services.AddControllers().AddNewtonsoftJson(x =>
+            {
+                x.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore;
+            });
             services.AddDbContext<DataContext>(options =>
                 options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
             services.AddCors();
 
+            //Interface Declaration
             services.AddScoped<IAuthRepository, AuthRepository>();
             
+            services.AddScoped<IUserComponent,UserComponent>();
+            
+
             services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
             .AddJwtBearer(options =>
             {
