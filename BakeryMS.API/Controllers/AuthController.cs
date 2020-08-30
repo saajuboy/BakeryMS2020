@@ -13,6 +13,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
 using System.Linq;
+using BakeryMS.API.Business.Interfaces;
 
 namespace BakeryMS.API.Controllers
 {
@@ -23,8 +24,10 @@ namespace BakeryMS.API.Controllers
         private readonly IAuthRepository _repository;
         private readonly IConfiguration _config;
         private readonly DataContext _context;
-        public AuthController(IAuthRepository repository, IConfiguration configuration, DataContext context)
+        private readonly IUserComponent _component;
+        public AuthController(IAuthRepository repository, IConfiguration configuration, DataContext context, IUserComponent component)
         {
+            _component = component;
             _context = context;
             _config = configuration;
             _repository = repository;
@@ -40,15 +43,17 @@ namespace BakeryMS.API.Controllers
 
             if (await _repository.UserExists(userForRegisterDto.Username))
                 return BadRequest("Username Already Exists");
-            var usertoCreate = new User
-            {
-                Username = userForRegisterDto.Username
-                //add user other details for registration
+            // var usertoCreate = new User
+            // {
+            //     Username = userForRegisterDto.Username
+            //     //add user other details for registration
 
-                //---end---
-            };
+            //     //---end---
+            // };
 
-            var createdUser = await _repository.Register(usertoCreate, userForRegisterDto.Password);
+            // var createdUser = await _repository.Register(usertoCreate, userForRegisterDto.Password);
+            var createdUser = await _component.RegisterUser(userForRegisterDto);
+
             return StatusCode(201);
 
         }
@@ -77,11 +82,11 @@ namespace BakeryMS.API.Controllers
                     new Claim(ClaimTypes.Name,userFromRepository.Username),
                     // new Claim(ClaimTypes.Role,userRoles)
             };
-            
+
             foreach (var item in userRoles)
             {
                 claims.Add(new Claim(ClaimTypes.Role, item));
-                
+
             }
 
             var key = new SymmetricSecurityKey(Encoding.UTF8
