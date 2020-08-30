@@ -9,8 +9,12 @@ namespace BakeryMS.API.Data.Repositories
     public class AuthRepository : IAuthRepository
     {
         private readonly DataContext _context;
+        private readonly UserRolesMapping _userRolesMapping;
         public AuthRepository(DataContext context)
         {
+            UserRolesMapping userRolesMapping = new UserRolesMapping();
+            
+            _userRolesMapping = userRolesMapping;
             _context = context;
 
         }
@@ -23,6 +27,9 @@ namespace BakeryMS.API.Data.Repositories
 
             if (!verifyPasswordHash(password, user.PasswordHash, user.PasswordSalt))
                 return null;
+
+            user.LastActive = DateTime.Now;
+            _context.SaveChanges();
 
             return user;
         }
@@ -46,10 +53,15 @@ namespace BakeryMS.API.Data.Repositories
             CreatePasswordhash(password, out passwordHash, out passwordSalt);
             user.PasswordHash = passwordHash;
             user.PasswordSalt = passwordSalt;
-            //add user other details for registration
 
-            //---end----
             await _context.Users.AddAsync(user);
+            await _context.SaveChangesAsync();
+
+            var role = await _context.Roles.FirstOrDefaultAsync(a => a.RoleName == "User");
+            _userRolesMapping.Roles = role;
+            _userRolesMapping.User = user;
+
+            await _context.UserRolesMappings.AddAsync(_userRolesMapping);
             await _context.SaveChangesAsync();
 
             return user;
