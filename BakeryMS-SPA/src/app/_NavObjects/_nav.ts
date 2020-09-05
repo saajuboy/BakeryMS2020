@@ -31,7 +31,9 @@ export const navItems: INavData[] = [
   {
     name: 'Test Module',
     url: '/test',
-    icon: 'icon-puzzle'
+    icon: 'icon-puzzle',
+    roles: ['sdsd', 'dsdsd'],
+    attributes: { disabled: false }
   },
   {
     name: 'Base',
@@ -195,6 +197,29 @@ export const navItems: INavData[] = [
     }
   },
   {
+    name: 'User',
+    url: '/User',
+    icon: 'icon-user',
+    roles: ['Admin', 'User'],
+    attributes: { disabled: false },
+    children: [
+      {
+        name: 'Register',
+        url: '/user/register',
+        icon: 'icon-user-follow',
+        roles: ['Admin'],
+        attributes: { disabled: false }
+      },
+      {
+        name: 'Edit Profile',
+        url: 'test',
+        icon: 'icon-wrench',
+        roles: ['sdsd', 'dsdsd'],
+        attributes: { disabled: false }
+      }
+    ]
+  },
+  {
     divider: true
   },
   {
@@ -237,20 +262,5 @@ export const navItems: INavData[] = [
       text: 'NEW'
     },
     attributes: { disabled: true },
-  },
-  {
-    name: 'Download CoreUI',
-    url: 'http://coreui.io/angular/',
-    icon: 'icon-cloud-download',
-    class: 'mt-auto',
-    variant: 'success',
-    attributes: { target: '_blank', rel: 'noopener' }
-  },
-  {
-    name: 'Try CoreUI PRO',
-    url: 'http://coreui.io/pro/angular/',
-    icon: 'icon-layers',
-    variant: 'danger',
-    attributes: { target: '_blank', rel: 'noopener' }
   }
 ];
