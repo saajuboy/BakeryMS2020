@@ -10,6 +10,7 @@ import { LoginComponent } from './views/login/login.component';
 import { RegisterComponent } from './views/register/register.component';
 import { TestComponent } from './views/Test/Test.component';
 import { AuthGuard } from './_guards/auth.guard';
+import { AdminGuard } from './_guards/admin.guard';
 
 export const routes: Routes = [
   {
@@ -36,13 +37,6 @@ export const routes: Routes = [
     component: LoginComponent,
     data: {
       title: 'Login Page'
-    }
-  },
-  {
-    path: 'register',
-    component: RegisterComponent,
-    data: {
-      title: 'Register Page'
     }
   },
   {
@@ -92,6 +86,15 @@ export const routes: Routes = [
       {
         path: 'widgets',
         loadChildren: () => import('./views/widgets/widgets.module').then(m => m.WidgetsModule)
+      },
+      {
+        path: 'user/register',
+        runGuardsAndResolvers: 'always',
+        canActivate: [AdminGuard],
+        component: RegisterComponent,
+        data: {
+          title: 'Register'
+        }
       }
     ]
   },
