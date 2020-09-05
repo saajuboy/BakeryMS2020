@@ -51,6 +51,7 @@ import { AlertifyService } from './_services/alertify.service';
 import { AuthGuard } from './_guards/auth.guard';
 import { FormsModule } from '@angular/forms';
 import { environment } from '../environments/environment';
+import { AdminGuard } from './_guards/admin.guard';
 
 // token getter function to automatically intercept http requests
 export function tokenGetter() {
@@ -97,7 +98,8 @@ export function tokenGetter() {
   },
     AuthService,
     AlertifyService,
-    AuthGuard
+    AuthGuard,
+    AdminGuard
   ],
   bootstrap: [AppComponent]
 })
