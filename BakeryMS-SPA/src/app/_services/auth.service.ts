@@ -23,7 +23,6 @@ export class AuthService {
           localStorage.setItem('token', user.token);
           this.decodedToken = this.jwtHelper.decodeToken(user.token);
           console.log(this.decodedToken);
-
         }
       })
     );
@@ -37,6 +36,44 @@ export class AuthService {
   loggedIn() {
     const token = localStorage.getItem('token');
     return !this.jwtHelper.isTokenExpired(token);
+  }
+
+  // roleMethods
+
+  isUserAdmin() {
+    let roles: string[];
+    const token = localStorage.getItem('token');
+    const decodeToken = this.jwtHelper.decodeToken(token);
+    roles = decodeToken.role;
+    return roles.includes('Admin');
+  }
+  isUserOutletManager() {
+    let roles: string[];
+    const token = localStorage.getItem('token');
+    const decodeToken = this.jwtHelper.decodeToken(token);
+    roles = decodeToken.role;
+    return roles.includes('OutletManager');
+  }
+  isUserBakeryManager() {
+    let roles: string[];
+    const token = localStorage.getItem('token');
+    const decodeToken = this.jwtHelper.decodeToken(token);
+    roles = decodeToken.role;
+    return roles.includes('BakeryManager');
+  }
+  isUserCashier() {
+    let roles: string[];
+    const token = localStorage.getItem('token');
+    const decodeToken = this.jwtHelper.decodeToken(token);
+    roles = decodeToken.role;
+    return roles.includes('Cashier');
+  }
+  isUserBaker() {
+    let roles: string[];
+    const token = localStorage.getItem('token');
+    const decodeToken = this.jwtHelper.decodeToken(token);
+    roles = decodeToken.role;
+    return roles.includes('Baker');
   }
 
 }
