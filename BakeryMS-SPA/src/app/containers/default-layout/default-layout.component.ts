@@ -1,7 +1,10 @@
 import { Component } from '@angular/core';
-import { navItems } from '../../_nav';
+import { navItems as navAdmin } from '../../_NavObjects/_nav';
+import { navItems as navBakeryManager } from '../../_NavObjects/_navBM';
 import { AlertifyService } from '../../_services/alertify.service';
 import { Router } from '@angular/router';
+import { AuthService } from '../../_services/auth.service';
+import { JwtHelperService } from '@auth0/angular-jwt';
 
 @Component({
   selector: 'app-dashboard',
@@ -9,11 +12,27 @@ import { Router } from '@angular/router';
 })
 export class DefaultLayoutComponent {
   public sidebarMinimized = false;
-  public navItems = navItems;
-  constructor(private alertify: AlertifyService, private router: Router) { }
+  public navItems;
+  jwtHelper = new JwtHelperService;
+
+  constructor(private alertify: AlertifyService, private router: Router, private auth: AuthService) {
+
+    this.setNavItem(auth);
+
+  }
   toggleMinimize(e) {
     this.sidebarMinimized = e;
   }
+
+  setNavItem(auth: AuthService) {
+    if (auth.isUserAdmin()) {
+      this.navItems = navAdmin;
+    } else if (auth.isUserBakeryManager()) {
+      this.navItems = navBakeryManager;
+    }
+
+  }
+
 
   logout() {
     localStorage.removeItem('token');
