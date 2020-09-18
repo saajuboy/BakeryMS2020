@@ -49,7 +49,7 @@ import { TestComponent } from './views/Test/Test.component';
 import { AuthService } from './_services/auth.service';
 import { AlertifyService } from './_services/alertify.service';
 import { AuthGuard } from './_guards/auth.guard';
-import { FormsModule } from '@angular/forms';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { environment } from '../environments/environment';
 import { AdminGuard } from './_guards/admin.guard';
 
@@ -63,6 +63,7 @@ export function tokenGetter() {
   imports: [
     BrowserModule,
     FormsModule,
+    ReactiveFormsModule,
     BrowserAnimationsModule,
     AppRoutingModule,
     AppAsideModule,

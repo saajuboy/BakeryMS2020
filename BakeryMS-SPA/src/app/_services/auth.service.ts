@@ -1,12 +1,20 @@
 import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { environment } from '../../environments/environment';
 import { JwtHelperService } from '@auth0/angular-jwt';
 import { map } from 'rxjs/operators';
 
+const httpOptions = {
+  headers: new HttpHeaders({
+    'Authorization': 'Bearer ' + localStorage.getItem('token')
+  })
+};
+
 @Injectable({
   providedIn: 'root'
 })
+
+
 export class AuthService {
 
   baseUrl = environment.apiUrl + 'auth/';
@@ -29,7 +37,7 @@ export class AuthService {
   }
 
   register(model: any) {
-    return this.http.post(this.baseUrl + 'register', model);
+    return this.http.post(this.baseUrl + 'register', model, httpOptions);
   }
 
 
@@ -42,9 +50,9 @@ export class AuthService {
 
   isUserAdmin() {
     let roles: string[];
-    const token = localStorage.getItem('token');
-    const decodeToken = this.jwtHelper.decodeToken(token);
-    roles = decodeToken.role;
+    // const token = localStorage.getItem('token');
+    // const decodeToken = this.jwtHelper.decodeToken(token);
+    roles = this.decodedToken.role;
     return roles.includes('Admin');
   }
   isUserOutletManager() {
