@@ -43,17 +43,10 @@ namespace BakeryMS.API.Controllers
 
             if (await _repository.UserExists(userForRegisterDto.Username))
                 return BadRequest("Username Already Exists");
-            // var usertoCreate = new User
-            // {
-            //     Username = userForRegisterDto.Username
-            //     //add user other details for registration
 
-            //     //---end---
-            // };
-
-            // var createdUser = await _repository.Register(usertoCreate, userForRegisterDto.Password);
             var createdUser = await _component.RegisterUser(userForRegisterDto);
 
+            // TODO --> create a createdAtRoute Response
             return StatusCode(201);
 
         }
