@@ -1,4 +1,5 @@
 using System.Text;
+using AutoMapper;
 using BakeryMS.API.Business.Component;
 using BakeryMS.API.Business.Interfaces;
 using BakeryMS.API.Data;
@@ -37,10 +38,10 @@ namespace BakeryMS.API
 
             //Interface Declaration
             services.AddScoped<IAuthRepository, AuthRepository>();
-            
-            services.AddScoped<IUserComponent,UserComponent>();
-            
 
+            services.AddScoped<IUserComponent, UserComponent>();
+
+            services.AddAutoMapper(typeof(Startup));
             services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
             .AddJwtBearer(options =>
             {
