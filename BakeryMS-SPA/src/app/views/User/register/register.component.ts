@@ -1,9 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
-import { User } from '../../_models/User';
-import { AlertifyService } from '../../_services/alertify.service';
-import { AuthService } from '../../_services/auth.service';
+import { User } from '../../../_models/User';
+import { AlertifyService } from '../../../_services/alertify.service';
+import { AuthService } from '../../../_services/auth.service';
 
 @Component({
   selector: 'app-dashboard',
@@ -45,7 +45,7 @@ export class RegisterComponent implements OnInit {
       }, error => {
         this.alertify.error(error);
       }, () => {
-        this.router.navigate(['/dashboard']);
+        this.router.navigate(['/user/list']);
       });
 
       console.log(this.user);
