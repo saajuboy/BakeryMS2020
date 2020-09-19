@@ -18,8 +18,7 @@ import { DefaultLayoutComponent } from './containers';
 
 import { P404Component } from './views/error/404.component';
 import { P500Component } from './views/error/500.component';
-import { LoginComponent } from './views/login/login.component';
-import { RegisterComponent } from './views/register/register.component';
+
 
 const APP_CONTAINERS = [
   DefaultLayoutComponent
@@ -43,7 +42,6 @@ import { HttpClientModule } from '@angular/common/http';
 import { BsDropdownModule } from 'ngx-bootstrap/dropdown';
 import { TabsModule } from 'ngx-bootstrap/tabs';
 import { ChartsModule } from 'ng2-charts';
-import { TestComponent } from './views/Test/Test.component';
 
 // Import services, guards
 import { AuthService } from './_services/auth.service';
@@ -52,6 +50,12 @@ import { AuthGuard } from './_guards/auth.guard';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { environment } from '../environments/environment';
 import { AdminGuard } from './_guards/admin.guard';
+
+// import Components
+import { UserListComponent } from './views/User/user-list/user-list.component';
+import { TestComponent } from './views/Test/Test.component';
+import { LoginComponent } from './views/login/login.component';
+import { RegisterComponent } from './views/user/register/register.component';
 
 // token getter function to automatically intercept http requests
 export function tokenGetter() {
@@ -91,7 +95,8 @@ export function tokenGetter() {
     P500Component,
     LoginComponent,
     RegisterComponent,
-    TestComponent
+    TestComponent,
+    UserListComponent
   ],
   providers: [{
     provide: LocationStrategy,
