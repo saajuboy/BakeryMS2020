@@ -7,10 +7,11 @@ import { DefaultLayoutComponent } from './containers';
 import { P404Component } from './views/error/404.component';
 import { P500Component } from './views/error/500.component';
 import { LoginComponent } from './views/login/login.component';
-import { RegisterComponent } from './views/register/register.component';
+import { RegisterComponent } from './views/user/register/register.component';
 import { TestComponent } from './views/Test/Test.component';
 import { AuthGuard } from './_guards/auth.guard';
 import { AdminGuard } from './_guards/admin.guard';
+import { UserListComponent } from './views/User/user-list/user-list.component';
 
 export const routes: Routes = [
   {
@@ -95,7 +96,17 @@ export const routes: Routes = [
         data: {
           title: 'Register'
         }
+      },
+      {
+        path: 'user/list',
+        runGuardsAndResolvers: 'always',
+        canActivate: [AdminGuard],
+        component: UserListComponent,
+        data: {
+          title: 'List'
+        }
       }
+
     ]
   },
   { path: '**', component: P404Component }

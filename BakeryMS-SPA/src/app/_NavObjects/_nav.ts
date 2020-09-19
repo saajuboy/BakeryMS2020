@@ -211,6 +211,13 @@ export const navItems: INavData[] = [
         attributes: { disabled: false }
       },
       {
+        name: 'List',
+        url: '/user/list',
+        icon: 'icon-list',
+        roles: ['Admin'],
+        attributes: { disabled: false }
+      },
+      {
         name: 'Edit Profile',
         url: 'test',
         icon: 'icon-wrench',
