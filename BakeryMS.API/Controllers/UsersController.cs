@@ -11,10 +11,10 @@ namespace BakeryMS.API.Controllers
     [ApiController]
     [Route("[controller]")]
     [Authorize]
-    public class UserController : ControllerBase
+    public class UsersController : ControllerBase
     {
         public IUserComponent _userComponent { get; set; }
-        public UserController(IUserComponent userComponent)
+        public UsersController(IUserComponent userComponent)
         {
             _userComponent = userComponent;
 
@@ -36,7 +36,7 @@ namespace BakeryMS.API.Controllers
         }
 
         [HttpGet]
-        [Authorize(Roles="Admin")]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> GetUsers()
         {
             var usersToReturn = await _userComponent.GetUsers();
