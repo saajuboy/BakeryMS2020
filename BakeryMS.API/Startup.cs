@@ -38,6 +38,7 @@ namespace BakeryMS.API
 
             //Interface Declaration
             services.AddScoped<IAuthRepository, AuthRepository>();
+            services.AddScoped<IUserRepository, UserRepository>();
 
             services.AddScoped<IUserComponent, UserComponent>();
 

@@ -9,6 +9,7 @@ namespace BakeryMS.API.Common.Helpers
         public AutoMapperProfiles()
         {
             CreateMap<UserForRegisterDto, User>();
+            CreateMap<User, UserForDetailDto>();
         }
     }
 }

@@ -37,6 +37,7 @@ namespace BakeryMS.API.Controllers
         [HttpPost("register")]
         public async Task<IActionResult> Register(UserForRegisterDto userForRegisterDto)
         {
+            //ToDO Move Return UserForDetailDto From USerComponent
             // validate request
 
             userForRegisterDto.Username = userForRegisterDto.Username.ToLower();
@@ -47,6 +48,7 @@ namespace BakeryMS.API.Controllers
             var createdUser = await _component.RegisterUser(userForRegisterDto);
 
             // TODO --> create a createdAtRoute Response
+            // return CreatedAtRoute("GetUser", new { Controller = "Users", id = createdUser.Id }, userToReturn);
             return StatusCode(201);
 
         }
