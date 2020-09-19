@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { AlertifyService } from '../../_services/alertify.service';
+import { environment } from '../../../environments/environment';
 
 @Component({
   // tslint:disable-next-line: component-selector
@@ -21,7 +22,7 @@ export class TestComponent implements OnInit {
   }
 
   getTestValues() {
-    this.http.get('https://localhost:5001/weatherforecast').subscribe(response => {
+    this.http.get(environment.apiUrl + 'weatherforecast').subscribe(response => {
       this.testValues = response;
     }, error => {
       console.log(error);
