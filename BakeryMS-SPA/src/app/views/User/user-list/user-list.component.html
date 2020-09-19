@@ -1,0 +1,58 @@
+<!-- <div class="container"> -->
+<!-- <div class="row">
+  <div class="col-md-12 mx-auto">
+    <div class="card mx-4">
+      <div class="card-body p-4">
+        <h1>Users</h1>
+        <p class="text-muted">List of Users</p>
+
+      </div>
+    </div>
+  </div>
+</div> -->
+
+<!-- <p>register form value : {{ registerForm.value | json }}</p>
+  <p>register form status : {{ registerForm.status | json }}</p> -->
+<!-- </div> -->
+
+<div class="card">
+  <div class="card-header"><i class="fa fa-align-justify"></i> User List</div>
+  <div class="card-body">
+    <table class="table table-bordered">
+      <thead>
+        <tr>
+          <th>Username</th>
+          <th>First Name</th>
+          <th>last Name</th>
+          <th>Gender</th>
+          <th>Last Active</th>
+          <!-- <th>Created</th> -->
+          <th>Status</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let user of users">
+          <td>{{ user.username }}</td>
+          <td>{{ user.firstName }}</td>
+          <td>{{ user.lastName }}</td>
+          <td>{{ user.gender }}</td>
+          <td>{{ user.lastActive | date:'medium' }}</td>
+          <!-- <td>{{ user.created.toDateString }}</td> -->
+          <td>
+            <span class="badge badge-success">Active</span>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+    <!-- <ul class="pagination">
+            <li class="page-item"><a class="page-link" href="#">Prev</a></li>
+            <li class="page-item active">
+              <a class="page-link" href="#">1</a>
+            </li>
+            <li class="page-item"><a class="page-link" href="#">2</a></li>
+            <li class="page-item"><a class="page-link" href="#">3</a></li>
+            <li class="page-item"><a class="page-link" href="#">4</a></li>
+            <li class="page-item"><a class="page-link" href="#">Next</a></li>
+          </ul> -->
+  </div>
+</div>
