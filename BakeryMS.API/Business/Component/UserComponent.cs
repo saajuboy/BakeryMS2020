@@ -36,8 +36,7 @@ namespace BakeryMS.API.Business.Component
 
         public async Task<User> UpdateUser(UserForRegisterDto userForRegisterDto)
         {
-            int a = 0;
-            await Task.Run(() => a = 1);
+            await Task.Run(() => 1);
             throw new System.NotImplementedException();
         }
 
