@@ -1,10 +1,12 @@
 using System.Linq;
-using System;
 using System.Security.Claims;
 using System.Threading.Tasks;
-using BakeryMS.API.Business.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using BakeryMS.API.Data.Interfaces;
+using BakeryMS.API.Common.DTOs;
+using AutoMapper;
+using System.Collections.Generic;
 
 namespace BakeryMS.API.Controllers
 {
@@ -13,10 +15,12 @@ namespace BakeryMS.API.Controllers
     [Authorize]
     public class UsersController : ControllerBase
     {
-        public IUserComponent _userComponent { get; set; }
-        public UsersController(IUserComponent userComponent)
+        private readonly IUserRepository _repository;
+        private readonly IMapper _mapper;
+        public UsersController(IUserRepository repository, IMapper mapper)
         {
-            _userComponent = userComponent;
+            _mapper = mapper;
+            _repository = repository;
 
         }
 
@@ -30,7 +34,9 @@ namespace BakeryMS.API.Controllers
 
             }
 
-            var userToReturn = await _userComponent.GetUser(id);
+            var userFromRepository = await _repository.GetUser(id);
+
+            var userToReturn = _mapper.Map<UserForDetailDto>(userFromRepository);
 
             return Ok(userToReturn);
         }
@@ -39,8 +45,9 @@ namespace BakeryMS.API.Controllers
         [Authorize(Roles = "Admin")]
         public async Task<IActionResult> GetUsers()
         {
-            var usersToReturn = await _userComponent.GetUsers();
+            var usersFromRepository = await _repository.GetUsers();
 
+            var usersToReturn = _mapper.Map<IEnumerable<UserForDetailDto>>(usersFromRepository);
             return Ok(usersToReturn);
         }
 

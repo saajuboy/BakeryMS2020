@@ -13,7 +13,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
 using System.Linq;
-using BakeryMS.API.Business.Interfaces;
+using AutoMapper;
 
 namespace BakeryMS.API.Controllers
 {
@@ -24,10 +24,10 @@ namespace BakeryMS.API.Controllers
         private readonly IAuthRepository _repository;
         private readonly IConfiguration _config;
         private readonly DataContext _context;
-        private readonly IUserComponent _component;
-        public AuthController(IAuthRepository repository, IConfiguration configuration, DataContext context, IUserComponent component)
+        private readonly IMapper _mapper;
+        public AuthController(IAuthRepository repository, IMapper mapper, IConfiguration configuration, DataContext context)
         {
-            _component = component;
+            _mapper = mapper;
             _context = context;
             _config = configuration;
             _repository = repository;
@@ -37,16 +37,17 @@ namespace BakeryMS.API.Controllers
         [HttpPost("register")]
         public async Task<IActionResult> Register(UserForRegisterDto userForRegisterDto)
         {
-            //ToDO Move Return UserForDetailDto From USerComponent
-            // validate request
-
             userForRegisterDto.Username = userForRegisterDto.Username.ToLower();
 
             if (await _repository.UserExists(userForRegisterDto.Username))
                 return BadRequest("Username Already Exists");
 
-            var createdUser = await _component.RegisterUser(userForRegisterDto);
+            var userToCreate = _mapper.Map<User>(userForRegisterDto);
 
+            //dynamic data
+            userToCreate.Status = true;
+
+            var createdUser = await _repository.Register(userToCreate, userForRegisterDto.Password);
             // TODO --> create a createdAtRoute Response
             // return CreatedAtRoute("GetUser", new { Controller = "Users", id = createdUser.Id }, userToReturn);
             return StatusCode(201);
@@ -63,7 +64,6 @@ namespace BakeryMS.API.Controllers
             if (userFromRepository == null)
                 return Unauthorized();
 
-            // DataContext _context = new DataContext();
             var userRoles = (from user in _context.Users
                              join roleMapping in _context.UserRolesMappings
                                  on user.Id equals roleMapping.User.Id
@@ -75,7 +75,6 @@ namespace BakeryMS.API.Controllers
             {
                     new Claim(ClaimTypes.NameIdentifier,userFromRepository.Id.ToString()),
                     new Claim(ClaimTypes.Name,userFromRepository.Username),
-                    // new Claim(ClaimTypes.Role,userRoles)
             };
 
             foreach (var item in userRoles)
