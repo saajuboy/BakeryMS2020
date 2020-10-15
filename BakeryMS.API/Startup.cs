@@ -37,6 +37,7 @@ namespace BakeryMS.API
             //Interface Declaration
             services.AddScoped<IAuthRepository, AuthRepository>();
             services.AddScoped<IUserRepository, UserRepository>();
+            services.AddScoped<IInventoryRepository, InventoryRepository>();
 
             services.AddAutoMapper(typeof(Startup));
             services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
