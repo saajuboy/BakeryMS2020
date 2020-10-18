@@ -4,14 +4,16 @@ using BakeryMS.API.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace BakeryMS.API.Migrations
 {
     [DbContext(typeof(DataContext))]
-    partial class DataContextModelSnapshot : ModelSnapshot
+    [Migration("20201017122321_NullableStockedQuantity")]
+    partial class NullableStockedQuantity
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -90,47 +92,15 @@ namespace BakeryMS.API.Migrations
                     b.Property<bool>("Status")
                         .HasColumnType("bit");
 
-                    b.Property<int?>("SupplierId")
+                    b.Property<int>("SupplierId")
                         .HasColumnType("int");
 
                     b.Property<int>("UserId")
                         .HasColumnType("int");
 
-                    b.Property<bool>("isFromOutlet")
-                        .HasColumnType("bit");
-
                     b.HasKey("Id");
-
-                    b.HasIndex("SupplierId");
 
                     b.ToTable("PurchaseOrderHeaders");
-                });
-
-            modelBuilder.Entity("BakeryMS.API.Models.Inventory.Supplier", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
-
-                    b.Property<string>("Address")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<int?>("ContactNumber")
-                        .HasColumnType("int");
-
-                    b.Property<string>("Email")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Name")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<int?>("Type")
-                        .HasColumnType("int");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("Suppliers");
                 });
 
             modelBuilder.Entity("BakeryMS.API.Models.Item", b =>
@@ -296,13 +266,6 @@ namespace BakeryMS.API.Migrations
                         .HasForeignKey("POHeaderId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
-                });
-
-            modelBuilder.Entity("BakeryMS.API.Models.Inventory.PurchaseOrderHeader", b =>
-                {
-                    b.HasOne("BakeryMS.API.Models.Inventory.Supplier", "Supplier")
-                        .WithMany()
-                        .HasForeignKey("SupplierId");
                 });
 
             modelBuilder.Entity("BakeryMS.API.Models.Item", b =>

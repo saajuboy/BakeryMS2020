@@ -23,7 +23,7 @@ namespace BakeryMS.API.Models.Inventory
         [Column(TypeName = "decimal(18,2)")]
         public decimal? RejectedQuantity { get; set; }
         [Column(TypeName = "decimal(18,2)")]
-        public decimal StockedQuantity { get; set; }
+        public decimal? StockedQuantity { get; set; }
         public DateTime? ModifiedTime { get; set; }
 
 
