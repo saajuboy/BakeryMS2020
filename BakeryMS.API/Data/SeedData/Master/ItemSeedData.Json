@@ -1,0 +1,52 @@
+[
+  {
+    "Name": "Normal Bread",
+    "Code": "BRDNML",
+    "Description": "1 Loaf Bread",
+    "ItemCategory": {
+      "Code": "BRDG",
+      "Description": "General Bread"
+    },
+    "Unit": { "Description": "Piece" }
+  },
+  {
+    "Name": "Butter Cake",
+    "Code": "CKEBTR",
+    "Description": "Whole Butter Cake",
+    "ItemCategory": {
+      "Code": "CKEW",
+      "Description": "Whole Cake"
+    },
+    "Unit": { "Description": "Kg" }
+  },
+  {
+    "Name": "Fish Bun",
+    "Code": "BUNFSH",
+    "Description": "Spicy Fish Bun Large",
+    "ItemCategory": {
+      "Code": "BUNH",
+      "Description": "Hot Bun"
+    },
+    "Unit": { "Description": "Piece" }
+  },
+  {
+    "Name": "Fish Pastry",
+    "Code": "PSTFSH",
+    "Description": "Crispy Fish Pastry",
+    "ItemCategory": {
+      "Code": "PSTR",
+      "Description": "Pastry"
+    },
+    "Unit": { "Description": "Piece" }
+  },
+  {
+    "Name": "Double Roast Bread",
+    "Code": "BRDDBL",
+    "Description": "Bagya Thatti Bread",
+    "ItemCategory": {
+      "Code": "BRDG",
+      "Description": "General Bread"
+    },
+    "Unit": { "Description": "Piece" }
+  }
+]

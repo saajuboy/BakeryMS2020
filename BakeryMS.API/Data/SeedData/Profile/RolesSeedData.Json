@@ -1,0 +1,20 @@
+[
+  {
+    "RoleName": "Admin"
+  },
+  {
+    "RoleName": "BakeryManager"
+  },
+  {
+    "RoleName": "OutletManager"
+  },
+  {
+    "RoleName": "Cashier"
+  },
+  {
+    "RoleName": "Baker"
+  },
+  {
+    "RoleName":"User"
+  }
+]

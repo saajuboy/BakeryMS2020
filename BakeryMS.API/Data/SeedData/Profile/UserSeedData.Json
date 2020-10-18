@@ -1,0 +1,67 @@
+[
+  {
+    "FirstName": "Saajidh",
+    "LastName": "Umar",
+    "Username": "saajidh",
+    "Gender": "male",
+    "DateOfBirth": "1996-03-12",
+    "Password": "password",
+    "ContactNumber": "07771234556",
+    "Created": "2020-02-13",
+    "LastActive": "2020-02-13",
+    "Status": true,
+    "PhotoUrl": "https://randomuser.me/api/portraits/men/35.jpg"
+  },
+  {
+    "FirstName": "saajidh",
+    "LastName": "umar",
+    "Username": "umar",
+    "Gender": "male",
+    "DateOfBirth": "1996-03-12",
+    "Password": "password",
+    "ContactNumber": "07771234556",
+    "Created": "2020-02-13",
+    "LastActive": "2020-10-11",
+    "Status": true,
+    "PhotoUrl": "https://randomuser.me/api/portraits/men/32.jpg"
+  },
+  {
+    "FirstName": "arjun",
+    "LastName": "mohan",
+    "Username": "arjun",
+    "Gender": "male",
+    "DateOfBirth": "1996-03-12",
+    "Password": "password",
+    "ContactNumber": "07771234556",
+    "Created": "2020-02-13",
+    "LastActive": "2020-10-11",
+    "Status": true,
+    "PhotoUrl": "https://randomuser.me/api/portraits/men/47.jpg"
+  },
+  {
+    "FirstName": "shifan",
+    "LastName": "moh",
+    "Username": "shifan",
+    "Gender": "male",
+    "DateOfBirth": "1996-03-12",
+    "Password": "password",
+    "ContactNumber": "07771234556",
+    "Created": "2020-02-13",
+    "LastActive": "2020-10-11",
+    "Status": true,
+    "PhotoUrl": "https://randomuser.me/api/portraits/men/44.jpg"
+  },
+  {
+    "FirstName": "indrani",
+    "LastName": "manel",
+    "Username": "manel",
+    "Gender": "female",
+    "DateOfBirth": "1996-03-12",
+    "Password": "password",
+    "ContactNumber": "07771234556",
+    "Created": "2020-02-13",
+    "LastActive": "2020-10-11",
+    "Status": true,
+    "PhotoUrl": "https://randomuser.me/api/portraits/women/47.jpg"
+  }
+]
