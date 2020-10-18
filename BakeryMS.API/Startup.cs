@@ -3,6 +3,7 @@ using AutoMapper;
 using BakeryMS.API.Data;
 using BakeryMS.API.Data.Interfaces;
 using BakeryMS.API.Data.Repositories;
+using BakeryMS.API.Data.SeedData;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -33,7 +34,9 @@ namespace BakeryMS.API
             services.AddDbContext<DataContext>(options =>
                 options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
             services.AddCors();
-
+            
+            services.AddTransient<Seed>();
+            
             //Interface Declaration
             services.AddScoped<IAuthRepository, AuthRepository>();
             services.AddScoped<IUserRepository, UserRepository>();
@@ -56,7 +59,7 @@ namespace BakeryMS.API
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
+        public void Configure(IApplicationBuilder app, IWebHostEnvironment env, Seed seeder)
         {
             if (env.IsDevelopment())
             {
@@ -64,6 +67,7 @@ namespace BakeryMS.API
             }
 
             app.UseRouting();
+            seeder.SeedData();
             app.UseCors(x => x.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader());
             app.UseHttpsRedirection();
 
