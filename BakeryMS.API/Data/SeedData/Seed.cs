@@ -26,13 +26,27 @@ namespace BakeryMS.API.Data.SeedData
             {
                 SeedItemsCategoriesANDUnits();
             }
+            if(!_context.Suppliers.Any()){
+                SeedSupplier();
+            }
             if (!_context.PurchaseOrderHeaders.Any())
             {
                 SeedPurchaseOrder();
             }
 
         }
+        private void SeedSupplier()
+        {
+            // SupplierSeedData.Json
+            var SupData = System.IO.File.ReadAllText("Data/SeedData/Master/SupplierSeedData.Json");
+            var Suppliers = JsonConvert.DeserializeObject<List<Supplier>>(SupData);
 
+            foreach (var sup in Suppliers)
+            {
+                _context.AddRange(sup);
+                _context.SaveChanges();
+            }
+        }
         private void SeedPurchaseOrder()
         {
             var POData = System.IO.File.ReadAllText("Data/SeedData/Inventory/PurchaseOrderSeedData.Json");

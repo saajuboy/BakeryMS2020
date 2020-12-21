@@ -1,0 +1,37 @@
+[
+  {
+    "Name": "PRIMA PVT (LTD)",
+    "ContactNumber": "011286 4580",
+    "Email": "pcml-info@prima.com.lk",
+    "Type": "1",
+    "Address": "50, Sri Jayawardenapura Mawatha Rajagiriya ,Sri Lanka"
+  },
+  {
+    "Name": "NEW LANKA TRADERS",
+    "ContactNumber": "0522300034",
+    "Email": "NewLankatraders@slt.net",
+    "Type": "1",
+    "Address": "Lower Gibson's Rd, Nuwara Eliya"
+  },
+  {
+    "Name": "KANJANE TRADERS",
+    "ContactNumber": "052 2456 001",
+    "Email": "KanjaneTD@gmail.com",
+    "Type": "2",
+    "Address": "122 PBC Hwy, Nuwara Eliya"
+  },
+  {
+    "Name": "Pubudu Sweet Traders",
+    "ContactNumber": "077 8959395",
+    "Email": "pubudu_sweet@gmail.com",
+    "Type": "2",
+    "Address": "21 Bonavista Rd, Nuwara Eliya"
+  },
+  {
+    "Name": "Rasheed Farm House",
+    "ContactNumber": "052 1889100",
+    "Email": "RasheedFarm@gmail.com",
+    "Type": "1",
+    "Address": "40 Badulla Road N Eliya"
+  }
+]
