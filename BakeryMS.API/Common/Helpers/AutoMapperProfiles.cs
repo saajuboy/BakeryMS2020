@@ -13,16 +13,34 @@ namespace BakeryMS.API.Common.Helpers
             CreateMap<UserForRegisterDto, User>();
             CreateMap<User, UserForDetailDto>();
             CreateMap<PurchaseOrderHeader, POForListDto>()
-            .ForMember(dest=> dest.SupplierName,opt=>{
-                opt.MapFrom(src=>src.Supplier.Name);
+            .ForMember(dest => dest.SupplierName, opt =>
+            {
+                opt.MapFrom(src => src.Supplier.Name);
             });
             CreateMap<PurchaseOrderHeader, POHForDetailDto>()
-            .ForMember(dest=> dest.Supplier,opt=>{
-                opt.MapFrom(src=>src.Supplier.Name);
+            .ForMember(dest => dest.SupplierId, opt =>
+            {
+                opt.MapFrom(src => src.Supplier.Id);
+            }).ForMember(dest => dest.PODetail, opt =>
+            {
+                opt.MapFrom(src => src.PurchaseOrderDetail);
             });
             CreateMap<PurchaseOrderDetail, PODForDetailDto>()
-            .ForMember(dest => dest.Item, opt =>{
+            .ForMember(dest => dest.Item, opt =>
+            {
                 opt.MapFrom(src => src.Item.Name);
+            });
+
+            CreateMap<POHForDetailDto, PurchaseOrderHeader>()
+            .ForMember(dest => dest.PurchaseOrderDetail, opt =>
+            {
+                opt.MapFrom(src => src.PODetail);
+            });
+
+            CreateMap<PODForDetailDto, PurchaseOrderDetail>()
+            .ForMember(dest => dest.Item.Id, opt =>
+            {
+                opt.MapFrom(src => src.ItemId);
             });
 
         }
