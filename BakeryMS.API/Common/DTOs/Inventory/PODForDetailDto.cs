@@ -8,6 +8,7 @@ namespace BakeryMS.API.Common.DTOs.Inventory
         public DateTime DueDate { get; set; }
         public decimal OrderQty { get; set; }
         public string Item { get; set; }
+        public int ItemId { get; set; }
         public decimal UnitPrice { get; set; }
         public decimal LineTotal { get; set; }
         public decimal ReceivedQuantity { get; set; }
@@ -15,4 +16,4 @@ namespace BakeryMS.API.Common.DTOs.Inventory
         public decimal? StockedQuantity { get; set; }
         public DateTime? ModifiedTime { get; set; }
     }
-}
+} 
