@@ -38,7 +38,7 @@ namespace BakeryMS.API.Common.Helpers
             });
 
             CreateMap<PODForDetailDto, PurchaseOrderDetail>()
-            .ForMember(dest => dest.Item.Id, opt =>
+            .ForPath(dest => dest.Item.Id, opt =>
             {
                 opt.MapFrom(src => src.ItemId);
             });
