@@ -9,9 +9,14 @@ import { P500Component } from './views/error/500.component';
 import { LoginComponent } from './views/login/login.component';
 import { RegisterComponent } from './views/user/register/register.component';
 import { TestComponent } from './views/Test/Test.component';
+import { UserListComponent } from './views/User/user-list/user-list.component';
+import { PurchaseOrderListComponent } from './views/Inventory/PurchaseOrderList/PurchaseOrderList.component';
+
 import { AuthGuard } from './_guards/auth.guard';
 import { AdminGuard } from './_guards/admin.guard';
-import { UserListComponent } from './views/User/user-list/user-list.component';
+import { RoleGuard } from './_guards/role.guard';
+import { PurchaseOrderCreateComponent } from './views/Inventory/PurchaseOrderCreate/PurchaseOrderCreate.component';
+
 
 export const routes: Routes = [
   {
@@ -87,6 +92,26 @@ export const routes: Routes = [
       {
         path: 'widgets',
         loadChildren: () => import('./views/widgets/widgets.module').then(m => m.WidgetsModule)
+      },
+      {
+        path: 'inventory/purchaseOrder',
+        runGuardsAndResolvers: 'always',
+        canActivate: [RoleGuard],
+        component: PurchaseOrderListComponent,
+        data: {
+          title: 'Purchase Order',
+          allowedRoles: ['Admin', 'OutletManager', 'BakeryManager']
+        }
+      },
+      {
+        path: 'inventory/purchaseOrder/create',
+        runGuardsAndResolvers: 'always',
+        canActivate: [RoleGuard],
+        component: PurchaseOrderCreateComponent,
+        data: {
+          title: 'Create Pur.Order',
+          allowedRoles: ['Admin', 'OutletManager', 'BakeryManager']
+        }
       },
       {
         path: 'user/register',
