@@ -50,12 +50,15 @@ import { AuthGuard } from './_guards/auth.guard';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { environment } from '../environments/environment';
 import { AdminGuard } from './_guards/admin.guard';
+import { RoleGuard } from './_guards/role.guard';
 
 // import Components
 import { UserListComponent } from './views/User/user-list/user-list.component';
 import { TestComponent } from './views/Test/Test.component';
 import { LoginComponent } from './views/login/login.component';
 import { RegisterComponent } from './views/user/register/register.component';
+import { PurchaseOrderCreateComponent } from './views/Inventory/PurchaseOrderCreate/PurchaseOrderCreate.component';
+import { PurchaseOrderListComponent } from './views/Inventory/PurchaseOrderList/PurchaseOrderList.component';
 
 // token getter function to automatically intercept http requests
 export function tokenGetter() {
@@ -96,7 +99,9 @@ export function tokenGetter() {
     LoginComponent,
     RegisterComponent,
     TestComponent,
-    UserListComponent
+    UserListComponent,
+    PurchaseOrderCreateComponent,
+    PurchaseOrderListComponent
   ],
   providers: [{
     provide: LocationStrategy,
@@ -105,7 +110,8 @@ export function tokenGetter() {
     AuthService,
     AlertifyService,
     AuthGuard,
-    AdminGuard
+    AdminGuard,
+    RoleGuard
   ],
   bootstrap: [AppComponent]
 })
