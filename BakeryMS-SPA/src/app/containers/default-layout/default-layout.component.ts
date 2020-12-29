@@ -1,6 +1,7 @@
 import { Component } from '@angular/core';
 import { navItems as navAdmin } from '../../_NavObjects/_nav';
 import { navItems as navBakeryManager } from '../../_NavObjects/_navBM';
+import { navItems as navOutletManager } from '../../_NavObjects/_navOM';
 import { AlertifyService } from '../../_services/alertify.service';
 import { Router } from '@angular/router';
 import { AuthService } from '../../_services/auth.service';
@@ -27,10 +28,11 @@ export class DefaultLayoutComponent {
   setNavItem(auth: AuthService) {
     if (auth.isUserAdmin()) {
       this.navItems = navAdmin;
+    } else if (auth.isUserOutletManager()) {
+      this.navItems = navOutletManager;
     } else if (auth.isUserBakeryManager()) {
       this.navItems = navBakeryManager;
     }
-
   }
 
 
