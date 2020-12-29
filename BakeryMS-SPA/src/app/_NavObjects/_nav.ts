@@ -197,6 +197,23 @@ export const navItems: INavData[] = [
     }
   },
   {
+    name: 'Inventory',
+    url: '/inventory',
+    icon: 'icon-basket-loaded',
+    children: [
+      {
+        name: 'Purchase Order',
+        url: '/inventory/purchaseOrder',
+        icon: 'icon-list'
+      },
+      {
+        name: 'Create Pur.Order',
+        url: '/inventory/purchaseOrder/create',
+        icon: 'icon-note'
+      }
+    ]
+  },
+  {
     name: 'User',
     url: '/User',
     icon: 'icon-user',
