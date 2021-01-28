@@ -42,6 +42,7 @@ import { HttpClientModule } from '@angular/common/http';
 import { BsDropdownModule } from 'ngx-bootstrap/dropdown';
 import { TabsModule } from 'ngx-bootstrap/tabs';
 import { ChartsModule } from 'ng2-charts';
+import { Ng2SearchPipeModule } from 'ng2-search-filter';
 
 // Import services, guards
 import { AuthService } from './_services/auth.service';
@@ -51,6 +52,9 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { environment } from '../environments/environment';
 import { AdminGuard } from './_guards/admin.guard';
 import { RoleGuard } from './_guards/role.guard';
+import { UtilityService } from './_services/utility.service';
+import { MasterService } from './_services/master.service';
+
 
 // import Components
 import { UserListComponent } from './views/User/user-list/user-list.component';
@@ -59,6 +63,7 @@ import { LoginComponent } from './views/login/login.component';
 import { RegisterComponent } from './views/user/register/register.component';
 import { PurchaseOrderCreateComponent } from './views/Inventory/PurchaseOrderCreate/PurchaseOrderCreate.component';
 import { PurchaseOrderListComponent } from './views/Inventory/PurchaseOrderList/PurchaseOrderList.component';
+
 
 // token getter function to automatically intercept http requests
 export function tokenGetter() {
@@ -81,6 +86,7 @@ export function tokenGetter() {
     PerfectScrollbarModule,
     BsDropdownModule.forRoot(),
     TabsModule.forRoot(),
+    Ng2SearchPipeModule ,
     ChartsModule,
     HttpClientModule,
     JwtModule.forRoot({
@@ -109,6 +115,8 @@ export function tokenGetter() {
   },
     AuthService,
     AlertifyService,
+    UtilityService,
+    MasterService,
     AuthGuard,
     AdminGuard,
     RoleGuard
