@@ -53,7 +53,7 @@
         </tr>
       </thead>
       <tbody>
-        <tr *ngFor="let user of userForView | filter: search">
+        <tr *ngFor="let user of users | filter: search">
           <td>{{ user.username }}</td>
           <td>{{ user.firstName }}</td>
           <td>{{ user.lastName }}</td>

@@ -11,6 +11,7 @@ import { UserService } from '../../../_services/user.service';
 export class UserListComponent implements OnInit {
 
   users: User[];
+  search: string = '';
 
   constructor(private userService: UserService, private alertify: AlertifyService) { }
 
@@ -23,5 +24,4 @@ export class UserListComponent implements OnInit {
     });
 
   }
-
 }
