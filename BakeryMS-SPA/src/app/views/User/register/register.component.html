@@ -24,7 +24,9 @@
                 autocomplete="username"
                 formControlName="username"
               />
-              <div class="invalid-feedback">Please choose a username</div>
+              <div *ngIf="r.get('username').hasError('required')" class="invalid-feedback">Please Enter a username</div>
+              <div *ngIf="r.get('username').hasError('pattern')" class="invalid-feedback">You have invalid characters </div>
+
             </div>
           </div>
           <div class="row">
@@ -45,7 +47,8 @@
                 autocomplete="firstname"
                 formControlName="firstname"
               />
-              <div class="invalid-feedback">Please choose a First name</div>
+              <div *ngIf="r.get('firstname').hasError('required')" class="invalid-feedback">Please enter a First name</div>
+              <div *ngIf="r.get('firstname').hasError('pattern')" class="invalid-feedback">only alpha charaters accepted</div>
             </div>
             <div class="input-group col-md-6 mb-3">
               <div class="input-group-prepend">
@@ -64,7 +67,8 @@
                 autocomplete="lastname"
                 formControlName="lastname"
               />
-              <div class="invalid-feedback">Please choose a Last name</div>
+              <div *ngIf="r.get('lastname').hasError('required')"  class="invalid-feedback">Please enter a Last name</div>
+              <div *ngIf="r.get('lastname').hasError('pattern')" class="invalid-feedback">only alpha charaters accepted </div>
             </div>
           </div>
           <div class="row">
