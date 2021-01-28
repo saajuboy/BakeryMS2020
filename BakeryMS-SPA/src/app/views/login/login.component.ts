@@ -19,6 +19,7 @@ export class LoginComponent implements OnInit {
   login() {
     this.authService.login(this.model).subscribe(next => {
       this.alertify.success('logged in succesfully');
+      this.alertify.message('Welcome ' + this.authService.decodedToken.unique_name + '!');
     }, error => {
       this.alertify.error(error);
     }, () => {
