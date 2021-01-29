@@ -1,6 +1,8 @@
 using AutoMapper;
 using BakeryMS.API.Common.DTOs;
 using BakeryMS.API.Common.DTOs.Inventory;
+using BakeryMS.API.Common.DTOs.Master;
+using BakeryMS.API.Models;
 using BakeryMS.API.Models.Inventory;
 using BakeryMS.API.Models.Profile;
 
@@ -12,6 +14,7 @@ namespace BakeryMS.API.Common.Helpers
         {
             CreateMap<UserForRegisterDto, User>();
             CreateMap<User, UserForDetailDto>();
+
             CreateMap<PurchaseOrderHeader, POForListDto>()
             .ForMember(dest => dest.SupplierName, opt =>
             {
@@ -42,6 +45,25 @@ namespace BakeryMS.API.Common.Helpers
             {
                 opt.MapFrom(src => src.ItemId);
             });
+
+            CreateMap<Supplier, SupplierDto>();
+
+            CreateMap<SupplierDto, Supplier>();
+
+            CreateMap<Item, ItemForListDto>()
+            .ForMember(dest => dest.ItemCategory, opt =>
+            {
+                opt.MapFrom(src => src.ItemCategory.Description);
+            })
+            .ForMember(dest => dest.Unit, opt =>
+            {
+                opt.MapFrom(src => src.Unit.Description);
+            });
+
+            CreateMap<Item, ItemForDetailDto>();
+            CreateMap<ItemCategory, ItemCategoryForDetailDto>();
+            CreateMap<Unit, UnitForDetailDto>();
+
 
         }
     }
