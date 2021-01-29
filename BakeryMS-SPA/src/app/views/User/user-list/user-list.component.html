@@ -29,11 +29,14 @@
           placeholder="Search"
           autocomplete="off"
           [(ngModel)]="search"
-          
         />
       </div>
       <div class="col-md-1">
-        <button class="btn btn-pill btn-block btn-primary" type="button">
+        <button
+          class="btn btn-pill btn-block btn-primary"
+          (click)="addUser()"
+          type="button"
+        >
           Add
         </button>
       </div>
@@ -53,7 +56,7 @@
         </tr>
       </thead>
       <tbody>
-        <tr *ngFor="let user of users | filter: search">
+        <tr *ngFor="let user of users | filter: search;let $index = index">
           <td>{{ user.username }}</td>
           <td>{{ user.firstName }}</td>
           <td>{{ user.lastName }}</td>
@@ -61,7 +64,12 @@
           <td>{{ user.lastActive | date: "medium" }}</td>
           <!-- <td>{{ user.created.toDateString }}</td> -->
           <td>
-            <span class="badge badge-success">Active</span>
+            <span *ngIf="user.status == true" class="badge badge-success"
+              >Active</span
+            >
+            <span *ngIf="user.status == false" class="badge badge-secondary"
+              >Deactive</span
+            >
           </td>
           <td>
             <button class="btn btn-ghost-secondary" type="button">
@@ -70,7 +78,16 @@
             <button class="btn btn-ghost-info" type="button">
               <i class="icon-info"></i>
             </button>
-            <button class="btn btn-ghost-danger" type="button">
+            <button
+              (click)="deactivate($index)"
+              class="btn btn-ghost-warning"
+              type="button"
+              popover="Deactivate"
+              triggers="mouseenter:mouseleave"
+            >
+              <i class="icon-lock"></i>
+            </button>
+            <button (click)="delete($index)" class="btn btn-ghost-danger" type="button">
               <i class="icon-close"></i>
             </button>
           </td>

@@ -140,7 +140,7 @@
                   'is-valid': !r.get('confirmPassword').errors
                 }"
                 class="form-control"
-                placeholder="Repeat password"
+                placeholder="Confirm password"
                 autocomplete="new-password"
                 formControlName="confirmPassword"
               />
@@ -151,7 +151,7 @@
                 "
                 class="invalid-feedback"
               >
-                Password is required
+               Confirm Password is required
               </div>
               <div
                 *ngIf="
@@ -183,7 +183,7 @@
             </div>
           </div>
           <button [disabled]="!r.valid" type="submit" class="btn btn-block btn-success">
-            Create Account
+            Register User
           </button>
         </form>
       </div>
