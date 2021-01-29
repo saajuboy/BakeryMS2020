@@ -3,6 +3,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using BakeryMS.API.Common.Params;
 using BakeryMS.API.Data.Interfaces;
+using BakeryMS.API.Models;
 using BakeryMS.API.Models.Inventory;
 using Microsoft.EntityFrameworkCore;
 
@@ -26,7 +27,11 @@ namespace BakeryMS.API.Data.Repositories
         {
             _context.Remove(entity);
         }
-
+        public void Update<T>(T entity) where T : class
+        {
+            _context.Update(entity);
+        }
+        //
         public async Task<bool> SaveAll()
         {
             return await _context.SaveChangesAsync() > 0;
@@ -111,6 +116,27 @@ namespace BakeryMS.API.Data.Repositories
             return supplier;
         }
 
+        public async Task<IEnumerable<Supplier>> GetSuppliers()
+        {
+            var suppliers = await _context.Suppliers.ToListAsync();
 
+            return suppliers;
+        }
+
+        public async Task<Item> GetItem(int id)
+        {
+            var item = await _context.Items.FirstOrDefaultAsync(a => a.Id == id);
+
+            return item;
+        }
+
+         public async Task<IEnumerable<Item>> GetItems()
+        {
+            var items = await _context.Items.ToListAsync();
+
+            return items;
+        }
+
+        
     }
 }
