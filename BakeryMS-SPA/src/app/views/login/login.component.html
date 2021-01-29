@@ -43,7 +43,7 @@
                   </div>
                   <div class="row">
                     <div class="col-6">
-                      <button  type="submit" class="btn btn-primary px-4" [disabled]="!loginForm.valid">
+                      <button  type="submit" class="btn btn-primary px-4" [disabled]="loginValidation(loginForm.valid)">
                         Login
                       </button>
                     </div>

@@ -9,11 +9,12 @@ import { Router } from '@angular/router';
 })
 export class LoginComponent implements OnInit {
 
-  model: any = {};
+  model = { username: '', password: '' };
 
   constructor(public authService: AuthService, private alertify: AlertifyService, private router: Router) { }
 
   ngOnInit() {
+
   }
 
   login() {
@@ -21,7 +22,13 @@ export class LoginComponent implements OnInit {
       this.alertify.success('logged in succesfully');
       this.alertify.message('Welcome ' + this.authService.decodedToken.unique_name + '!');
     }, error => {
-      this.alertify.error(error);
+
+      if (error.status === 401) {
+        this.alertify.error('UnAuthorized');
+      } else if (error.status === 403) {
+        this.alertify.error('Deactivated, Contact Admin');
+      }
+
     }, () => {
       this.router.navigate(['']);
     });
@@ -47,6 +54,20 @@ export class LoginComponent implements OnInit {
     };
   }
 
+  loginValidation(isFormValid: boolean): boolean {
+    if (!isFormValid) {
+      return true;
+    }
+    if (this.model.password.length < 4) {
+      // this.alertify.warning('minimum character for password is 4');
+      return true;
+    }
+    if (this.model.password.length > 20) {
+      // this.alertify.warning('maximum character for password is 20');
+      return true;
+    }
+    return false;
+  }
   // styleObjectForLoginForm(): object {
   //   return {
   //     filter: 'blur(0px)',
