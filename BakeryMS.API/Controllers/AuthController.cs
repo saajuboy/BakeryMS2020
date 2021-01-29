@@ -64,6 +64,9 @@ namespace BakeryMS.API.Controllers
             if (userFromRepository == null)
                 return Unauthorized();
 
+            if((bool)userFromRepository.Status == false)
+                return Forbid();
+
             var userRoles = (from user in _context.Users
                              join roleMapping in _context.UserRolesMappings
                                  on user.Id equals roleMapping.User.Id
