@@ -9,6 +9,7 @@ export interface User {
     gender: string;
     created: Date;
     lastActive: Date;
+    status:boolean;
     // photoUrl: string;
 
     // photos?: Photo[];
