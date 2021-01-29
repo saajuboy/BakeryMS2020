@@ -1,12 +1,21 @@
 import { Component, OnInit } from '@angular/core';
 import { getStyle, hexToRgba } from '@coreui/coreui/dist/js/coreui-utilities';
 import { CustomTooltips } from '@coreui/coreui-plugin-chartjs-custom-tooltips';
+import { SmallWidget } from '../../_models/widgets';
+import { UtilityService } from '../../_services/utility.service';
 
 @Component({
   templateUrl: 'dashboard.component.html'
 })
 export class DashboardComponent implements OnInit {
 
+  // orders: SmallWidget;
+  /**
+   *
+   */
+  constructor(private utiServ: UtilityService) {
+
+  }
   radioModel: string = 'Month';
 
   // lineChart1
@@ -230,6 +239,7 @@ export class DashboardComponent implements OnInit {
       label: 'BEP'
     }
   ];
+
   /* tslint:disable:max-line-length */
   public mainChartLabels: Array<any> = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday', 'Monday', 'Thursday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
   /* tslint:enable:max-line-length */
@@ -241,7 +251,7 @@ export class DashboardComponent implements OnInit {
       mode: 'index',
       position: 'nearest',
       callbacks: {
-        labelColor: function(tooltipItem, chart) {
+        labelColor: function (tooltipItem, chart) {
           return { backgroundColor: chart.data.datasets[tooltipItem.datasetIndex].borderColor };
         }
       }
@@ -254,7 +264,7 @@ export class DashboardComponent implements OnInit {
           drawOnChartArea: false,
         },
         ticks: {
-          callback: function(value: any) {
+          callback: function (value: any) {
             return value.charAt(0);
           }
         }
@@ -263,8 +273,8 @@ export class DashboardComponent implements OnInit {
         ticks: {
           beginAtZero: true,
           maxTicksLimit: 5,
-          stepSize: Math.ceil(250 / 5),
-          max: 250
+          stepSize: Math.ceil(500000 / 5),
+          max: 500000
         }
       }]
     },
@@ -380,9 +390,22 @@ export class DashboardComponent implements OnInit {
   ngOnInit(): void {
     // generate random values for mainChart
     for (let i = 0; i <= this.mainChartElements; i++) {
-      this.mainChartData1.push(this.random(50, 200));
-      this.mainChartData2.push(this.random(80, 100));
-      this.mainChartData3.push(65);
+      this.mainChartData1.push(this.random(50000, 500000));
+      this.mainChartData2.push(this.random(45000, 200000));
+      this.mainChartData3.push(250000);
     }
+
+    // this.orders = {
+    //   valueMax: 30,
+    //   valueMin: 0,
+    //   valueNow: 20,
+    //   percentageNumber: (this.orders.valueNow - this.orders.valueMin) / (this.orders.valueMax - this.orders.valueMin),
+    //   percentageString: this.orders.percentageNumber + '%'
+    // };
+  }
+
+  addDate(d: number): string {
+    const today = this.utiServ.currentDate();
+    return this.utiServ.addDate(new Date(), d).toString();
   }
 }
