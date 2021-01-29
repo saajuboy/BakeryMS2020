@@ -12,5 +12,6 @@ namespace BakeryMS.API.Common.DTOs
         public int? ContactNumber { get; set; }
         public string PhotoUrl { get; set; }
         public DateTime LastActive { get; set; }
+        public bool Status { get; set; }
     }
 }
