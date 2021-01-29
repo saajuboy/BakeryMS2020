@@ -8,13 +8,19 @@ export class AlertifyService {
 
   constructor() { }
 
-  confirm(message: string, okCallback: () => any) {
+  confirm(title: string, message: string, okCallback: () => any, cancelCallback: () => any) {
     // tslint:disable-next-line: only-arrow-functions
-    alertify.confirm(message, function (e) {
+    alertify.confirm(title, message, function (e) {
       if (e) {
         okCallback();
       } else { }
+    }, function (e) {
+      if (e) {
+        cancelCallback();
+      }
     });
+
+
   }
 
   success(message: string) {
