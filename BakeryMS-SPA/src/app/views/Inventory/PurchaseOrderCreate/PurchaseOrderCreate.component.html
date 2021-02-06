@@ -1,3 +1,445 @@
-<p>
-  PurchaseOrderCreate works!
-</p>
+<!-- <div class="container"> -->
+<div class="row">
+  <div class="col-md-12 mx-auto">
+    <div class="card mx-4">
+      <div class="card-body p-4">
+        <form [formGroup]="pOCreateForm" (ngSubmit)="createPO()">
+          <h1>Create Purchase Order</h1>
+          <p class="text-muted">Create a new Purchase Order</p>
+          <div class="row">
+            <div class="input-group col-md-4 mb-3">
+              <div class="input-group-prepend">
+                <span class="input-group-text"
+                  ><i class="icon-calendar"> &nbsp; Order Date</i></span
+                >
+              </div>
+              <input
+                [ngClass]="{
+                  'is-invalid': pOCreateForm.get('orderDate').errors,
+                  'is-valid': !pOCreateForm.get('orderDate').errors
+                }"
+                class="form-control"
+                id="orderDate"
+                formControlName="orderDate"
+                placeholder="date"
+                type="date"
+              />
+              <div class="invalid-feedback">
+                Please choose a valid Order date
+              </div>
+            </div>
+            <div class="input-group col-md-4 mb-3">
+              <div class="input-group-prepend">
+                <span class="input-group-text"
+                  ><i class="icon-user">&nbsp; User</i></span
+                >
+              </div>
+              <input
+                type="text"
+                class="form-control"
+                placeholder="username"
+                autocomplete="username"
+                formControlName="username"
+              />
+              <div class="invalid-feedback">Please choose a username</div>
+            </div>
+          </div>
+          <div class="row">
+            <div class="input-group col-md-4 mb-3">
+              <div class="input-group-prepend">
+                <span class="input-group-text"
+                  ><i class="icon-people">&nbsp; Supplier</i></span
+                >
+              </div>
+              <select
+                class="form-control"
+                id="suppliers"
+                formControlName="supplierId"
+                [ngClass]="{
+                  'is-invalid':
+                    pOCreateForm.get('supplierId').errors &&
+                    pOCreateForm.get('supplierId').touched,
+                  'is-valid':
+                    !pOCreateForm.get('supplierId').errors &&
+                    pOCreateForm.get('supplierId').touched
+                }"
+              >
+                <!-- <option value="0" selected="true">Please Select</option> -->
+                <option *ngFor="let sup of suppliers" [value]="sup.id">
+                  {{ sup.name + " - " + sup.email }}
+                </option>
+              </select>
+              <!-- <input
+                [ngClass]="{
+                  'is-invalid':
+                    pOCreateForm.get('supplier').errors &&
+                    pOCreateForm.get('supplier').touched &&
+                    pOCreateForm.get('supplier').hasError('mismatch'),
+                  'is-valid':
+                    !pOCreateForm.get('supplier').errors &&
+                    pOCreateForm.get('supplier').touched
+                }"
+                class="form-control"
+                list="datalistOptions"
+                id="exampleDataList"
+                placeholder="Type to search suppliers ..."
+                formControlName="supplier"
+                autocomplete="off"
+              />
+              <datalist id="datalistOptions">
+                <option
+                  *ngFor="let sup of suppliers"
+                  [value]="sup.name + ' - ' + sup.email"
+                >
+                  {{ sup.name }}
+                </option>
+              </datalist> -->
+
+              <div class="invalid-feedback">Please select a supplier</div>
+            </div>
+            <div class="input-group col-md-4 mb-3">
+              <div class="input-group-prepend">
+                <span class="input-group-text"
+                  ><i class="icon-calendar"> &nbsp; Delivery Date</i></span
+                >
+              </div>
+              <input
+                [ngClass]="{
+                  'is-invalid': pOCreateForm.get('deliveryDate').errors,
+                  'is-valid': !pOCreateForm.get('deliveryDate').errors
+                }"
+                class="form-control"
+                id="deliveryDate"
+                formControlName="deliveryDate"
+                placeholder="date"
+                type="date"
+              />
+              <div class="invalid-feedback">
+                Please choose a valid Delivery date
+              </div>
+            </div>
+            <div class="input-group col-md-4 mb-3">
+              <div class="input-group-prepend">
+                <span class="input-group-text"
+                  ><i class="icon-plane"> &nbsp; Delivery Method</i></span
+                >
+              </div>
+              <select
+                class="form-control"
+                id="deliveryMethod"
+                formControlName="deliveryMethod"
+              >
+                <option *ngFor="let method of deliveryMethods" [value]="method">
+                  {{ method }}
+                </option>
+              </select>
+              <div class="invalid-feedback">
+                Please choose a valid Delivery Method
+              </div>
+            </div>
+          </div>
+          <div class="row mt-4">
+            <div class="col-md-4" style="display: flex;">
+              <div class="col-md-5" >
+                <button
+                type="button"
+                class="btn btn-pill btn-block btn-primary"
+                (click)="addNewRow()"
+              >
+                Add row
+              </button>
+              </div>
+              <div class="col-md-5 pull-right">
+                <button
+                type="button"
+                class="btn btn-pill btn-block btn-warning"
+                (click)="ClearRows()"
+              >
+                Clear
+              </button>
+              </div>
+            </div>
+          </div>
+          <div class="row mt-2">
+            <table class="table table-bordered">
+              <thead>
+                <tr>
+                  <th *ngFor="let column of columns">{{ column }}</th>
+                </tr>
+              </thead>
+              <tbody #rows>
+                <ng-container
+                  formArrayName="tableRowArray"
+                  *ngFor="
+                    let pod of gettableRowArray.controls;
+                    let $index = index;
+                    let length = length
+                  "
+                >
+                  <tr [formGroupName]="$index">
+                    <td>
+                      <select
+                        class="form-control"
+                        id="itemCode"
+                        formControlName="itemCodeId"
+                        [ngClass]="{
+                          'is-invalid':
+                            pod.get('itemCodeId').errors &&
+                            pod.get('itemCodeId').touched ||
+                            pod.get('itemCodeId').hasError('mismatch'),
+                          'is-valid': !pod.get('itemCodeId').errors
+                        }"
+                        (change)="
+                          ItemSelectedValidator(
+                            pod,
+                            pod.get('itemCodeId').value
+                          )
+                        "
+                      >
+                        <option *ngFor="let item of items" [value]="item.id">
+                          {{ item.code }}
+                        </option>
+                      </select>
+                      <!-- <input
+                        [ngClass]="{
+                          'is-invalid':
+                            pod.get('itemCode').errors &&
+                            pod.get('itemCode').touched,
+                          'is-valid':
+                            !pod.get('itemCode').errors &&
+                            pod.get('itemCode').touched
+                        }"
+                        class="form-control"
+                        list="datalistOptions2"
+                        id="exampleDataList"
+                        placeholder="Search for Item Code ..."
+                        formControlName="itemCode"
+                      />
+                      <datalist id="datalistOptions2">
+                        <option value="San Francisco"></option>
+                        <option value="New York"></option>
+                        <option value="Seattle"></option>
+                        <option value="Los Angeles"></option>
+                        <option value="Chicago"></option>
+                      </datalist> -->
+                      <div class="invalid-feedback">
+                        Please choose a valid code
+                      </div>
+                    </td>
+                    <td>
+                      <select
+                        class="form-control"
+                        id="itemName"
+                        formControlName="itemNameId"
+                        [ngClass]="{
+                          'is-invalid':
+                            pod.get('itemNameId').errors &&
+                            pod.get('itemNameId').touched ||
+                            pod.get('itemNameId').hasError('mismatch'),
+                          'is-valid': !pod.get('itemNameId').errors
+                        }"
+                        (change)="
+                          ItemSelectedValidator(
+                            pod,
+                            pod.get('itemNameId').value
+                          )
+                        "
+                      >
+                        <option *ngFor="let item of items" [value]="item.id">
+                          {{ item.name }}
+                        </option>
+                      </select>
+                      <!-- <input
+                        [ngClass]="{
+                          'is-invalid':
+                            pod.get('itemName').errors &&
+                            pod.get('itemName').touched,
+                          'is-valid':
+                            !pod.get('itemName').errors &&
+                            pod.get('itemName').touched
+                        }"
+                        class="form-control"
+                        list="datalistOptions3"
+                        id="exampleDataList"
+                        placeholder="Search for Items ..."
+                        formControlName="itemName"
+                      />
+                      <datalist id="datalistOptions3">
+                        <option value="San Francisco"></option>
+                        <option value="New York"></option>
+                        <option value="Seattle"></option>
+                        <option value="Los Angeles"></option>
+                        <option value="Chicago"></option>
+                      </datalist> -->
+                      <div class="invalid-feedback">
+                        Please choose a valid item
+                      </div>
+                    </td>
+                    <td>
+                      <input
+                        [ngClass]="{
+                          'is-invalid': pod.get('dueDate').errors,
+                          'is-valid': !pod.get('dueDate').errors
+                        }"
+                        class="form-control"
+                        id="date-input"
+                        name="date-input"
+                        placeholder="date"
+                        type="date"
+                        formControlName="dueDate"
+                      />
+                      <div class="invalid-feedback">
+                        Please choose a valid due date
+                      </div>
+                    </td>
+                    <td>
+                      <input
+                        [ngClass]="{
+                          'is-invalid':
+                            pod.get('quantity').errors &&
+                            pod.get('quantity').touched,
+                          'is-valid':
+                            !pod.get('quantity').errors &&
+                            pod.get('quantity').touched
+                        }"
+                        type="text"
+                        class="form-control"
+                        placeholder="0.00"
+                        formControlName="quantity"
+                        (change)="getTotal(pod)"
+                      />
+                      <div class="invalid-feedback">
+                        Enter a valid quantity eg - 1.24
+                      </div>
+                    </td>
+                    <td>
+                      <input
+                        [ngClass]="{
+                          'is-invalid':
+                            pod.get('unitPrice').errors &&
+                            pod.get('unitPrice').touched,
+                          'is-valid':
+                            !pod.get('unitPrice').errors &&
+                            pod.get('unitPrice').touched
+                        }"
+                        type="text"
+                        class="form-control"
+                        placeholder="0.00"
+                        formControlName="unitPrice"
+                        (change)="getTotal(pod)"
+                      />
+                      <div class="invalid-feedback">
+                        Enter a valid unit price eg - 1.24
+                      </div>
+                    </td>
+                    <td>
+                      <input
+                        type="text"
+                        class="form-control"
+                        placeholder="0.00"
+                        formControlName="lineTotal"
+                        [value]="
+                          'Rs ' +
+                          (
+                            pod.get('unitPrice').value *
+                            pod.get('quantity').value
+                          ).toFixed(2)
+                        "
+                      />
+                    </td>
+                    <td>
+                      <button
+                        class="btn btn-ghost-danger"
+                        type="button"
+                        (click)="onDeleteRow($index)"
+                      >
+                        <i class="icon-close"></i>
+                      </button>
+                    </td>
+                  </tr>
+                </ng-container>
+              </tbody>
+            </table>
+            
+          </div>
+          <div class="row">
+            <div class="col-md-9 " style="display: flex;">
+              <div class="col-md-2">
+                <button
+                  type="button"
+                  class="btn btn-pill btn-block btn-primary"
+                  (click)="addNewRow()"
+                >
+                  Add Row
+                </button>
+              </div>
+              <div class="col-md-2 pull-left">
+                <button
+                type="button"
+                class="btn btn-pill btn-block btn-warning"
+                (click)="ClearRows()"
+              >
+                Clear
+              </button>
+              </div>
+            </div>
+            <div class="card-header col-md-3">
+              
+              <div class="align-left">
+                <label class="h5"
+                  >Total No of Rows: {{ gettableRowArray.length }}</label
+                >
+              </div>
+              <div class="align-left">
+                <label class="h4">Total Amount: Rs {{ totalValue.toFixed(2) }}</label>
+              </div>
+            
+            </div>
+          </div>
+          <br>
+          <br>
+          <div class="row">
+            <div class="col-md-2">
+              <button
+                type="submit"
+                class="btn btn-block btn-light"
+                (click)="backToList()"
+              >
+                Back to list
+              </button>
+            </div>
+            <div class="col-md-6"></div>
+            <div class="col-md-2">
+              <button
+                type="submit"
+                [disabled]="pOCreateForm.invalid"
+                class="btn btn-block  btn-outline-success"
+              >
+                Create
+              </button>
+            </div>
+            <div class="col-md-2">
+              <button
+                type="submit"
+                [disabled]="pOCreateForm.invalid"
+                class="btn btn-block btn-success"
+              >
+                Create and send
+              </button>
+            </div>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="output">
+  <p>Form Data: {{ pOCreateForm.value | json }}</p>
+  <p>Is Valid: {{ pOCreateForm.valid }}</p>
+  <p>value : {{ totalValue.toString() }}</p>
+</div>
+
+<!-- <p>register form value : {{ registerForm.value | json }}</p>
+  <p>register form status : {{ registerForm.status | json }}</p> -->
+<!-- </div> -->

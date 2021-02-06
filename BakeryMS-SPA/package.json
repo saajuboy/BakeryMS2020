@@ -50,6 +50,7 @@
     "moment": "^2.24.0",
     "mutationobserver-shim": "^0.3.5",
     "ng2-charts": "^2.3.0",
+    "ng2-search-filter": "^0.5.1",
     "ngx-bootstrap": "^5.6.1",
     "ngx-perfect-scrollbar": "^9.0.0",
     "rxjs": "^6.5.5",

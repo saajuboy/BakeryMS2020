@@ -30,6 +30,8 @@
             "name": ".NET Core Attach",
             "type": "coreclr",
             "request": "attach",
+            // "processName": "BakeryMS.API.exe"
+            
             "processId": "${command:pickProcess}"
         }
     ]
