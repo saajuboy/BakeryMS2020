@@ -22,4 +22,14 @@ export class UserService {
     // return this.http.get<User>(this.baseUrl + 'users/' + id, httpOptions);
   }
 
+  updateUser(id: number, user: User) {
+    return this.http.put(this.baseUrl + 'users/' + id, user);
+  }
+  patchUser(id: number, user: any) {
+    return this.http.patch(this.baseUrl + 'users/' + id, user);
+  }
+  deleteUser(id: number) {
+    return this.http.delete(this.baseUrl + 'users/' + id);
+  }
+
 }

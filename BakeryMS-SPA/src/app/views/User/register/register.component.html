@@ -4,8 +4,14 @@
     <div class="card mx-4">
       <div class="card-body p-4">
         <form [formGroup]="registerForm" (ngSubmit)="register()">
-          <h1>Register</h1>
-          <p class="text-muted">Create user account</p>
+          <h1 *ngIf="isEditForm === false">Register</h1>
+          <h1 *ngIf="isEditForm === true">Edit User</h1>
+          <p *ngIf="isEditForm === false" class="text-muted">
+            Create user account
+          </p>
+          <p *ngIf="isEditForm === true" class="text-muted">
+            Edit user account
+          </p>
           <div class="row">
             <div class="input-group col-md-12 mb-3">
               <div class="input-group-prepend">
@@ -17,16 +23,27 @@
                   'is-invalid':
                     r.get('username').errors && r.get('username').touched,
                   'is-valid':
-                    !r.get('username').errors && r.get('username').touched
+                    !r.get('username').errors &&
+                    (r.get('username').touched ||
+                      r.get('username').value !== '')
                 }"
                 class="form-control"
                 placeholder="Username"
                 autocomplete="username"
                 formControlName="username"
               />
-              <div *ngIf="r.get('username').hasError('required')" class="invalid-feedback">Please Enter a username</div>
-              <div *ngIf="r.get('username').hasError('pattern')" class="invalid-feedback">You have invalid characters </div>
-
+              <div
+                *ngIf="r.get('username').hasError('required')"
+                class="invalid-feedback"
+              >
+                Please Enter a username
+              </div>
+              <div
+                *ngIf="r.get('username').hasError('pattern')"
+                class="invalid-feedback"
+              >
+                You have invalid characters
+              </div>
             </div>
           </div>
           <div class="row">
@@ -40,15 +57,27 @@
                   'is-invalid':
                     r.get('firstname').errors && r.get('firstname').touched,
                   'is-valid':
-                    !r.get('firstname').errors && r.get('firstname').touched
+                    !r.get('firstname').errors &&
+                    (r.get('firstname').touched ||
+                      r.get('firstname').value !== '')
                 }"
                 class="form-control"
                 placeholder="First Name"
                 autocomplete="firstname"
                 formControlName="firstname"
               />
-              <div *ngIf="r.get('firstname').hasError('required')" class="invalid-feedback">Please enter a First name</div>
-              <div *ngIf="r.get('firstname').hasError('pattern')" class="invalid-feedback">only alpha charaters accepted</div>
+              <div
+                *ngIf="r.get('firstname').hasError('required')"
+                class="invalid-feedback"
+              >
+                Please enter a First name
+              </div>
+              <div
+                *ngIf="r.get('firstname').hasError('pattern')"
+                class="invalid-feedback"
+              >
+                only alpha charaters accepted
+              </div>
             </div>
             <div class="input-group col-md-6 mb-3">
               <div class="input-group-prepend">
@@ -60,15 +89,27 @@
                   'is-invalid':
                     r.get('lastname').errors && r.get('lastname').touched,
                   'is-valid':
-                    !r.get('lastname').errors && r.get('lastname').touched
+                    !r.get('lastname').errors &&
+                    (r.get('lastname').touched ||
+                      r.get('lastname').value !== '')
                 }"
                 class="form-control"
                 placeholder="Last Name"
                 autocomplete="lastname"
                 formControlName="lastname"
               />
-              <div *ngIf="r.get('lastname').hasError('required')"  class="invalid-feedback">Please enter a Last name</div>
-              <div *ngIf="r.get('lastname').hasError('pattern')" class="invalid-feedback">only alpha charaters accepted </div>
+              <div
+                *ngIf="r.get('lastname').hasError('required')"
+                class="invalid-feedback"
+              >
+                Please enter a Last name
+              </div>
+              <div
+                *ngIf="r.get('lastname').hasError('pattern')"
+                class="invalid-feedback"
+              >
+                only alpha charaters accepted
+              </div>
             </div>
           </div>
           <div class="row">
@@ -80,7 +121,9 @@
                 type="password"
                 [ngClass]="{
                   'is-invalid':
-                    r.get('password').errors && r.get('password').touched,
+                    r.get('password').errors &&
+                    (r.get('password').touched ||
+                      (!r.get('password').touched && isEditForm === true)),
                   'is-valid': !r.get('password').errors
                 }"
                 class="form-control"
@@ -91,7 +134,8 @@
               <div
                 *ngIf="
                   r.get('password').hasError('required') &&
-                  r.get('password').touched
+                  (r.get('password').touched ||
+                    (!r.get('password').touched && isEditForm === true))
                 "
                 class="invalid-feedback"
               >
@@ -134,8 +178,12 @@
                 [ngClass]="{
                   'is-invalid':
                     (r.get('confirmPassword').errors &&
-                      r.get('confirmPassword').touched) ||
-                    (r.get('confirmPassword').touched &&
+                      (r.get('confirmPassword').touched ||
+                        (!r.get('confirmPassword').touched &&
+                          isEditForm === true))) ||
+                    ((r.get('confirmPassword').touched ||
+                      (!r.get('confirmPassword').touched &&
+                        isEditForm === true)) &&
                       r.hasError('mismatch')),
                   'is-valid': !r.get('confirmPassword').errors
                 }"
@@ -147,11 +195,12 @@
               <div
                 *ngIf="
                   r.get('confirmPassword').hasError('required') &&
-                  r.get('confirmPassword').touched
+                  (r.get('confirmPassword').touched ||
+                    (!r.get('confirmPassword').touched && isEditForm === true))
                 "
                 class="invalid-feedback"
               >
-               Confirm Password is required
+                Confirm Password is required
               </div>
               <div
                 *ngIf="
@@ -161,9 +210,14 @@
               >
                 Passwords do not match
               </div>
-              <div *ngIf="
-              !r.hasError('mismatch') && r.get('confirmPassword').touched
-            " class="valid-feedback">Confirm Password is valid!</div>
+              <div
+                *ngIf="
+                  !r.hasError('mismatch') && r.get('confirmPassword').touched
+                "
+                class="valid-feedback"
+              >
+                Confirm Password is valid!
+              </div>
             </div>
           </div>
           <div class="row">
@@ -182,8 +236,12 @@
               </select>
             </div>
           </div>
-          <button [disabled]="!r.valid" type="submit" class="btn btn-block btn-success">
-            Register User
+          <button
+            [disabled]="!r.valid"
+            type="submit"
+            class="btn btn-block btn-success"
+          >
+            {{ isEditForm === false ? "Register User" : "Update User" }}
           </button>
         </form>
       </div>

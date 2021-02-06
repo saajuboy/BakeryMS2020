@@ -46,8 +46,8 @@
       <thead>
         <tr>
           <th>Username</th>
-          <th>First Name</th>
-          <th>last Name</th>
+          <!-- <th>First Name</th>
+          <th>last Name</th> -->
           <th>Gender</th>
           <th>Last Active</th>
           <!-- <th>Created</th> -->
@@ -56,10 +56,10 @@
         </tr>
       </thead>
       <tbody>
-        <tr *ngFor="let user of users | filter: search;let $index = index">
+        <tr *ngFor="let user of users | filter: search; let $index = index">
           <td>{{ user.username }}</td>
-          <td>{{ user.firstName }}</td>
-          <td>{{ user.lastName }}</td>
+          <!-- <td>{{ user.firstName }}</td>
+          <td>{{ user.lastName }}</td> -->
           <td>{{ user.gender }}</td>
           <td>{{ user.lastActive | date: "medium" }}</td>
           <!-- <td>{{ user.created.toDateString }}</td> -->
@@ -72,22 +72,42 @@
             >
           </td>
           <td>
-            <button class="btn btn-ghost-secondary" type="button">
+            <button
+              class="btn btn-ghost-secondary"
+              (click)="editUser(user.id)"
+              type="button"
+            >
               <i class="icon-pencil"></i>
             </button>
-            <button class="btn btn-ghost-info" type="button">
+            <button
+              (click)="ShowUserInfo(user.id)"
+              class="btn btn-ghost-info"
+              type="button"
+            >
               <i class="icon-info"></i>
             </button>
             <button
-              (click)="deactivate($index)"
-              class="btn btn-ghost-warning"
+              (click)="deactivate(user.id)"
+              [ngClass]="{
+                'btn btn-ghost-warning': user.status === true,
+                'btn btn-ghost-success': user.status === false
+              }"
               type="button"
               popover="Deactivate"
               triggers="mouseenter:mouseleave"
             >
-              <i class="icon-lock"></i>
+              <i
+                [ngClass]="{
+                  'icon-user-unfollow': user.status === true,
+                  'icon-user-following': user.status === false
+                }"
+              ></i>
             </button>
-            <button (click)="delete($index)" class="btn btn-ghost-danger" type="button">
+            <button
+              (click)="delete(user.id)"
+              class="btn btn-ghost-danger"
+              type="button"
+            >
               <i class="icon-close"></i>
             </button>
           </td>
@@ -105,4 +125,80 @@
             <li class="page-item"><a class="page-link" href="#">Next</a></li>
           </ul> -->
   </div>
+</div>
+
+<div
+  bsModal
+  #infoModal="bs-modal"
+  class="modal fade"
+  tabindex="-1"
+  role="dialog"
+  aria-labelledby="myModalLabel"
+  aria-hidden="true"
+>
+  <div class="modal-dialog modal-info" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h4 class="modal-title">User Info</h4>
+        <button
+          type="button"
+          class="close"
+          (click)="infoModal.hide()"
+          aria-label="Close"
+        >
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <div class="row mt-3">
+          <div class="col-md-6 font-weight-bold">User Name</div>
+          <div class="col-md-1">-</div>
+          <div class="col-md-5">{{ userInfo.username }}</div>
+        </div>
+        <div class="row mt-2">
+          <div class="col-md-6 font-weight-bold">First Name</div>
+          <div class="col-md-1">-</div>
+          <div class="col-md-5">{{ userInfo.firstName }}</div>
+        </div>
+        <div class="row mt-2">
+          <div class="col-md-6 font-weight-bold">Last Name</div>
+          <div class="col-md-1">-</div>
+          <div class="col-md-5">{{ userInfo.lastName }}</div>
+        </div>
+        <div class="row mt-2">
+          <div class="col-md-6 font-weight-bold">Gender</div>
+          <div class="col-md-1">-</div>
+          <div class="col-md-5">{{ userInfo.gender }}</div>
+        </div>
+        <div class="row mt-2">
+          <div class="col-md-6 font-weight-bold">Created</div>
+          <div class="col-md-1">-</div>
+          <div class="col-md-5">{{ userInfo.created | date: "short" }}</div>
+        </div>
+        <div class="row mt-2">
+          <div class="col-md-6 font-weight-bold">Last Active</div>
+          <div class="col-md-1">-</div>
+          <div class="col-md-5">{{ userInfo.lastActive | date: "medium" }}</div>
+        </div>
+        <div class="row mt-2">
+          <div class="col-md-6 font-weight-bold">Status</div>
+          <div class="col-md-1">-</div>
+          <div class="col-md-5">
+            {{ userInfo.status === false ? "deactive" : "active" }}
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button
+          type="button"
+          class="btn btn-secondary"
+          (click)="infoModal.hide()"
+        >
+          Close
+        </button>
+      </div>
+    </div>
+    <!-- /.modal-content -->
+  </div>
+  <!-- /.modal-dialog -->
 </div>

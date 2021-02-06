@@ -1,6 +1,6 @@
-import { Component, OnInit } from '@angular/core';
-import { Router, RouteReuseStrategy } from '@angular/router';
-import { routes } from '../../../app.routing';
+import { Component, OnInit, ViewChild } from '@angular/core';
+import { Router } from '@angular/router';
+import { ModalDirective } from 'ngx-bootstrap/modal';
 import { User } from '../../../_models/User';
 import { AlertifyService } from '../../../_services/alertify.service';
 import { UserService } from '../../../_services/user.service';
@@ -11,9 +11,11 @@ import { UserService } from '../../../_services/user.service';
   styleUrls: ['./user-list.component.scss']
 })
 export class UserListComponent implements OnInit {
+  @ViewChild('infoModal') public infoModal: ModalDirective;
 
   users: User[];
   search: string = '';
+  userInfo: any = {};
 
   constructor(private userService: UserService, private alertify: AlertifyService, private router: Router) { }
 
@@ -30,16 +32,48 @@ export class UserListComponent implements OnInit {
     this.router.navigateByUrl('/user/register');
   }
 
-  deactivate(index: number) {
+  deactivate(id: number) {
+    const usr = this.users.find(a => a.id === id);
+    const user: any = {};
+    user.status = usr.status === false ? true : false;
     this.alertify.confirm('Are you sure?',
-      'Are you sure you want to deactivate user? ',
-      () => { this.alertify.success('User deactivated succesfully'); },
+      'Are you sure you want to ' + (usr.status === false ? 'Activate' : 'Deactivate') + ' user? ',
+      () => {
+        this.userService.patchUser(id, user).subscribe(() => {
+          this.alertify.success('User deactivated succesfully');
+          this.users.find(a => a.id === id).status = user.status;
+        }, () => {
+          this.alertify.error('Failed To Deactivate User');
+        });
+
+      },
       () => { });
+
+    // this.alertify.success('User deactivated succesfully');
   }
-  delete(index: number) {
+  delete(id: number) {
     this.alertify.confirm('Are you sure?',
       'Are you sure you want to delete user? This action cannot be undone',
-      () => { this.alertify.success('User deleted succesfully'); },
+      () => {
+        this.userService.deleteUser(id).subscribe((next) => {
+          this.alertify.success('User deleted succesfully');
+          this.users = this.users.filter(function (obj) {
+            return obj.id !== id;
+          });
+        }, () => {
+          this.alertify.error('Failed to Delete User');
+        });
+      },
       () => { });
+
+  }
+  editUser(id: number) {
+    this.router.navigate(['user/edit', id]);
+  }
+  ShowUserInfo(id: number) {
+    this.userInfo = this.users.find(a => a.id === id);
+    console.log(this.userInfo);
+
+    this.infoModal.show();
   }
 }

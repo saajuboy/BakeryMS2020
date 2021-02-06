@@ -1,3 +1,5 @@
+using System.Net;
+using System.Data;
 using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
@@ -51,5 +53,55 @@ namespace BakeryMS.API.Controllers
             return Ok(usersToReturn);
         }
 
+
+        [HttpPut("{id}")]
+        public async Task<IActionResult> UpdateUser(int id, UserForRegisterDto userForUpdateDto)
+        {
+            if (!User.FindAll(ClaimTypes.Role).Any(a => a.Value == "admin" || a.Value == "Admin"))
+            {
+                if (id != int.Parse(User.FindFirst(ClaimTypes.NameIdentifier).Value))
+                    return Unauthorized();
+
+            }
+
+            userForUpdateDto.Username = userForUpdateDto.Username.ToLower();
+
+            if (await _repository.UserExists(userForUpdateDto.Username, id))
+                return BadRequest("Username Already Exists");
+
+            var UserFromRepository = await _repository.GetUser(id);
+
+            var userToUpdate = _mapper.Map(userForUpdateDto, UserFromRepository);
+
+            var user = await _repository.UpdateUser(userToUpdate, userForUpdateDto.Password);
+
+            if (user != null)
+                return NoContent();
+
+            throw new System.Exception($"Updating user {id} failed on save");
+        }
+
+        [HttpPatch("{id}")]
+        [Authorize(Roles = "Admin")]
+        public async Task<IActionResult> PatchUser(int id, UserForPatchDto userForPatchDto)
+        {
+            var UserFromRepository = await _repository.GetUser(id);
+            UserFromRepository.Status = userForPatchDto.status;
+
+            if (await _repository.SaveAll())
+                return NoContent();
+
+            throw new System.Exception($"Updating user {id} status failed on save");
+        }
+
+        [HttpDelete("{id}")]
+        [Authorize(Roles = "Admin")]
+        public async Task<IActionResult> DeleteUser(int id)
+        {
+            if(await _repository.DeleteUser(id))
+            return Ok();
+
+            throw new System.Exception($"Failed to delet user {id}");
+        }
     }
 }
