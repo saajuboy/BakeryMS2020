@@ -4,6 +4,8 @@ using BakeryMS.API.Data;
 using BakeryMS.API.Data.Interfaces;
 using BakeryMS.API.Data.Repositories;
 using BakeryMS.API.Data.SeedData;
+using DinkToPdf;
+using DinkToPdf.Contracts;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -34,13 +36,14 @@ namespace BakeryMS.API
             services.AddDbContext<DataContext>(options =>
                 options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
             services.AddCors();
-            
+
             services.AddTransient<Seed>();
-            
+
             //Interface Declaration
             services.AddScoped<IAuthRepository, AuthRepository>();
             services.AddScoped<IUserRepository, UserRepository>();
             services.AddScoped<IInventoryRepository, InventoryRepository>();
+            services.AddScoped<IReportRepository, ReportRepository>();
 
             services.AddAutoMapper(typeof(Startup));
             services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
@@ -55,6 +58,8 @@ namespace BakeryMS.API
                     ValidateAudience = false
                 };
             });
+
+            services.AddSingleton(typeof(IConverter), new SynchronizedConverter(new PdfTools()));
 
         }
 
