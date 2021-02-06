@@ -111,32 +111,32 @@ namespace BakeryMS.API.Data.Repositories
 
         public async Task<Supplier> GetSupplier(int id)
         {
-            var supplier = await _context.Suppliers.FirstOrDefaultAsync(a => a.Id == id);
+            var supplier = await _context.Suppliers.Where(a=>a.IsDeleted == false).FirstOrDefaultAsync(a => a.Id == id);
 
             return supplier;
         }
 
         public async Task<IEnumerable<Supplier>> GetSuppliers()
         {
-            var suppliers = await _context.Suppliers.ToListAsync();
+            var suppliers = await _context.Suppliers.Where(a=>a.IsDeleted == false).ToListAsync();
 
             return suppliers;
         }
 
         public async Task<Item> GetItem(int id)
         {
-            var item = await _context.Items.FirstOrDefaultAsync(a => a.Id == id);
+            var item = await _context.Items.Where(a=>a.IsDeleted == false).Include(a => a.ItemCategory).Include(b => b.Unit).FirstOrDefaultAsync(a => a.Id == id);
 
             return item;
         }
 
-         public async Task<IEnumerable<Item>> GetItems()
+        public async Task<IEnumerable<Item>> GetItems()
         {
-            var items = await _context.Items.ToListAsync();
+            var items = await _context.Items.Where(a=>a.IsDeleted == false).Include(a => a.ItemCategory).Include(b => b.Unit).ToListAsync();
 
             return items;
         }
 
-        
+
     }
 }

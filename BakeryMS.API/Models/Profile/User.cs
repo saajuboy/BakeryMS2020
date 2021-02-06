@@ -18,6 +18,7 @@ namespace BakeryMS.API.Models.Profile
         public DateTime? LastActive { get; set; }
         public string PhotoUrl { get; set; }
         public string PhotoPublicId { get; set; }
+        public bool IsDeleted { get; set; }
         
 
     }

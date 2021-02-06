@@ -1,4 +1,5 @@
 using System;
+using System.Linq;
 using System.Threading.Tasks;
 using BakeryMS.API.Data.Interfaces;
 using BakeryMS.API.Models.Profile;
@@ -20,7 +21,7 @@ namespace BakeryMS.API.Data.Repositories
         }
         public async Task<User> Login(string username, string password)
         {
-            var user = await _context.Users.FirstOrDefaultAsync(x => x.Username == username);
+            var user = await _context.Users.Where(a=>a.IsDeleted == false).FirstOrDefaultAsync(x => x.Username == username);
 
             if (user == null)
                 return null;

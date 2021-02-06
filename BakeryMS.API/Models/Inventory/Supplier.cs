@@ -8,5 +8,6 @@ namespace BakeryMS.API.Models.Inventory
         public string Email { get; set; }
         public int? Type { get; set; }
         public string Address { get; set; }
+        public bool IsDeleted { get; set; }
     }
 }
