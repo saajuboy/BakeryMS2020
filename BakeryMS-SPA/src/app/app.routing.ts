@@ -16,6 +16,8 @@ import { AuthGuard } from './_guards/auth.guard';
 import { AdminGuard } from './_guards/admin.guard';
 import { RoleGuard } from './_guards/role.guard';
 import { PurchaseOrderCreateComponent } from './views/Inventory/PurchaseOrderCreate/PurchaseOrderCreate.component';
+import { ItemListComponent } from './views/Inventory/Item/ItemList/ItemList.component';
+import { ItemCreateComponent } from './views/Inventory/Item/ItemCreate/ItemCreate.component';
 
 
 export const routes: Routes = [
@@ -29,10 +31,10 @@ export const routes: Routes = [
     runGuardsAndResolvers: 'always',
     canActivate: [AuthGuard],
     component: DefaultLayoutComponent,
-    data: {title: 'Home'},
+    data: { title: 'Home' },
     children: [
       { path: 'test', component: TestComponent, data: { title: 'Test Module' } },
-      
+
       { path: 'base', loadChildren: () => import('./views/base/base.module').then(m => m.BaseModule) },
       { path: 'buttons', loadChildren: () => import('./views/buttons/buttons.module').then(m => m.ButtonsModule) },
       { path: 'charts', loadChildren: () => import('./views/chartjs/chartjs.module').then(m => m.ChartJSModule) },
@@ -43,12 +45,42 @@ export const routes: Routes = [
       { path: 'widgets', loadChildren: () => import('./views/widgets/widgets.module').then(m => m.WidgetsModule) },
 
       {
+        path: 'inventory/item',
+        runGuardsAndResolvers: 'always',
+        canActivate: [RoleGuard],
+        component: ItemListComponent,
+        data: {
+          title: 'Item List',
+          allowedRoles: ['Admin', 'OutletManager', 'BakeryManager', 'Cashier']
+        }
+      }, 
+      {
+        path: 'inventory/item/create',
+        runGuardsAndResolvers: 'always',
+        canActivate: [RoleGuard],
+        component: ItemCreateComponent,
+        data: {
+          title: 'Item Create',
+          allowedRoles: ['Admin', 'OutletManager', 'BakeryManager', 'Cashier']
+        }
+      },
+      {
+        path: 'inventory/item/edit:id',
+        runGuardsAndResolvers: 'always',
+        canActivate: [RoleGuard],
+        component: ItemCreateComponent,
+        data: {
+          title: 'Item Edit',
+          allowedRoles: ['Admin', 'OutletManager', 'BakeryManager', 'Cashier']
+        }
+      },
+      {
         path: 'inventory/purchaseOrder',
         runGuardsAndResolvers: 'always',
         canActivate: [RoleGuard],
         component: PurchaseOrderListComponent,
         data: {
-          title: 'Purchase Order',
+          title: 'Purchase Order List',
           allowedRoles: ['Admin', 'OutletManager', 'BakeryManager']
         }
       },
@@ -59,6 +91,16 @@ export const routes: Routes = [
         component: PurchaseOrderCreateComponent,
         data: {
           title: 'Create Pur.Order',
+          allowedRoles: ['Admin', 'OutletManager', 'BakeryManager']
+        }
+      },
+      {
+        path: 'inventory/purchaseOrder/edit:id',
+        runGuardsAndResolvers: 'always',
+        canActivate: [RoleGuard],
+        component: PurchaseOrderCreateComponent,
+        data: {
+          title: 'Edit Pur.Order',
           allowedRoles: ['Admin', 'OutletManager', 'BakeryManager']
         }
       },
