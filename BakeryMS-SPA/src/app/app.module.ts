@@ -64,6 +64,9 @@ import { LoginComponent } from './views/login/login.component';
 import { RegisterComponent } from './views/user/register/register.component';
 import { PurchaseOrderCreateComponent } from './views/Inventory/PurchaseOrderCreate/PurchaseOrderCreate.component';
 import { PurchaseOrderListComponent } from './views/Inventory/PurchaseOrderList/PurchaseOrderList.component';
+import { ItemCreateComponent } from './views/Inventory/Item/ItemCreate/ItemCreate.component';
+import { ItemListComponent } from './views/Inventory/Item/ItemList/ItemList.component';
+
 
 
 
@@ -110,7 +113,9 @@ export function tokenGetter() {
     TestComponent,
     UserListComponent,
     PurchaseOrderCreateComponent,
-    PurchaseOrderListComponent
+    PurchaseOrderListComponent,
+    ItemCreateComponent,
+    ItemListComponent
   ],
   providers: [{
     provide: LocationStrategy,
