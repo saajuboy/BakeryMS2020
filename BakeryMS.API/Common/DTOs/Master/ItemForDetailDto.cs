@@ -8,5 +8,6 @@ namespace BakeryMS.API.Common.DTOs.Master
         public string Description { get; set; }
         public ItemCategoryForDetailDto ItemCategory { get; set; }
         public UnitForDetailDto Unit { get; set; }
+        public int Type { get; set; }
     }
 }
