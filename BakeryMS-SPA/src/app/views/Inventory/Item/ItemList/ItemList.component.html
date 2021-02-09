@@ -1,5 +1,5 @@
 <div class="card">
-  <div class="card-header"><i class="fa fa-align-justify"></i> User List</div>
+  <div class="card-header"><i class="fa fa-align-justify"></i> Item List</div>
   <div class="card-body">
     <div class="row">
       <div class="input-group col-md-4 mb-3">
@@ -17,7 +17,7 @@
       <div class="col-md-1">
         <button
           class="btn btn-pill btn-block btn-primary"
-          (click)="addUser()"
+          (click)="addItem()"
           type="button"
         >
           Add
@@ -28,66 +28,47 @@
     <table class="table table-bordered">
       <thead>
         <tr>
-          <th><i (click)="sort(1)" class="icon-chart"></i> Username</th>
-          <!-- <th>First Name</th>
-          <th>last Name</th> -->
-          <th><i (click)="sort(2)" class="icon-chart"></i> Gender</th>
-          <th><i (click)="sort(3)" class="icon-chart"></i> Last Active</th>
-          <!-- <th>Created</th> -->
-          <th><i (click)="sort(4)" class="icon-chart"></i> Status</th>
+          <th><i (click)="sort(1)" class="icon-chart"></i> Item Name</th>
+          <th><i (click)="sort(2)" class="icon-chart"></i> Code</th>
+          <th><i (click)="sort(3)" class="icon-chart"></i> Description</th>
+          <th><i (click)="sort(4)" class="icon-chart"></i> Item Type</th>
           <th>Actions</th>
         </tr>
       </thead>
       <tbody>
-        <tr *ngFor="let user of users | filter: search; let $index = index">
-          <td>{{ user.username }}</td>
-          <!-- <td>{{ user.firstName }}</td>
-          <td>{{ user.lastName }}</td> -->
-          <td>{{ user.gender }}</td>
-          <td>{{ user.lastActive | date: "medium" }}</td>
-          <!-- <td>{{ user.created.toDateString }}</td> -->
+        <tr *ngFor="let item of items | filter: search">
+          <td>{{ item.name }}</td>
+          <td>{{ item.code }}</td>
+          <td>{{ item.description }}</td>
           <td>
-            <span *ngIf="user.status == true" class="badge badge-success"
-              >Active</span
+            <span *ngIf="item.type == 0" class="badge badge-success"
+              >Production</span
             >
-            <span *ngIf="user.status == false" class="badge badge-secondary"
-              >Deactive</span
+            <span *ngIf="item.type == 1" class="badge badge-primary"
+              >Company</span
+            >
+            <span *ngIf="item.type == 2" class="badge badge-danger">Raw</span>
+            <span *ngIf="item.type == 3" class="badge badge-secondary"
+              >Misc</span
             >
           </td>
           <td>
             <button
               class="btn btn-ghost-secondary"
-              (click)="editUser(user.id)"
+              (click)="editItem(item.id)"
               type="button"
             >
               <i class="icon-pencil"></i>
             </button>
             <button
-              (click)="ShowUserInfo(user.id)"
+              (click)="ShowItemInfo(item.id)"
               class="btn btn-ghost-info"
               type="button"
             >
               <i class="icon-info"></i>
             </button>
             <button
-              (click)="deactivate(user.id)"
-              [ngClass]="{
-                'btn btn-ghost-warning': user.status === true,
-                'btn btn-ghost-success': user.status === false
-              }"
-              type="button"
-              popover="Deactivate"
-              triggers="mouseenter:mouseleave"
-            >
-              <i
-                [ngClass]="{
-                  'icon-user-unfollow': user.status === true,
-                  'icon-user-following': user.status === false
-                }"
-              ></i>
-            </button>
-            <button
-              (click)="delete(user.id)"
+              (click)="delete(item.id)"
               class="btn btn-ghost-danger"
               type="button"
             >
@@ -122,7 +103,7 @@
   <div class="modal-dialog modal-info" role="document">
     <div class="modal-content">
       <div class="modal-header">
-        <h4 class="modal-title">User Info</h4>
+        <h4 class="modal-title">Item Info</h4>
         <button
           type="button"
           class="close"
@@ -134,40 +115,43 @@
       </div>
       <div class="modal-body">
         <div class="row mt-3">
-          <div class="col-md-6 font-weight-bold">User Name</div>
+          <div class="col-md-6 font-weight-bold">Item Name</div>
           <div class="col-md-1">-</div>
-          <div class="col-md-5">{{ userInfo.username }}</div>
+          <div class="col-md-5">{{ itemInfo.name }}</div>
         </div>
         <div class="row mt-2">
-          <div class="col-md-6 font-weight-bold">First Name</div>
+          <div class="col-md-6 font-weight-bold">Item Code</div>
           <div class="col-md-1">-</div>
-          <div class="col-md-5">{{ userInfo.firstName }}</div>
+          <div class="col-md-5">{{ itemInfo.code }}</div>
         </div>
         <div class="row mt-2">
-          <div class="col-md-6 font-weight-bold">Last Name</div>
+          <div class="col-md-6 font-weight-bold">Description</div>
           <div class="col-md-1">-</div>
-          <div class="col-md-5">{{ userInfo.lastName }}</div>
+          <div class="col-md-5">{{ itemInfo.description }}</div>
         </div>
         <div class="row mt-2">
-          <div class="col-md-6 font-weight-bold">Gender</div>
+          <div class="col-md-6 font-weight-bold">Item Category</div>
           <div class="col-md-1">-</div>
-          <div class="col-md-5">{{ userInfo.gender }}</div>
+          <div class="col-md-5">{{ itemInfo.itemCategory }}</div>
         </div>
         <div class="row mt-2">
-          <div class="col-md-6 font-weight-bold">Created</div>
+          <div class="col-md-6 font-weight-bold">Unit</div>
           <div class="col-md-1">-</div>
-          <div class="col-md-5">{{ userInfo.created | date: "short" }}</div>
+          <div class="col-md-5">{{ itemInfo.unit }}</div>
         </div>
         <div class="row mt-2">
-          <div class="col-md-6 font-weight-bold">Last Active</div>
-          <div class="col-md-1">-</div>
-          <div class="col-md-5">{{ userInfo.lastActive | date: "medium" }}</div>
-        </div>
-        <div class="row mt-2">
-          <div class="col-md-6 font-weight-bold">Status</div>
+          <div class="col-md-6 font-weight-bold">Item Type</div>
           <div class="col-md-1">-</div>
           <div class="col-md-5">
-            {{ userInfo.status === false ? "deactive" : "active" }}
+            {{
+              itemInfo.status === 1
+                ? itemInfo.status === 2
+                  ? itemInfo.status === 3
+                    ? "Miscalleneous"
+                    : "Raw material"
+                  : "Company"
+                : "Production"
+            }}
           </div>
         </div>
       </div>

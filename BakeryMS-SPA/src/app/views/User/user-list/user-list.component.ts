@@ -16,6 +16,7 @@ export class UserListComponent implements OnInit {
   users: User[];
   search: string = '';
   userInfo: any = {};
+  sortOrder = { one: false, two: false, three: false, four: false };
 
   constructor(private userService: UserService, private alertify: AlertifyService, private router: Router) { }
 
@@ -75,5 +76,37 @@ export class UserListComponent implements OnInit {
     console.log(this.userInfo);
 
     this.infoModal.show();
+  }
+
+  sort(propertyNumber: number) {
+
+    switch (propertyNumber) {
+      case 1:
+        this.users.sort((a, b) =>
+          this.sortOrder.one === false ? a.username.localeCompare(b.username) : b.username.localeCompare(a.username));
+        this.sortOrder.one = !this.sortOrder.one;
+        break;
+      case 2:
+        this.users.sort((a, b) => this.sortOrder.two === false ? a.gender.localeCompare(b.gender) : b.gender.localeCompare(a.gender));
+        this.sortOrder.two = !this.sortOrder.two;
+        break;
+      case 3:
+        this.users.sort((a, b) => {
+          return this.sortOrder.three === false ?
+            <any>new Date(b.lastActive) - <any>new Date(a.lastActive) :
+            <any>new Date(a.lastActive) - <any>new Date(b.lastActive);
+        });
+        this.sortOrder.three = !this.sortOrder.three;
+        break;
+      case 4:
+        this.users.sort((a, b) => this.sortOrder.four === false ? +a.status - +b.status : +b.status - +a.status);
+        this.sortOrder.four = !this.sortOrder.four;
+        break;
+      default:
+        this.users.sort((a, b) =>
+          this.sortOrder.one === false ? a.username.localeCompare(b.username) : b.username.localeCompare(a.username));
+        this.sortOrder.one = !this.sortOrder.one;
+        break;
+    }
   }
 }
