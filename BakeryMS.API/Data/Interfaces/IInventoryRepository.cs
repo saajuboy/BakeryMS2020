@@ -11,6 +11,7 @@ namespace BakeryMS.API.Data.Interfaces
         void Add<T>(T entity) where T : class;
         void Delete<T>(T entity) where T : class;
         void Update<T>(T entity) where T : class;
+        T Get<T>(object id) where T : class;
         Task<bool> SaveAll();
         Task<PurchaseOrderHeader> GetPurchaseOrder(int id, POFilterParams filterParams);
         Task<IEnumerable<PurchaseOrderHeader>> GetPurchaseOrders(POFilterParams filterParams);
@@ -18,7 +19,7 @@ namespace BakeryMS.API.Data.Interfaces
         Task<IEnumerable<Supplier>> GetSuppliers();
         Task CreatePurchaseOrder(PurchaseOrderHeader purchaseOrderHeader);
         Task<IEnumerable<Item>> GetItems();
-         Task<Item> GetItem(int id);
-        
+        Task<Item> GetItem(int id);
+
     }
 }

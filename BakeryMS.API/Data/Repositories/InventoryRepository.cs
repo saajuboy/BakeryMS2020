@@ -32,6 +32,14 @@ namespace BakeryMS.API.Data.Repositories
             _context.Update(entity);
         }
         //
+        public T Get<T>(object id) where T : class
+        {
+            T item = null;
+            item = _context.Set<T>().Find(id);
+
+            return item;
+        }
+        
         public async Task<bool> SaveAll()
         {
             return await _context.SaveChangesAsync() > 0;
@@ -111,32 +119,30 @@ namespace BakeryMS.API.Data.Repositories
 
         public async Task<Supplier> GetSupplier(int id)
         {
-            var supplier = await _context.Suppliers.Where(a=>a.IsDeleted == false).FirstOrDefaultAsync(a => a.Id == id);
+            var supplier = await _context.Suppliers.Where(a => a.IsDeleted == false).FirstOrDefaultAsync(a => a.Id == id);
 
             return supplier;
         }
 
         public async Task<IEnumerable<Supplier>> GetSuppliers()
         {
-            var suppliers = await _context.Suppliers.Where(a=>a.IsDeleted == false).ToListAsync();
+            var suppliers = await _context.Suppliers.Where(a => a.IsDeleted == false).ToListAsync();
 
             return suppliers;
         }
 
         public async Task<Item> GetItem(int id)
         {
-            var item = await _context.Items.Where(a=>a.IsDeleted == false).Include(a => a.ItemCategory).Include(b => b.Unit).FirstOrDefaultAsync(a => a.Id == id);
+            var item = await _context.Items.Where(a => a.IsDeleted == false).Include(a => a.ItemCategory).Include(b => b.Unit).FirstOrDefaultAsync(a => a.Id == id);
 
             return item;
         }
 
         public async Task<IEnumerable<Item>> GetItems()
         {
-            var items = await _context.Items.Where(a=>a.IsDeleted == false).Include(a => a.ItemCategory).Include(b => b.Unit).ToListAsync();
+            var items = await _context.Items.Where(a => a.IsDeleted == false).Include(a => a.ItemCategory).Include(b => b.Unit).ToListAsync();
 
             return items;
         }
-
-
     }
 }
