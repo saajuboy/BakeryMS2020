@@ -3,6 +3,7 @@ using System.Threading.Tasks;
 using AutoMapper;
 using BakeryMS.API.Common.DTOs.Master;
 using BakeryMS.API.Data.Interfaces;
+using BakeryMS.API.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -29,7 +30,7 @@ namespace BakeryMS.API.Controllers.Master
             var itemToReturn = _mapper.Map<ItemForDetailDto>(itemFromRepo);
 
             return Ok(itemToReturn);
-            
+
         }
 
         [HttpGet]
@@ -39,6 +40,22 @@ namespace BakeryMS.API.Controllers.Master
             var itemsToReturn = _mapper.Map<IEnumerable<ItemForListDto>>(itemsFromRepo);
 
             return Ok(itemsToReturn);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> CreateItem(ItemForDetailDto itemForDetailDto)
+        {
+            var itemToCreate = _mapper.Map<Item>(itemForDetailDto);
+            itemToCreate.ItemCategory = _invRepo.Get<ItemCategory>(itemForDetailDto.ItemCategory.Id);
+            itemToCreate.Unit = _invRepo.Get<Unit>(itemForDetailDto.Unit.Id);
+
+            _invRepo.Add<Item>(itemToCreate);
+
+            if (await _invRepo.SaveAll())
+                return Ok();
+
+            throw new System.Exception($"Failed to Create user on save");
+ 
         }
     }
 }
