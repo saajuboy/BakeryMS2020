@@ -61,8 +61,14 @@ namespace BakeryMS.API.Common.Helpers
             });
 
             CreateMap<Item, ItemForDetailDto>();
+            CreateMap<ItemForDetailDto, Item>();
+
             CreateMap<ItemCategory, ItemCategoryForDetailDto>();
+            CreateMap<ItemCategoryForDetailDto, ItemCategory>();
+
             CreateMap<Unit, UnitForDetailDto>();
+            CreateMap<UnitForDetailDto, Unit>();
+
 
 
         }
