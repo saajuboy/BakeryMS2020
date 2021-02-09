@@ -6,6 +6,7 @@ export interface Item {
 
     itemCategory: ItemCategory;
     unit: Unit;
+    type: number; // 0:production,1:Company,2:Raw,3:Misc
 }
 export interface ItemForDropdown {
     id: number;
