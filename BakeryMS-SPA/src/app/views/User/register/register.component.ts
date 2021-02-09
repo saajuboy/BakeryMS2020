@@ -102,4 +102,8 @@ export class RegisterComponent implements OnInit {
       gender: user.gender
     })
   }
+
+  backToList(){
+    this.router.navigate(['/user/list']);
+  }
 }
