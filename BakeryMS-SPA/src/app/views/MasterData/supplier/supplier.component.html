@@ -1,0 +1,374 @@
+<div class="card">
+  <div class="card-header">
+    <i class="fa fa-align-justify"></i> Supplier List
+  </div>
+  <div class="card-body">
+    <div class="row">
+      <div class="input-group col-md-4 mb-3">
+        <div class="input-group-prepend">
+          <span class="input-group-text"><i class="icon-magnifier"></i></span>
+        </div>
+        <input
+          type="text"
+          class="form-control"
+          placeholder="Search"
+          autocomplete="off"
+          [(ngModel)]="search"
+        />
+      </div>
+      <div class="col-md-1">
+        <button
+          class="btn btn-pill btn-block btn-primary"
+          (click)="addSupplier()"
+          type="button"
+        >
+          Add
+        </button>
+      </div>
+    </div>
+
+    <table class="table table-bordered">
+      <thead>
+        <tr>
+          <th><i (click)="sort(1)" class="icon-chart"></i> Name</th>
+          <th><i (click)="sort(2)" class="icon-chart"></i> Contact Number</th>
+          <th><i (click)="sort(3)" class="icon-chart"></i> E-Mail</th>
+          <th style="width: 15%;">Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let supplier of suppliers | filter: search">
+          <td>{{ supplier.name }}</td>
+          <td>{{ supplier.contactNumber }}</td>
+          <td>{{ supplier.email }}</td>
+          <td>
+            <button
+              class="btn btn-ghost-secondary"
+              (click)="editSupplier(supplier.id)"
+              type="button"
+            >
+              <i class="icon-pencil"></i>
+            </button>
+            <button
+              (click)="ShowSupplierInfo(supplier.id)"
+              class="btn btn-ghost-info"
+              type="button"
+            >
+              <i class="icon-info"></i>
+            </button>
+            <button
+              (click)="delete(supplier.id)"
+              class="btn btn-ghost-danger"
+              type="button"
+            >
+              <i class="icon-close"></i>
+            </button>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+    <!-- <ul class="pagination">
+            <li class="page-item"><a class="page-link" href="#">Prev</a></li>
+            <li class="page-item active">
+              <a class="page-link" href="#">1</a>
+            </li>
+            <li class="page-item"><a class="page-link" href="#">2</a></li>
+            <li class="page-item"><a class="page-link" href="#">3</a></li>
+            <li class="page-item"><a class="page-link" href="#">4</a></li>
+            <li class="page-item"><a class="page-link" href="#">Next</a></li>
+          </ul> -->
+  </div>
+</div>
+
+<div
+  bsModal
+  #infoModal="bs-modal"
+  class="modal fade"
+  tabindex="-1"
+  role="dialog"
+  aria-labelledby="myModalLabel"
+  aria-hidden="true"
+>
+  <div class="modal-dialog modal-info" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h4 class="modal-title">Supplier Info</h4>
+        <button
+          type="button"
+          class="close"
+          (click)="infoModal.hide()"
+          aria-label="Close"
+        >
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <div class="row mt-3">
+          <div class="col-md-6 font-weight-bold">Supplier Name</div>
+          <div class="col-md-1">-</div>
+          <div class="col-md-5">{{ supplierInfo.name }}</div>
+        </div>
+        <div class="row mt-2">
+          <div class="col-md-6 font-weight-bold">Contact Number</div>
+          <div class="col-md-1">-</div>
+          <div class="col-md-5">{{ supplierInfo.contactNumber }}</div>
+        </div>
+        <div class="row mt-2">
+          <div class="col-md-6 font-weight-bold">E-mail</div>
+          <div class="col-md-1">-</div>
+          <div class="col-md-5">{{ supplierInfo.email }}</div>
+        </div>
+        <div class="row mt-2">
+          <div class="col-md-6 font-weight-bold">Type</div>
+          <div class="col-md-1">-</div>
+          <div class="col-md-5">{{
+            supplierInfo.status === 1
+              ? supplierInfo.status === 2
+                ? supplierInfo.status === 3
+                  ? "Miscalleneous"
+                  : "Raw material"
+                : "Company"
+              : "Production"
+          }}</div>
+        </div>
+        <div class="row mt-2">
+          <div class="col-md-6 font-weight-bold">Address</div>
+          <div class="col-md-1">-</div>
+          <div class="col-md-5">{{ supplierInfo.address }}</div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button
+          type="button"
+          class="btn btn-secondary"
+          (click)="infoModal.hide()"
+        >
+          Close
+        </button>
+      </div>
+    </div>
+    <!-- /.modal-content -->
+  </div>
+  <!-- /.modal-dialog -->
+</div>
+
+<div
+  bsModal
+  #primaryModal="bs-modal"
+  class="modal fade"
+  tabindex="-1"
+  role="dialog"
+  aria-labelledby="myModalLabel"
+  aria-hidden="true"
+>
+  <div class="modal-dialog modal-dialog-centered modal-primary" role="document">
+    <div class="modal-content">
+      <form [formGroup]="createForm" (ngSubmit)="createSupplier()">
+        <div class="modal-header">
+          <h4 class="modal-title">{{ isEditForm === false ? "Add" : "Edit" }} Supplier</h4>
+          <button
+            type="button"
+            class="close"
+            (click)="addModal.hide()"
+            aria-label="Close"
+          >
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          <div class="row mt-3 ml-2 mr-2">
+            <div class="input-group">
+              <div class="input-group-prepend">
+                <span class="input-group-text"
+                  ><i class="icon-puzzle">&nbsp; Name</i></span
+                >
+              </div>
+              <input
+                type="text"
+                [ngClass]="{
+                  'is-invalid': r.get('name').errors && r.get('name').touched,
+                  'is-valid':
+                    !r.get('name').errors &&
+                    (r.get('name').touched || r.get('name').value !== '')
+                }"
+                class="form-control"
+                placeholder="Supplier Name"
+                autocomplete="off"
+                formControlName="name"
+              />
+              <div
+                *ngIf="r.get('name').hasError('required')"
+                class="invalid-feedback"
+              >
+                supplier name required
+              </div>
+              <div
+                *ngIf="r.get('name').hasError('pattern')"
+                class="invalid-feedback"
+              >
+                Name contains invalid characters
+              </div>
+            </div>
+          </div>
+          <div class="row mt-3 ml-2 mr-2">
+            <div class="input-group">
+              <div class="input-group-prepend">
+                <span class="input-group-text">
+                  <i class="icon-pencil"></i> &nbsp; Number
+                </span>
+              </div>
+              <input
+                type="text"
+                [ngClass]="{
+                  'is-invalid':
+                    r.get('contactNumber').errors && r.get('contactNumber').touched,
+                  'is-valid':
+                    !r.get('contactNumber').errors &&
+                    (r.get('contactNumber').touched ||
+                      r.get('contactNumber').value !== '')
+                }"
+                class="form-control"
+                placeholder="Contact number"
+                autocomplete="off"
+                formControlName="contactNumber"
+
+              />
+              <div
+                *ngIf="r.get('contactNumber').hasError('required')"
+                class="invalid-feedback"
+              >
+                Contact number is required
+              </div>
+              <div
+                *ngIf="r.get('contactNumber').hasError('pattern')"
+                class="invalid-feedback"
+              >
+                Only numbers and + allowed
+              </div>
+            </div>
+          </div>
+          <div class="row mt-3 ml-2 mr-2">
+            <div class="input-group">
+              <div class="input-group-prepend">
+                <span class="input-group-text">
+                  <i class="icon-pencil"></i> &nbsp; E-Mail
+                </span>
+              </div>
+              <input
+                type="text"
+                [ngClass]="{
+                  'is-invalid':
+                    r.get('email').errors && r.get('email').touched,
+                  'is-valid':
+                    !r.get('email').errors &&
+                    (r.get('email').touched ||
+                      r.get('email').value !== '')
+                }"
+                class="form-control"
+                placeholder="E-Mail"
+                autocomplete="off"
+                formControlName="email"
+                (input)="r.patchValue({code:r.get('email').value.toLower()})"
+
+              />
+              <div
+                *ngIf="r.get('email').hasError('required')"
+                class="invalid-feedback"
+              >
+                email is required
+              </div>
+              <div
+                *ngIf="r.get('email').hasError('email')"
+                class="invalid-feedback"
+              >
+                should be an email
+              </div>
+            </div>
+          </div>
+          <div class="row mt-3 ml-2 mr-2">
+            <div class="input-group ">
+              <div class="input-group-prepend">
+                <span class="input-group-text"
+                  ><i class="icon-globe"> &nbsp; Type</i></span
+                >
+              </div>
+              <select
+                class="form-control"
+                id="type"
+                formControlName="type"
+                [ngClass]="{
+                  'is-invalid':
+                    r.get('type').errors &&
+                    r.get('type').touched,
+                  'is-valid':
+                    !r.get('type').errors &&
+                    (r.get('type').touched ||
+                      r.get('type').value !== '')
+                }"
+              >
+                <option [value]="0">Production</option>
+                <option [value]="1">Company</option>
+                <option [value]="2">Raw Material</option>
+                <option [value]="2">Miscalleaneous</option>
+              </select>
+              <div
+                *ngIf="r.get('type').hasError('required')"
+                class="invalid-feedback"
+              >
+                Type is required
+              </div>
+            </div>
+          </div>
+          <div class="row mt-3 ml-2 mr-2">
+            <div class="input-group">
+              <div class="input-group-prepend">
+                <span class="input-group-text">
+                  <i class="icon-pencil"></i> &nbsp; Address
+                </span>
+              </div>
+              <input
+                type="text"
+                [ngClass]="{
+                  'is-invalid':
+                    r.get('address').errors && r.get('address').touched,
+                  'is-valid':
+                    !r.get('address').errors &&
+                    (r.get('address').touched ||
+                      r.get('address').value !== '')
+                }"
+                class="form-control"
+                placeholder="Address"
+                autocomplete="off"
+                formControlName="address"
+
+              />
+              <div
+                *ngIf="r.get('address').hasError('required')"
+                class="invalid-feedback"
+              >
+               Address is required
+              </div>
+            </div>
+          </div>
+          <p>create form value : {{ createForm.getRawValue() | json }}</p>
+          <p>create form status : {{ createForm.status | json }}</p>
+        </div>
+        <div class="modal-footer">
+          <button
+            type="button"
+            class="btn btn-secondary"
+            (click)="addModal.hide()"
+          >
+            Close
+          </button>
+          <button [disabled]="!r.valid" type="submit" class="btn btn-primary">
+            {{ isEditForm === false ? "Create" : "Update" }}
+          </button>
+        </div>
+      </form>
+    </div>
+    <!-- /.modal-content -->
+  </div>
+  <!-- /.modal-dialog -->
+</div>
+<!-- /.modal -->

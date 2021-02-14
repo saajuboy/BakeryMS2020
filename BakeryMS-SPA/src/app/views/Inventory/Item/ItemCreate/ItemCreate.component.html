@@ -1,3 +1,226 @@
-<p>
-  ItemCreate works!
-</p>
+<!-- <div class="container"> -->
+<div class="row">
+  <div class="col-md-12 mx-auto">
+    <div class="card mx-4">
+      <div class="card-body p-4">
+        <form [formGroup]="createForm" (ngSubmit)="createItem()">
+          <h1 *ngIf="isEditForm === false">Create Item</h1>
+          <h1 *ngIf="isEditForm === true">Edit Item</h1>
+          <p *ngIf="isEditForm === false" class="text-muted">
+            Create All types of Item
+          </p>
+          <p *ngIf="isEditForm === true" class="text-muted">
+            Edit all types of Item
+          </p>
+          <div class="row">
+            <div class="input-group col-md-6 mb-3">
+              <div class="input-group-prepend">
+                <span class="input-group-text"><i class="icon-eye">&nbsp; Name</i></span>
+              </div>
+              <input
+                type="text"
+                [ngClass]="{
+                  'is-invalid': r.get('name').errors && r.get('name').touched,
+                  'is-valid':
+                    !r.get('name').errors &&
+                    (r.get('name').touched || r.get('name').value !== '')
+                }"
+                class="form-control"
+                placeholder="Item Name"
+                autocomplete="off"
+                formControlName="name"
+              />
+              <div
+                *ngIf="r.get('name').hasError('required')"
+                class="invalid-feedback"
+              >
+                Item Name required
+              </div>
+              <div
+                *ngIf="r.get('name').hasError('pattern')"
+                class="invalid-feedback"
+              >
+                You have invalid characters
+              </div>
+            </div>
+            <div class="input-group col-md-6 mb-3">
+              <div class="input-group-prepend">
+                <span class="input-group-text"><i class="icon-badge">&nbsp; Type</i></span>
+              </div>
+              <select
+                class="form-control"
+                formControlName="type"
+                name="itemType"
+                id="itemTypeSelect"
+                [ngClass]="{
+                  'is-invalid': r.get('type').errors && r.get('type').touched,
+                  'is-valid':
+                    !r.get('type').errors &&
+                    (r.get('type').touched || r.get('name').value !== '')
+                }"
+              >
+                <option value="0">Production</option>
+                <option value="1">Company</option>
+                <option value="2">Raw material</option>
+                <option value="3">Miscalleaneous</option>
+              </select>
+              <div
+                *ngIf="r.get('type').hasError('required')"
+                class="invalid-feedback"
+              >
+                Item Type is required
+              </div>
+            </div>
+          </div>
+          <div class="row">
+            <div class="input-group col-md-6 mb-3">
+              <div class="input-group-prepend">
+                <span class="input-group-text"
+                  ><i class="icon-globe"> &nbsp; Category</i></span
+                >
+              </div>
+              <select
+                class="form-control"
+                id="category"
+                formControlName="itemCategory"
+                [ngClass]="{
+                  'is-invalid':
+                    r.get('itemCategory').errors &&
+                    r.get('itemCategory').touched,
+                  'is-valid':
+                    !r.get('itemCategory').errors &&
+                    (r.get('itemCategory').touched ||
+                      r.get('itemCategory').value !== '')
+                }"
+
+                (change)="setCode( r.get('itemCategory').value)"
+              >
+                <option
+                  *ngFor="let category of itemCategories"
+                  [value]="category.id"
+                >
+                  {{ category.description }}
+                </option>
+              </select>
+              <span class="input-group-append">
+                <button class="btn btn-primary" type="button"><i class="icon-plus "></i></button>
+              </span>
+              <div
+                *ngIf="r.get('itemCategory').hasError('required')"
+                class="invalid-feedback"
+              >
+                Item Category is required
+              </div>
+            </div>
+            <div class="input-group col-md-6 mb-3">
+              <div class="input-group-prepend">
+                <span class="input-group-text"> <i class="icon-puzzle"></i> &nbsp; Code </span>
+              </div>
+              <input
+                type="text"
+                [ngClass]="{
+                  'is-invalid': r.get('code').errors && r.get('code').touched,
+                  'is-valid':
+                    !r.get('code').errors &&
+                    (r.get('code').touched || r.get('code').value !== '')
+                }"
+                class="form-control"
+                placeholder="Item Code"
+                autocomplete="off"
+                formControlName="code"
+              />
+              <div
+                *ngIf="r.get('code').hasError('required')"
+                class="invalid-feedback"
+              >
+                Item code is required
+              </div>
+            </div>
+          </div>
+          <div class="row">
+            <div class="input-group col-md-12 mb-3">
+              <div class="input-group-prepend">
+                <span class="input-group-text"> <i class="icon-pencil"></i>&nbsp; Description </span>
+              </div>
+              <input
+                type="text"
+                [ngClass]="{
+                  'is-invalid':
+                    r.get('description').value === '' &&
+                    r.get('description').touched,
+                  'is-valid': r.get('description').value !== ''
+                }"
+                class="form-control"
+                placeholder="Description"
+                autocomplete="off"
+                formControlName="description"
+              />
+              <div
+                *ngIf="r.get('description').value === ''"
+                class="invalid-feedback text-warning"
+              >
+                It is better to have a description for an item !
+              </div>
+            </div>
+          </div>
+          <div class="row">
+            <div class="input-group col-md-6 mb-3">
+              <div class="input-group-prepend">
+                <span class="input-group-text"><i class="fa fa-balance-scale">&nbsp; Unit</i></span>
+              </div>
+              <select
+                class="form-control"
+                formControlName="unit"
+                name="unit"
+                id="unitSelect"
+                [ngClass]="{
+                  'is-invalid': r.get('unit').errors && r.get('unit').touched,
+                  'is-valid':
+                    !r.get('unit').errors &&
+                    (r.get('unit').touched || r.get('unit').value !== '')
+                }"
+              >
+                <option *ngFor="let unit of units" [value]="unit.id">
+                  {{ unit.description }}
+                </option>
+              </select>
+              <span class="input-group-append">
+                <button class="btn btn-primary" type="button"><i class="icon-plus"></i></button>
+              </span>
+              <div
+                *ngIf="r.get('unit').hasError('required')"
+                class="invalid-feedback"
+              >
+                It is better to have a description for an item !
+              </div>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-md-2">
+              <button
+                type="button"
+                class="btn btn-block btn-primary"
+                (click)="backToList()"
+              >
+                Back to list
+              </button>
+            </div>
+            <div class="col-md-7"></div>
+            <div class="col-md-3">
+              <button
+                [disabled]="!r.valid"
+                type="submit"
+                class="btn btn-block btn-success"
+              >
+                {{ isEditForm === false ? "Create Item" : "Update Item" }}
+              </button>
+            </div>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+
+<p>create form value : {{ createForm.getRawValue() | json }}</p>
+<p>create form status : {{ createForm.status | json }}</p>

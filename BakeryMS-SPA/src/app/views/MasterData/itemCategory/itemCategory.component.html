@@ -1,0 +1,243 @@
+<div class="card">
+  <div class="card-header">
+    <i class="fa fa-align-justify"></i> Item Category List
+  </div>
+  <div class="card-body">
+    <div class="row">
+      <div class="input-group col-md-4 mb-3">
+        <div class="input-group-prepend">
+          <span class="input-group-text"><i class="icon-magnifier"></i></span>
+        </div>
+        <input
+          type="text"
+          class="form-control"
+          placeholder="Search"
+          autocomplete="off"
+          [(ngModel)]="search"
+        />
+      </div>
+      <div class="col-md-1">
+        <button
+          class="btn btn-pill btn-block btn-primary"
+          (click)="addItemCategory()"
+          type="button"
+        >
+          Add
+        </button>
+      </div>
+    </div>
+
+    <table class="table table-bordered">
+      <thead>
+        <tr>
+          <th><i (click)="sort(1)" class="icon-chart"></i> Category Code</th>
+          <th>
+            <i (click)="sort(2)" class="icon-chart"></i> Description / Name
+          </th>
+          <th style="width: 15%;">Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let cat of itemCategories | filter: search">
+          <td>{{ cat.code }}</td>
+          <td>{{ cat.description }}</td>
+          <td>
+            <button
+              class="btn btn-ghost-secondary"
+              (click)="editItemCategory(cat.id)"
+              type="button"
+            >
+              <i class="icon-pencil"></i>
+            </button>
+            <button
+              (click)="ShowItemCategoryInfo(cat.id)"
+              class="btn btn-ghost-info"
+              type="button"
+            >
+              <i class="icon-info"></i>
+            </button>
+            <button
+              (click)="delete(cat.id)"
+              class="btn btn-ghost-danger"
+              type="button"
+            >
+              <i class="icon-close"></i>
+            </button>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+    <!-- <ul class="pagination">
+            <li class="page-item"><a class="page-link" href="#">Prev</a></li>
+            <li class="page-item active">
+              <a class="page-link" href="#">1</a>
+            </li>
+            <li class="page-item"><a class="page-link" href="#">2</a></li>
+            <li class="page-item"><a class="page-link" href="#">3</a></li>
+            <li class="page-item"><a class="page-link" href="#">4</a></li>
+            <li class="page-item"><a class="page-link" href="#">Next</a></li>
+          </ul> -->
+  </div>
+</div>
+
+<div
+  bsModal
+  #infoModal="bs-modal"
+  class="modal fade"
+  tabindex="-1"
+  role="dialog"
+  aria-labelledby="myModalLabel"
+  aria-hidden="true"
+>
+  <div class="modal-dialog modal-info" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h4 class="modal-title">Item Category Info</h4>
+        <button
+          type="button"
+          class="close"
+          (click)="infoModal.hide()"
+          aria-label="Close"
+        >
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <div class="row mt-3">
+          <div class="col-md-6 font-weight-bold">Item Category Code</div>
+          <div class="col-md-1">-</div>
+          <div class="col-md-5">{{ itemCategoryInfo.code }}</div>
+        </div>
+        <div class="row mt-2">
+          <div class="col-md-6 font-weight-bold">Item Category Name</div>
+          <div class="col-md-1">-</div>
+          <div class="col-md-5">{{ itemCategoryInfo.description }}</div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button
+          type="button"
+          class="btn btn-secondary"
+          (click)="infoModal.hide()"
+        >
+          Close
+        </button>
+      </div>
+    </div>
+    <!-- /.modal-content -->
+  </div>
+  <!-- /.modal-dialog -->
+</div>
+
+<div
+  bsModal
+  #primaryModal="bs-modal"
+  class="modal fade"
+  tabindex="-1"
+  role="dialog"
+  aria-labelledby="myModalLabel"
+  aria-hidden="true"
+>
+  <div class="modal-dialog modal-dialog-centered modal-primary" role="document">
+    <div class="modal-content">
+      <form [formGroup]="createForm" (ngSubmit)="createItemCategory()">
+        <div class="modal-header">
+          <h4 class="modal-title">{{ isEditForm === false ? "Add" : "Edit" }} Item Category</h4>
+          <button
+            type="button"
+            class="close"
+            (click)="addModal.hide()"
+            aria-label="Close"
+          >
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          <div class="row mt-3 ml-2 mr-2">
+            <div class="input-group">
+              <div class="input-group-prepend">
+                <span class="input-group-text"
+                  ><i class="icon-puzzle">&nbsp; Code</i></span
+                >
+              </div>
+              <input
+                type="text"
+                [ngClass]="{
+                  'is-invalid': r.get('code').errors && r.get('code').touched,
+                  'is-valid':
+                    !r.get('code').errors &&
+                    (r.get('code').touched || r.get('code').value !== '')
+                }"
+                class="form-control"
+                placeholder="Item Categery Code"
+                autocomplete="off"
+                formControlName="code"
+                (input)="r.patchValue({code:r.get('code').value.toUpperCase()})"
+              />
+              <div
+                *ngIf="r.get('code').hasError('required')"
+                class="invalid-feedback"
+              >
+                Item Category Code required
+              </div>
+              <div
+                *ngIf="r.get('code').hasError('pattern')"
+                class="invalid-feedback"
+              >
+                Code should be only 4 alpha characters eg:- ABCD
+              </div>
+            </div>
+          </div>
+          <div class="row mt-3 ml-2 mr-2">
+            <div class="input-group">
+              <div class="input-group-prepend">
+                <span class="input-group-text">
+                  <i class="icon-pencil"></i> &nbsp; Description
+                </span>
+              </div>
+              <input
+                type="text"
+                [ngClass]="{
+                  'is-invalid':
+                    r.get('description').errors && r.get('description').touched,
+                  'is-valid':
+                    !r.get('description').errors &&
+                    (r.get('description').touched ||
+                      r.get('description').value !== '')
+                }"
+                class="form-control"
+                placeholder="Description"
+                autocomplete="off"
+                formControlName="description"
+
+              />
+              <div
+                *ngIf="r.get('description').hasError('required')"
+                class="invalid-feedback"
+              >
+                description/name is required
+              </div>
+            </div>
+          </div>
+          <!-- <p>create form value : {{ createForm.getRawValue() | json }}</p>
+          <p>create form status : {{ createForm.status | json }}</p> -->
+        </div>
+        <div class="modal-footer">
+          <button
+            type="button"
+            class="btn btn-secondary"
+            (click)="addModal.hide()"
+          >
+            Close
+          </button>
+          <button [disabled]="!r.valid" type="submit" class="btn btn-primary">
+            {{ isEditForm === false ? "Create" : "Update" }}
+          </button>
+        </div>
+      </form>
+    </div>
+    <!-- /.modal-content -->
+  </div>
+  <!-- /.modal-dialog -->
+</div>
+<!-- /.modal -->
