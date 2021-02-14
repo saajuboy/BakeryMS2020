@@ -11,7 +11,8 @@ namespace BakeryMS.API.Data.Interfaces
         void Add<T>(T entity) where T : class;
         void Delete<T>(T entity) where T : class;
         void Update<T>(T entity) where T : class;
-        T Get<T>(object id) where T : class;
+        Task<T> Get<T>(object id) where T : class;
+        Task<IEnumerable<T>> GetAll<T>() where T : class;
         Task<bool> SaveAll();
         Task<PurchaseOrderHeader> GetPurchaseOrder(int id, POFilterParams filterParams);
         Task<IEnumerable<PurchaseOrderHeader>> GetPurchaseOrders(POFilterParams filterParams);

@@ -32,10 +32,17 @@ namespace BakeryMS.API.Data.Repositories
             _context.Update(entity);
         }
         //
-        public T Get<T>(object id) where T : class
+        public async Task<T> Get<T>(object id) where T : class
         {
             T item = null;
-            item = _context.Set<T>().Find(id);
+            item = await _context.Set<T>().FindAsync(id);
+
+            return item;
+        }
+        public async Task<IEnumerable<T>> GetAll<T>() where T : class
+        {
+            
+            var item = await _context.Set<T>().ToListAsync();
 
             return item;
         }
@@ -144,5 +151,7 @@ namespace BakeryMS.API.Data.Repositories
 
             return items;
         }
+
+        
     }
 }
