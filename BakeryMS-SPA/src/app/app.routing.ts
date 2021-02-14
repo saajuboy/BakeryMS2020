@@ -18,6 +18,9 @@ import { RoleGuard } from './_guards/role.guard';
 import { PurchaseOrderCreateComponent } from './views/Inventory/PurchaseOrderCreate/PurchaseOrderCreate.component';
 import { ItemListComponent } from './views/Inventory/Item/ItemList/ItemList.component';
 import { ItemCreateComponent } from './views/Inventory/Item/ItemCreate/ItemCreate.component';
+import { ItemCategoryComponent } from './views/MasterData/itemCategory/itemCategory.component';
+import { SupplierComponent } from './views/MasterData/supplier/supplier.component';
+import { UnitComponent } from './views/MasterData/unit/unit.component';
 
 
 export const routes: Routes = [
@@ -53,7 +56,7 @@ export const routes: Routes = [
           title: 'Item List',
           allowedRoles: ['Admin', 'OutletManager', 'BakeryManager', 'Cashier']
         }
-      }, 
+      },
       {
         path: 'inventory/item/create',
         runGuardsAndResolvers: 'always',
@@ -65,7 +68,7 @@ export const routes: Routes = [
         }
       },
       {
-        path: 'inventory/item/edit:id',
+        path: 'inventory/item/edit/:id',
         runGuardsAndResolvers: 'always',
         canActivate: [RoleGuard],
         component: ItemCreateComponent,
@@ -95,7 +98,7 @@ export const routes: Routes = [
         }
       },
       {
-        path: 'inventory/purchaseOrder/edit:id',
+        path: 'inventory/purchaseOrder/edit/:id',
         runGuardsAndResolvers: 'always',
         canActivate: [RoleGuard],
         component: PurchaseOrderCreateComponent,
@@ -129,6 +132,36 @@ export const routes: Routes = [
         component: UserListComponent,
         data: {
           title: 'List'
+        }
+      },
+      {
+        path: 'master/itemCategory',
+        runGuardsAndResolvers: 'always',
+        canActivate: [RoleGuard],
+        component: ItemCategoryComponent,
+        data: {
+          title: 'Item Categories',
+          allowedRoles: ['Admin', 'OutletManager', 'BakeryManager', 'Cashier']
+        }
+      },
+      {
+        path: 'master/supplier',
+        runGuardsAndResolvers: 'always',
+        canActivate: [RoleGuard],
+        component: SupplierComponent,
+        data: {
+          title: 'Suppliers',
+          allowedRoles: ['Admin', 'OutletManager', 'BakeryManager', 'Cashier']
+        }
+      },
+      {
+        path: 'master/unit',
+        runGuardsAndResolvers: 'always',
+        canActivate: [RoleGuard],
+        component: UnitComponent,
+        data: {
+          title: 'Units',
+          allowedRoles: ['Admin', 'OutletManager', 'BakeryManager', 'Cashier']
         }
       }
 

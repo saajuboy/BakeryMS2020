@@ -12,6 +12,176 @@ export const navItems: INavData[] = [
   },
   {
     title: true,
+    name: 'Main Navigation'
+  },
+  {
+    name: 'POS',
+    url: '/inventory',
+    icon: 'icon-wallet',
+    children: [
+      {
+        name: 'Purchase Order',
+        url: '/inventory/purchaseOrder',
+        icon: 'icon-list'
+      }
+    ]
+  },
+  {
+    name: 'Inventory',
+    url: '/inventory',
+    icon: 'icon-basket-loaded',
+    children: [
+      {
+        name: 'Item',
+        url: '/inventory/item',
+        icon: 'icon-social-dropbox ',
+        children: [
+          {
+            name: 'Item List',
+            url: '/inventory/item',
+            icon: 'icon-list'
+          },
+          {
+            name: 'Create Item',
+            url: '/inventory/item/create',
+            icon: 'icon-note'
+          }
+        ]
+      },
+      {
+        name: 'Purchase Order',
+        url: '/inventory/purchaseOrder',
+        icon: 'icon-briefcase',
+        children: [
+          {
+            name: 'Purchase Order List',
+            url: '/inventory/purchaseOrder',
+            icon: 'icon-list'
+          },
+          {
+            name: 'Create Pur.Order',
+            url: '/inventory/purchaseOrder/create',
+            icon: 'icon-note'
+          }
+        ]
+      }
+
+
+    ]
+  },
+  {
+    name: 'Manufacturing',
+    url: '/inventory',
+    icon: 'icon-fire ',
+    children: [
+      {
+        name: 'Purchase Order',
+        url: '/inventory/purchaseOrder',
+        icon: 'icon-fire '
+      }
+    ]
+  },
+  {
+    name: 'Employee Management',
+    url: '/inventory',
+    icon: 'icon-people ',
+    children: [
+      {
+        name: 'Purchase Order',
+        url: '/inventory/purchaseOrder',
+        icon: 'icon-fire '
+      }
+    ]
+  },
+  {
+    name: 'Schedule Routine',
+    url: '/inventory',
+    icon: 'icon-refresh ',
+    children: [
+      {
+        name: 'Purchase Order',
+        url: '/inventory/purchaseOrder',
+        icon: 'icon-fire '
+      }
+    ]
+  },
+  {
+    name: 'Quality Control',
+    url: '/inventory',
+    icon: 'icon-heart ',
+    children: [
+      {
+        name: 'Purchase Order',
+        url: '/inventory/purchaseOrder',
+        icon: 'icon-fire '
+      }
+    ]
+  },
+  {
+    name: 'Reports',
+    url: '/inventory',
+    icon: 'icon-docs ',
+    children: [
+      {
+        name: 'Purchase Order',
+        url: '/inventory/purchaseOrder',
+        icon: 'icon-fire '
+      }
+    ]
+  },
+  {
+    name: 'Master Data',
+    url: '/Master',
+    icon: 'icon-globe ',
+    children: [
+      {
+        name: 'Item Category',
+        url: '/master/itemCategory',
+        icon: 'icon-fire '
+      },
+      {
+        name: 'Supplier',
+        url: '/master/supplier',
+        icon: 'icon-fire '
+      },
+      {
+        name: 'Unit',
+        url: '/master/unit',
+        icon: 'icon-fire '
+      }
+    ]
+  },
+  {
+    name: 'User',
+    url: '/User',
+    icon: 'icon-user',
+    children: [
+      {
+        name: 'Register',
+        url: '/user/register',
+        icon: 'icon-user-follow',
+      },
+      {
+        name: 'List',
+        url: '/user/list',
+        icon: 'icon-list'
+      },
+      {
+        name: 'Edit Profile',
+        url: 'test',
+        icon: 'icon-wrench'
+      }
+    ]
+  },
+  {
+    name: 'Test Module',
+    url: '/test',
+    icon: 'icon-puzzle',
+    roles: ['sdsd', 'dsdsd'],
+    attributes: { disabled: false }
+  },
+  {
+    title: true,
     name: 'Theme'
   },
   {
@@ -27,13 +197,6 @@ export const navItems: INavData[] = [
   {
     title: true,
     name: 'Components'
-  },
-  {
-    name: 'Test Module',
-    url: '/test',
-    icon: 'icon-puzzle',
-    roles: ['sdsd', 'dsdsd'],
-    attributes: { disabled: false }
   },
   {
     name: 'Base',
@@ -196,53 +359,7 @@ export const navItems: INavData[] = [
       text: 'NEW'
     }
   },
-  {
-    name: 'Inventory',
-    url: '/inventory',
-    icon: 'icon-basket-loaded',
-    children: [
-      {
-        name: 'Purchase Order',
-        url: '/inventory/purchaseOrder',
-        icon: 'icon-list'
-      },
-      {
-        name: 'Create Pur.Order',
-        url: '/inventory/purchaseOrder/create',
-        icon: 'icon-note'
-      }
-    ]
-  },
-  {
-    name: 'User',
-    url: '/User',
-    icon: 'icon-user',
-    roles: ['Admin', 'User'],
-    attributes: { disabled: false },
-    children: [
-      {
-        name: 'Register',
-        url: '/user/register',
-        icon: 'icon-user-follow',
-        roles: ['Admin'],
-        attributes: { disabled: false }
-      },
-      {
-        name: 'List',
-        url: '/user/list',
-        icon: 'icon-list',
-        roles: ['Admin'],
-        attributes: { disabled: false }
-      },
-      {
-        name: 'Edit Profile',
-        url: 'test',
-        icon: 'icon-wrench',
-        roles: ['sdsd', 'dsdsd'],
-        attributes: { disabled: false }
-      }
-    ]
-  },
+
   {
     divider: true
   },

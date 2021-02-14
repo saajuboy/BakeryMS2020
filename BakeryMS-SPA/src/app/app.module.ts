@@ -66,13 +66,16 @@ import { PurchaseOrderCreateComponent } from './views/Inventory/PurchaseOrderCre
 import { PurchaseOrderListComponent } from './views/Inventory/PurchaseOrderList/PurchaseOrderList.component';
 import { ItemCreateComponent } from './views/Inventory/Item/ItemCreate/ItemCreate.component';
 import { ItemListComponent } from './views/Inventory/Item/ItemList/ItemList.component';
+import { ItemCategoryComponent } from './views/MasterData/itemCategory/itemCategory.component';
+import { UnitComponent } from './views/MasterData/unit/unit.component';
+import { SupplierComponent } from './views/MasterData/supplier/supplier.component';
 
 
 
 
 // token getter function to automatically intercept http requests
 export function tokenGetter() {
-  console.log(localStorage.getItem('token'));
+  // console.log(localStorage.getItem('token'));
   return localStorage.getItem('token');
 }
 
@@ -115,7 +118,10 @@ export function tokenGetter() {
     PurchaseOrderCreateComponent,
     PurchaseOrderListComponent,
     ItemCreateComponent,
-    ItemListComponent
+    ItemListComponent,
+    ItemCategoryComponent,
+    UnitComponent,
+    SupplierComponent
   ],
   providers: [{
     provide: LocationStrategy,
