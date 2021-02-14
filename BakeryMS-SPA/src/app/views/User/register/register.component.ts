@@ -37,7 +37,7 @@ export class RegisterComponent implements OnInit {
         this.isEditForm = true;
         this.userID = usrId;
       }
-    })
+    });
   }
   createRegisterForm() {
     this.registerForm = this.fb.group({
@@ -91,7 +91,7 @@ export class RegisterComponent implements OnInit {
       (user: User) => this.createEditUserForm(user),
       (error: any) => { console.log(error); }
 
-    )
+    );
   }
 
   createEditUserForm(user: User) {
@@ -100,7 +100,7 @@ export class RegisterComponent implements OnInit {
       firstname: user.firstName,
       lastname: user.lastName,
       gender: user.gender
-    })
+    });
   }
 
   backToList(){
