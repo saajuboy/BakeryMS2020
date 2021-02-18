@@ -55,6 +55,7 @@ import { AdminGuard } from './_guards/admin.guard';
 import { RoleGuard } from './_guards/role.guard';
 import { UtilityService } from './_services/utility.service';
 import { MasterService } from './_services/master.service';
+import { InventoryService } from './_services/inventory.service';
 
 
 // import Components
@@ -69,8 +70,6 @@ import { ItemListComponent } from './views/Inventory/Item/ItemList/ItemList.comp
 import { ItemCategoryComponent } from './views/MasterData/itemCategory/itemCategory.component';
 import { UnitComponent } from './views/MasterData/unit/unit.component';
 import { SupplierComponent } from './views/MasterData/supplier/supplier.component';
-
-
 
 
 // token getter function to automatically intercept http requests
@@ -131,6 +130,7 @@ export function tokenGetter() {
     AlertifyService,
     UtilityService,
     MasterService,
+    InventoryService,
     AuthGuard,
     AdminGuard,
     RoleGuard
