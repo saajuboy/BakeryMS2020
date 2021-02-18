@@ -6,7 +6,7 @@ namespace BakeryMS.API.Common.DTOs.Inventory
     public class PODForDetailDto
     {
         public int Id { get; set; }
-        public DateTime DueDate { get; set; }
+        public string DueDate { get; set; }
         [Required]
         [Range(0.01, double.MaxValue, ErrorMessage = "Order Quantity should be greater than 0")]
         public decimal OrderQty { get; set; }

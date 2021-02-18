@@ -1,6 +1,7 @@
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
+import { map } from 'rxjs/operators';
 import { environment } from '../../environments/environment';
 import { Item, ItemCategory, ItemForDropdown, Unit } from '../_models/item';
 import { Supplier, SupplierForDropdown } from '../_models/supplier';
@@ -13,10 +14,18 @@ export class MasterService {
 
   constructor(private http: HttpClient) { }
 
-  getSuppliers(isForDropdown: boolean): Observable<Supplier[]> | Observable<SupplierForDropdown[]> {
+  getSuppliers(isForDropdown: boolean, type?: number): Observable<Supplier[]> | Observable<SupplierForDropdown[]> {
 
     if (isForDropdown === true) {
-      return this.http.get<SupplierForDropdown[]>(this.baseUrl + 'suppliers');
+      return this.http.get<SupplierForDropdown[]>(this.baseUrl + 'suppliers')
+        .pipe(
+          map(response => {
+            if (type != null) {
+              return response.filter(a => a.type === type);
+            }
+            return response;
+          })
+        );
     } else {
       return this.http.get<Supplier[]>(this.baseUrl + 'suppliers');
     }
@@ -34,9 +43,16 @@ export class MasterService {
     return this.http.delete(this.baseUrl + 'suppliers/' + id);
   }
 
-  getItems(isForDropdown: boolean): Observable<Item[]> | Observable<ItemForDropdown[]> {
+  getItems(isForDropdown: boolean, type?: number): Observable<Item[]> | Observable<ItemForDropdown[]> {
     if (isForDropdown === true) {
-      return this.http.get<ItemForDropdown[]>(this.baseUrl + 'items');
+      return this.http.get<ItemForDropdown[]>(this.baseUrl + 'items').pipe(
+        map(response => {
+          if (type != null) {
+            return response.filter(a => a.type === type);
+          }
+          return response;
+        })
+      );
     } else {
       return this.http.get<Item[]>(this.baseUrl + 'items');
     }

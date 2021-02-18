@@ -2,7 +2,7 @@
 
 export interface PurchaseOrderHeader {
     id: number;
-    pONumber: number;
+    poNumber: number;
     userId: number;
     supplierId: number;
     status: boolean;
@@ -10,6 +10,8 @@ export interface PurchaseOrderHeader {
     orderDate: Date;
     deliveryDate: Date;
     modifiedDate: Date;
+    supplierName?: string;
+    userName?: string;
 
     poDetail?: PurchaseOrderDetail[];
 }

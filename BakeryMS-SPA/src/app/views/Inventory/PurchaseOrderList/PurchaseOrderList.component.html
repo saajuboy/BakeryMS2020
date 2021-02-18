@@ -1,3 +1,188 @@
-<p>
-  PurchaseOrderList works!
-</p>
+<div class="card">
+  <div class="card-header"><i class="fa fa-align-justify"></i> Purchase Order List</div>
+  <div class="card-body">
+    <div class="row">
+      <div class="input-group col-md-4 mb-3">
+        <div class="input-group-prepend">
+          <span class="input-group-text"><i class="icon-magnifier"></i></span>
+        </div>
+        <input
+          type="text"
+          class="form-control"
+          placeholder="Search"
+          autocomplete="off"
+          [(ngModel)]="search"
+        />
+      </div>
+      <div class="col-md-1">
+        <button
+          class="btn btn-pill btn-block btn-primary"
+          (click)="add()"
+          type="button"
+        >
+          Add
+        </button>
+      </div>
+    </div>
+
+    <table class="table table-bordered">
+      <thead>
+        <tr>
+          <th><i (click)="sort(1)" class="icon-chart"></i> PO Number</th>
+          <th><i (click)="sort(2)" class="icon-chart"></i> Supplier</th>
+          <th><i (click)="sort(3)" class="icon-chart"></i> Status</th>
+          <th><i (click)="sort(4)" class="icon-chart"></i> Order Date</th>
+          <th><i (click)="sort(5)" class="icon-chart"></i> Delivery Date</th>
+          <th style="width: 15%;">Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let pO of purchaseOrders | filter: search">
+          <td>{{ pO.poNumber }}</td>
+          <td>{{ pO.supplierName }}</td>
+          <td>
+            <span *ngIf="pO.status == false" class="badge badge-secondary"
+              >Not Sent</span
+            >
+            <span *ngIf="pO.status == true" class="badge badge-success"
+              >Sent</span
+            >
+            <!-- <span *ngIf="item.type == 2" class="badge badge-danger">Raw</span>
+            <span *ngIf="item.type == 3" class="badge badge-secondary"
+              >Misc</span
+            > -->
+          </td>
+          <td>{{ pO.orderDate }}</td>
+          <td>{{ pO.deliveryDate }}</td>
+          <td>
+            <button
+              class="btn btn-ghost-secondary"
+              (click)="edit(pO.id)"
+              type="button"
+            >
+              <i class="icon-pencil"></i>
+            </button>
+            <button
+              (click)="ShowInfo(pO.id)"
+              class="btn btn-ghost-info"
+              type="button"
+            >
+              <i class="icon-info"></i>
+            </button>
+            <button
+              (click)="delete(pO.id)"
+              class="btn btn-ghost-danger"
+              type="button"
+            >
+              <i class="icon-close"></i>
+            </button>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+    <!-- <ul class="pagination">
+            <li class="page-item"><a class="page-link" href="#">Prev</a></li>
+            <li class="page-item active">
+              <a class="page-link" href="#">1</a>
+            </li>
+            <li class="page-item"><a class="page-link" href="#">2</a></li>
+            <li class="page-item"><a class="page-link" href="#">3</a></li>
+            <li class="page-item"><a class="page-link" href="#">4</a></li>
+            <li class="page-item"><a class="page-link" href="#">Next</a></li>
+          </ul> -->
+  </div>
+</div>
+
+<div
+  bsModal
+  #infoModal="bs-modal"
+  class="modal fade"
+  tabindex="-1"
+  role="dialog"
+  aria-labelledby="myModalLabel"
+  aria-hidden="true"
+>
+  <div class="modal-dialog modal-info" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h4 class="modal-title">Purchase Order Info</h4>
+        <button
+          type="button"
+          class="close"
+          (click)="infoModal.hide()"
+          aria-label="Close"
+        >
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <div class="row mt-3">
+          <div class="col-md-6 font-weight-bold">PO Number</div>
+          <div class="col-md-1">-</div>
+          <div class="col-md-5">{{ purchaseOrderInfo.poNumber }}</div>
+        </div>
+        <div class="row mt-2">
+          <div class="col-md-6 font-weight-bold">User</div>
+          <div class="col-md-1">-</div>
+          <div class="col-md-5">{{ purchaseOrderInfo.userName |titlecase}}</div>
+        </div>
+        <div class="row mt-2">
+          <div class="col-md-6 font-weight-bold">Supplier</div>
+          <div class="col-md-1">-</div>
+          <div class="col-md-5">{{ purchaseOrderInfo.supplierName|titlecase }}</div>
+        </div>
+        <div class="row mt-2">
+          <div class="col-md-6 font-weight-bold">Status</div>
+          <div class="col-md-1">-</div>
+          <div class="col-md-5">{{ purchaseOrderInfo.status === false?'Not Sent':'Sent' }}</div>
+        </div>
+        <div class="row mt-2">
+          <div class="col-md-6 font-weight-bold">Delivery Method</div>
+          <div class="col-md-1">-</div>
+          <div class="col-md-5">{{ purchaseOrderInfo.deliveryMethod }}</div>
+        </div>
+        <div class="row mt-2">
+          <div class="col-md-6 font-weight-bold">Order Date</div>
+          <div class="col-md-1">-</div>
+          <div class="col-md-5">{{ purchaseOrderInfo.orderDate | date:'yyyy-MM-dd'}}</div>
+        </div>
+        <div class="row mt-2">
+          <div class="col-md-6 font-weight-bold">Delivery Date</div>
+          <div class="col-md-1">-</div>
+          <div class="col-md-5">{{ purchaseOrderInfo.deliveryDate | date:'yyyy-MM-dd' }}</div>
+        </div>
+        <div class="row mt-2 ml-3 mr-3">
+          <table class="table">
+            <thead>
+              <th>Item</th>
+              <th>Due Date</th>
+              <th>Quantity</th>
+              <th>Price</th>
+              <th>line Total</th>
+            </thead>
+            <tbody>
+                <tr *ngFor="let row of purchaseOrderInfo.poDetail">
+                  <td>{{row.item}}</td>
+                  <td>{{row.dueDate}}</td>
+                  <td>{{row.orderQty}}</td>
+                  <td>{{row.unitPrice}}</td>
+                  <td>{{row.lineTotal}}</td>
+                </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button
+          type="button"
+          class="btn btn-secondary"
+          (click)="infoModal.hide()"
+        >
+          Close
+        </button>
+      </div>
+    </div>
+    <!-- /.modal-content -->
+  </div>
+  <!-- /.modal-dialog -->
+</div>

@@ -12,6 +12,7 @@ export interface ItemForDropdown {
     id: number;
     name: string;
     code: string;
+    type: number;
 }
 export interface ItemCategory {
     id: number;

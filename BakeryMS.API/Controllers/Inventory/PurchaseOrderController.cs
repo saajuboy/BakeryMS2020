@@ -6,8 +6,10 @@ using System.Threading.Tasks;
 using AutoMapper;
 using BakeryMS.API.Common.DTOs.Inventory;
 using BakeryMS.API.Common.Params;
+using BakeryMS.API.Data;
 using BakeryMS.API.Data.Interfaces;
 using BakeryMS.API.Models.Inventory;
+using BakeryMS.API.Models.Profile;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -20,8 +22,10 @@ namespace BakeryMS.API.Controllers.Inventory
     {
         private readonly IInventoryRepository _repository;
         private readonly IMapper _mapper;
-        public PurchaseOrderController(IInventoryRepository repository, IMapper mapper)
+        private readonly DataContext _context;
+        public PurchaseOrderController(IInventoryRepository repository, IMapper mapper, DataContext context)
         {
+            _context = context;
             _mapper = mapper;
             _repository = repository;
 
@@ -77,6 +81,13 @@ namespace BakeryMS.API.Controllers.Inventory
             var pOsFromRepo = await _repository.GetPurchaseOrders(filterParams);
             var pOsToReturn = _mapper.Map<IEnumerable<POForListDto>>(pOsFromRepo); // check with list automapping
 
+            var index = 0;
+            var users = await _repository.GetAll<User>();
+            foreach (var po in pOsFromRepo)
+            {
+                pOsToReturn.ElementAt(index).UserName = users.FirstOrDefault(a => a.Id == po.UserId).Username;
+                index = index + 1;
+            }
             return Ok(pOsToReturn);
         }
 

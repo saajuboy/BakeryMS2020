@@ -63,6 +63,7 @@
                     !pOCreateForm.get('supplierId').errors &&
                     pOCreateForm.get('supplierId').touched
                 }"
+                (change)="supplierChange(pOCreateForm.get('supplierId').value,suppliers)"
               >
                 <!-- <option value="0" selected="true">Please Select</option> -->
                 <option *ngFor="let sup of suppliers" [value]="sup.id">
@@ -139,24 +140,26 @@
             </div>
           </div>
           <div class="row mt-4">
-            <div class="col-md-4" style="display: flex;">
-              <div class="col-md-5" >
+            <div class="col-md-4" style="display: flex">
+              <div class="col-md-5">
                 <button
-                type="button"
-                class="btn btn-pill btn-block btn-primary"
-                (click)="addNewRow()"
-              >
-                Add row
-              </button>
+                  type="button"
+                  class="btn btn-pill btn-block btn-primary"
+                  (click)="addNewRow()"
+                  [disabled]="pOCreateForm.get('supplierId').value === ''"
+                >
+                  Add row
+                </button>
               </div>
               <div class="col-md-5 pull-right">
                 <button
-                type="button"
-                class="btn btn-pill btn-block btn-warning"
-                (click)="ClearRows()"
-              >
-                Clear
-              </button>
+                  type="button"
+                  class="btn btn-pill btn-block btn-warning"
+                  (click)="ClearRows()"
+                  [disabled]="pOCreateForm.get('supplierId').value === ''"
+                >
+                  Clear
+                </button>
               </div>
             </div>
           </div>
@@ -169,7 +172,7 @@
               </thead>
               <tbody #rows>
                 <ng-container
-                  formArrayName="tableRowArray"
+                  formArrayName="poDetail"
                   *ngFor="
                     let pod of gettableRowArray.controls;
                     let $index = index;
@@ -181,18 +184,18 @@
                       <select
                         class="form-control"
                         id="itemCode"
-                        formControlName="itemCodeId"
+                        formControlName="itemid"
                         [ngClass]="{
                           'is-invalid':
-                            pod.get('itemCodeId').errors &&
-                            pod.get('itemCodeId').touched ||
-                            pod.get('itemCodeId').hasError('mismatch'),
-                          'is-valid': !pod.get('itemCodeId').errors
+                            (pod.get('itemid').errors &&
+                              pod.get('itemid').touched) ||
+                            pod.get('itemid').hasError('mismatch'),
+                          'is-valid': !pod.get('itemid').errors
                         }"
                         (change)="
                           ItemSelectedValidator(
                             pod,
-                            pod.get('itemCodeId').value
+                            pod.get('itemid').value
                           )
                         "
                       >
@@ -230,18 +233,18 @@
                       <select
                         class="form-control"
                         id="itemName"
-                        formControlName="itemNameId"
+                        formControlName="itemid"
                         [ngClass]="{
                           'is-invalid':
-                            pod.get('itemNameId').errors &&
-                            pod.get('itemNameId').touched ||
-                            pod.get('itemNameId').hasError('mismatch'),
-                          'is-valid': !pod.get('itemNameId').errors
+                            (pod.get('itemid').errors &&
+                              pod.get('itemid').touched) ||
+                            pod.get('itemid').hasError('mismatch'),
+                          'is-valid': !pod.get('itemid').errors
                         }"
                         (change)="
                           ItemSelectedValidator(
                             pod,
-                            pod.get('itemNameId').value
+                            pod.get('itemid').value
                           )
                         "
                       >
@@ -296,17 +299,17 @@
                       <input
                         [ngClass]="{
                           'is-invalid':
-                            pod.get('quantity').errors &&
-                            pod.get('quantity').touched,
+                            pod.get('orderQty').errors &&
+                            pod.get('orderQty').touched,
                           'is-valid':
-                            !pod.get('quantity').errors &&
-                            pod.get('quantity').touched
+                            !pod.get('orderQty').errors &&
+                            pod.get('orderQty').touched
                         }"
                         type="text"
                         class="form-control"
                         placeholder="0.00"
-                        formControlName="quantity"
-                        (change)="getTotal(pod)"
+                        formControlName="orderQty"
+                        (change)="getTotal(pod,$index)"
                       />
                       <div class="invalid-feedback">
                         Enter a valid quantity eg - 1.24
@@ -326,7 +329,7 @@
                         class="form-control"
                         placeholder="0.00"
                         formControlName="unitPrice"
-                        (change)="getTotal(pod)"
+                        (change)="getTotal(pod,$index)"
                       />
                       <div class="invalid-feedback">
                         Enter a valid unit price eg - 1.24
@@ -338,14 +341,7 @@
                         class="form-control"
                         placeholder="0.00"
                         formControlName="lineTotal"
-                        [value]="
-                          'Rs ' +
-                          (
-                            pod.get('unitPrice').value *
-                            pod.get('quantity').value
-                          ).toFixed(2)
-                        "
-                      />
+                        [value]="(pod.get('unitPrice').value * pod.get('orderQty').value).toFixed(2)"/>
                     </td>
                     <td>
                       <button
@@ -360,48 +356,49 @@
                 </ng-container>
               </tbody>
             </table>
-            
           </div>
           <div class="row">
-            <div class="col-md-9 " style="display: flex;">
+            <div class="col-md-9" style="display: flex">
               <div class="col-md-2">
                 <button
                   type="button"
                   class="btn btn-pill btn-block btn-primary"
                   (click)="addNewRow()"
+                  [disabled]="pOCreateForm.get('supplierId').value === ''"
                 >
                   Add Row
                 </button>
               </div>
               <div class="col-md-2 pull-left">
                 <button
-                type="button"
-                class="btn btn-pill btn-block btn-warning"
-                (click)="ClearRows()"
-              >
-                Clear
-              </button>
+                  type="button"
+                  class="btn btn-pill btn-block btn-warning"
+                  (click)="ClearRows()"
+                  [disabled]="pOCreateForm.get('supplierId').value === ''"
+                >
+                  Clear
+                </button>
               </div>
             </div>
             <div class="card-header col-md-3">
-              
               <div class="align-left">
                 <label class="h5"
                   >Total No of Rows: {{ gettableRowArray.length }}</label
                 >
               </div>
               <div class="align-left">
-                <label class="h4">Total Amount: Rs {{ totalValue.toFixed(2) }}</label>
+                <label class="h4"
+                  >Total Amount: Rs {{ totalValue.toFixed(2) }}</label
+                >
               </div>
-            
             </div>
           </div>
-          <br>
-          <br>
+          <br />
+          <br />
           <div class="row">
             <div class="col-md-2">
               <button
-                type="submit"
+                type="button"
                 class="btn btn-block btn-light"
                 (click)="backToList()"
               >
@@ -413,7 +410,7 @@
               <button
                 type="submit"
                 [disabled]="pOCreateForm.invalid"
-                class="btn btn-block  btn-outline-success"
+                class="btn btn-block btn-outline-success"
               >
                 Create
               </button>
@@ -435,7 +432,7 @@
 </div>
 
 <div class="output">
-  <p>Form Data: {{ pOCreateForm.value | json }}</p>
+  <p>Form Data: {{ pOCreateForm.getRawValue() | json }}</p>
   <p>Is Valid: {{ pOCreateForm.valid }}</p>
   <p>value : {{ totalValue.toString() }}</p>
 </div>

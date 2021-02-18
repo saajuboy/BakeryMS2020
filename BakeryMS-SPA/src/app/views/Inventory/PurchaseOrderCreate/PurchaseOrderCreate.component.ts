@@ -7,6 +7,7 @@ import { PODRow, PurchaseOrderDetail, PurchaseOrderHeader } from '../../../_mode
 import { SupplierForDropdown } from '../../../_models/supplier';
 import { AlertifyService } from '../../../_services/alertify.service';
 import { AuthService } from '../../../_services/auth.service';
+import { InventoryService } from '../../../_services/inventory.service';
 import { MasterService } from '../../../_services/master.service';
 import { UtilityService } from '../../../_services/utility.service';
 
@@ -27,10 +28,10 @@ export class PurchaseOrderCreateComponent implements OnInit {
   deliveryMethods: string[];
   totalValue = 0;
   $totalRows = 0;
-
+  type: number;
 
   get gettableRowArray(): FormArray {
-    return this.pOCreateForm.get('tableRowArray') as FormArray;
+    return this.pOCreateForm.get('poDetail') as FormArray;
   }
 
   constructor(private authService: AuthService,
@@ -38,34 +39,39 @@ export class PurchaseOrderCreateComponent implements OnInit {
     private fb: FormBuilder,
     private router: Router,
     private utiService: UtilityService,
+    private inventoryService: InventoryService,
     private masterService: MasterService) {
 
     this.deliveryMethods = ['Direct', 'Pick Up', 'Shipping'];
-    this.columns = ['Item Code', 'Item Name', 'Due Date', 'Quantity', 'Unit Price', 'Line Total', 'Actions'];
+    this.columns = ['Item Code', 'Item Name', 'Due Date', 'Quantity', 'Unit Price (Rs)', 'Line Total (Rs)', 'Actions'];
 
   }
 
   ngOnInit() {
 
-    this.masterService.getSuppliers(true).subscribe(result => {
+    if (this.authService.isUserAdmin()) {
+      this.type = null;
+    } else if (this.authService.isUserBakeryManager()) {
+      this.type = 2;
+    } else if (this.authService.isUserOutletManager()) {
+      this.type = 1;
+    } else {
+      this.type = null;
+    }
+
+    this.masterService.getSuppliers(true, this.type).subscribe(result => {
       this.suppliers = result;
 
     }, error => {
       this.alertify.error(error);
     });
 
-    this.masterService.getItems(true).subscribe(result => {
+    this.masterService.getItems(true, this.type).subscribe(result => {
       this.items = result;
 
     }, error => {
       this.alertify.error(error);
     });
-    // this.getSuppliers().then((sups) => {
-    //   this.suppliers = sups;
-    //   console.log('inside subscribe:' + this.suppliers);
-
-    //   console.log('outside subscribe:' + this.suppliers);
-    // });
 
     this.createPurchaseOrderForm();
 
@@ -79,11 +85,12 @@ export class PurchaseOrderCreateComponent implements OnInit {
     this.pOCreateForm = this.fb.group({
       // suppArray: [],
       supplierId: ['', Validators.required],
+      userId: ['', Validators.required],
       deliveryMethod: ['', Validators.required],
       orderDate: ['', Validators.required],
       deliveryDate: [null, Validators.required],
       username: [{ value: '', disabled: true }, Validators.required],
-      tableRowArray: this.fb.array([
+      poDetail: this.fb.array([
         this.initiatePodRowValues()
       ])
     });
@@ -92,8 +99,10 @@ export class PurchaseOrderCreateComponent implements OnInit {
   setInitialValues(g: FormGroup) {
     const decodedToken = this.authService.decodedToken;
     const userDetails: string = this.utiService.titleCase(decodedToken.unique_name) + ' - ' + decodedToken.role.join(', ');
+    const userID: number = decodedToken.nameid;
     g.patchValue({
       username: userDetails,
+      userId: userID,
       orderDate: this.utiService.currentDate(),
       deliveryDate: this.utiService.addDate(new Date(), 3),
       deliveryMethod: this.deliveryMethods[0]
@@ -101,23 +110,31 @@ export class PurchaseOrderCreateComponent implements OnInit {
     });
   }
   createPO() {
-    this.totalValue = this.totalValue + 1;
-    this.alertify.success('submit clicked');
+    // set status,
+    this.purchaseOrder = Object.assign({}, this.pOCreateForm.getRawValue());
+    console.log(this.purchaseOrder);
+    this.inventoryService.CreatePurchaseOrder(this.purchaseOrder).subscribe(() => {
+      this.alertify.success('successfully Created');
+    }, error => {
+      this.alertify.error('failed to create');
+      this.alertify.error('Some error occured :' + error.error);
+    }, () => {
+      this.backToList();
+    });
+
+    // this.alertify.success('submit clicked');
   }
 
   initiatePodRowValues(): FormGroup {
 
     const formRow = this.fb.group({
-      itemCodeId: new FormControl('', {
-        validators: [Validators.required]
-      }),
-      itemNameId: new FormControl('', {
+      itemid: new FormControl('', {
         validators: [Validators.required]
       }),
       dueDate: new FormControl(this.utiService.currentDate(), {
         validators: [Validators.required]
       }),
-      quantity: new FormControl(0, {
+      orderQty: new FormControl(0, {
         validators: [Validators.required, Validators.pattern(/^\d+\.\d{2}$/)]
       }),
       unitPrice: new FormControl(0, {
@@ -127,21 +144,15 @@ export class PurchaseOrderCreateComponent implements OnInit {
         validators: [Validators.pattern(/^\d+\.\d{2}$/)]
       })
     },
-      // { validators: this.ItemSelectedValidator }
     );
-
-    // formRow.patchValue({});
     return formRow;
 
   }
 
   ItemSelectedValidator(g: FormGroup, value: any) {
     g.patchValue({
-      itemNameId: value,
-      itemCodeId: value
+      itemid: value
     });
-    // return g.get('itemCodeId').value === g.get('itemNameId').value ? null : { mismatch: true };
-    // }
 
   }
 
@@ -149,8 +160,9 @@ export class PurchaseOrderCreateComponent implements OnInit {
     this.gettableRowArray.push(this.initiatePodRowValues());
   }
   ClearRows() {
-    // this.gettableRowArray.push(this.initiatePodRowValues());
+
     this.gettableRowArray.clear();
+    this.totalValue = 0;
     this.addNewRow();
   }
 
@@ -159,13 +171,28 @@ export class PurchaseOrderCreateComponent implements OnInit {
     this.gettableRowArray.removeAt(rowIndex);
   }
 
-  getTotal(g: FormGroup) {
+  getTotal(g: FormGroup, i: number) {
+
     const formArray = this.gettableRowArray;
     this.totalValue = 0;
     formArray.getRawValue().forEach(x => {
-      x.lineTotal = parseFloat(x.quantity) * parseFloat(x.unitPrice);
+      x.lineTotal = parseFloat(x.orderQty) * parseFloat(x.unitPrice);
       this.totalValue += +x.lineTotal;
     });
+
+    g.patchValue({
+      lineTotal: g.get('orderQty').value * g.get('unitPrice').value
+    });
+  }
+
+  supplierChange(supId: number, sups: any) {
+
+    for (let i = 0; i < sups.length; i++) {
+      if (sups[i].id === supId) {
+        console.log(sups[i]);
+
+      }
+    }
   }
 
   backToList() {

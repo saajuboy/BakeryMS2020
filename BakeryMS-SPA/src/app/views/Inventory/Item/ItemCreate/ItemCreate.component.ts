@@ -73,8 +73,9 @@ export class ItemCreateComponent implements OnInit {
   createItem() {
     if (this.createForm.valid) {
       this.item = Object.assign({}, this.createForm.getRawValue());
-      this.item.itemCategory = <any>{ id: 0 };
+      this.item.itemCategory = <any>{ id: 0, code: 'ABCD', description: 'ABCD' }; // code and description ADDED to avoid validation from API
       this.item.unit = <any>{ id: 0 };
+
       this.item.itemCategory.id = this.createForm.controls['itemCategory'].value;
       this.item.unit.id = this.createForm.controls['unit'].value;
 

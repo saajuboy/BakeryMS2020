@@ -41,12 +41,12 @@ namespace BakeryMS.API.Data.Repositories
         }
         public async Task<IEnumerable<T>> GetAll<T>() where T : class
         {
-            
+
             var item = await _context.Set<T>().ToListAsync();
 
             return item;
         }
-        
+
         public async Task<bool> SaveAll()
         {
             return await _context.SaveChangesAsync() > 0;
@@ -102,7 +102,7 @@ namespace BakeryMS.API.Data.Repositories
             {
                 purchaseOrders = purchaseOrders.Where(a => a.Status == true);
             }
-            return await purchaseOrders.ToListAsync();
+            return await purchaseOrders.Include(a => a.Supplier).ToListAsync();
         }
 
         public async Task CreatePurchaseOrder(PurchaseOrderHeader purchaseOrderHeader)
@@ -152,6 +152,6 @@ namespace BakeryMS.API.Data.Repositories
             return items;
         }
 
-        
+
     }
 }

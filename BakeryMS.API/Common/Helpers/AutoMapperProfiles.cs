@@ -1,3 +1,4 @@
+using System;
 using AutoMapper;
 using BakeryMS.API.Common.DTOs;
 using BakeryMS.API.Common.DTOs.Inventory;
@@ -19,6 +20,14 @@ namespace BakeryMS.API.Common.Helpers
             .ForMember(dest => dest.SupplierName, opt =>
             {
                 opt.MapFrom(src => src.Supplier.Name);
+            })
+            .ForMember(dest => dest.OrderDate, opt =>
+            {
+                opt.MapFrom(src => src.OrderDate.ToShortDateString());
+            })
+            .ForMember(dest => dest.DeliveryDate, opt =>
+            {
+                opt.MapFrom(src => src.DeliveryDate.ToShortDateString());
             });
             CreateMap<PurchaseOrderHeader, POHForDetailDto>()
             .ForMember(dest => dest.SupplierId, opt =>
@@ -32,6 +41,10 @@ namespace BakeryMS.API.Common.Helpers
             .ForMember(dest => dest.Item, opt =>
             {
                 opt.MapFrom(src => src.Item.Name);
+            })
+            .ForMember(dest => dest.DueDate, opt =>
+            {
+                opt.MapFrom(src => src.DueDate.ToShortDateString());
             });
 
             CreateMap<POHForDetailDto, PurchaseOrderHeader>()
@@ -44,6 +57,10 @@ namespace BakeryMS.API.Common.Helpers
             .ForPath(dest => dest.Item.Id, opt =>
             {
                 opt.MapFrom(src => src.ItemId);
+            })
+            .ForMember(dest => dest.DueDate, opt =>
+            {
+                opt.MapFrom(src => DateTime.Parse(src.DueDate));
             });
 
             CreateMap<Supplier, SupplierDto>();
