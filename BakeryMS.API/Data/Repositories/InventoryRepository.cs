@@ -68,15 +68,17 @@ namespace BakeryMS.API.Data.Repositories
                     break;
             }
 
-            if (!filterParams.containNotActive)
-            {
-                purchaseOrders = purchaseOrders.Where(a => a.Status == true);
-            }
+            // if (!filterParams.containNotActive)
+            // {
+            //     purchaseOrders = purchaseOrders.Where(a => a.Status == true);
+            // }
 
 
             var purchaseOrder = await purchaseOrders
-           .Include(p => p.PurchaseOrderDetail).ThenInclude(pd => pd.Item)
-           .FirstOrDefaultAsync(a => a.Id == id);
+            .Where(a => a.IsDeleted == false)
+            .Include(a => a.Supplier)
+            .Include(p => p.PurchaseOrderDetail).ThenInclude(pd => pd.Item)
+            .FirstOrDefaultAsync(a => a.Id == id);
 
             return purchaseOrder;
 
@@ -98,11 +100,12 @@ namespace BakeryMS.API.Data.Repositories
                     break;
             }
 
-            if (!filterParams.containNotActive)
-            {
-                purchaseOrders = purchaseOrders.Where(a => a.Status == true);
-            }
-            return await purchaseOrders.Include(a => a.Supplier).ToListAsync();
+            // if (!filterParams.containNotActive)
+            // {
+            //     purchaseOrders = purchaseOrders.Where(a => a.Status == true);
+            // }
+
+            return await purchaseOrders.Where(a => a.IsDeleted == false).Include(a => a.Supplier).ToListAsync();
         }
 
         public async Task CreatePurchaseOrder(PurchaseOrderHeader purchaseOrderHeader)
@@ -112,7 +115,7 @@ namespace BakeryMS.API.Data.Repositories
 
             var maxId = _context.PurchaseOrderHeaders.Max(model => model.PONumber);
             purchaseOrderHeader.PONumber = maxId + 1;
-            purchaseOrderHeader.Status = true;
+            // purchaseOrderHeader.Status = false;
 
             foreach (var pod in purchaseOrderHeader.PurchaseOrderDetail)
             {

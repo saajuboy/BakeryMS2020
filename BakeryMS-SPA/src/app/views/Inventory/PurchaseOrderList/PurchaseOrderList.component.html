@@ -1,5 +1,7 @@
 <div class="card">
-  <div class="card-header"><i class="fa fa-align-justify"></i> Purchase Order List</div>
+  <div class="card-header">
+    <i class="fa fa-align-justify"></i> Purchase Order List
+  </div>
   <div class="card-body">
     <div class="row">
       <div class="input-group col-md-4 mb-3">
@@ -33,7 +35,7 @@
           <th><i (click)="sort(3)" class="icon-chart"></i> Status</th>
           <th><i (click)="sort(4)" class="icon-chart"></i> Order Date</th>
           <th><i (click)="sort(5)" class="icon-chart"></i> Delivery Date</th>
-          <th style="width: 15%;">Actions</th>
+          <th style="width: 15%">Actions</th>
         </tr>
       </thead>
       <tbody>
@@ -47,6 +49,8 @@
             <span *ngIf="pO.status == true" class="badge badge-success"
               >Sent</span
             >
+
+            {{ pO.isFromOutlet === true ? "From Oulet" : "From Bakery" }}
             <!-- <span *ngIf="item.type == 2" class="badge badge-danger">Raw</span>
             <span *ngIf="item.type == 3" class="badge badge-secondary"
               >Misc</span
@@ -59,6 +63,7 @@
               class="btn btn-ghost-secondary"
               (click)="edit(pO.id)"
               type="button"
+              [disabled]="pO.status === true"
             >
               <i class="icon-pencil"></i>
             </button>
@@ -124,17 +129,23 @@
         <div class="row mt-2">
           <div class="col-md-6 font-weight-bold">User</div>
           <div class="col-md-1">-</div>
-          <div class="col-md-5">{{ purchaseOrderInfo.userName |titlecase}}</div>
+          <div class="col-md-5">
+            {{ purchaseOrderInfo.userName | titlecase }}
+          </div>
         </div>
         <div class="row mt-2">
           <div class="col-md-6 font-weight-bold">Supplier</div>
           <div class="col-md-1">-</div>
-          <div class="col-md-5">{{ purchaseOrderInfo.supplierName|titlecase }}</div>
+          <div class="col-md-5">
+            {{ purchaseOrderInfo.supplierName | titlecase }}
+          </div>
         </div>
         <div class="row mt-2">
           <div class="col-md-6 font-weight-bold">Status</div>
           <div class="col-md-1">-</div>
-          <div class="col-md-5">{{ purchaseOrderInfo.status === false?'Not Sent':'Sent' }}</div>
+          <div class="col-md-5">
+            {{ purchaseOrderInfo.status === false ? "Not Sent" : "Sent" }}
+          </div>
         </div>
         <div class="row mt-2">
           <div class="col-md-6 font-weight-bold">Delivery Method</div>
@@ -144,12 +155,16 @@
         <div class="row mt-2">
           <div class="col-md-6 font-weight-bold">Order Date</div>
           <div class="col-md-1">-</div>
-          <div class="col-md-5">{{ purchaseOrderInfo.orderDate | date:'yyyy-MM-dd'}}</div>
+          <div class="col-md-5">
+            {{ purchaseOrderInfo.orderDate | date: "yyyy-MM-dd" }}
+          </div>
         </div>
         <div class="row mt-2">
           <div class="col-md-6 font-weight-bold">Delivery Date</div>
           <div class="col-md-1">-</div>
-          <div class="col-md-5">{{ purchaseOrderInfo.deliveryDate | date:'yyyy-MM-dd' }}</div>
+          <div class="col-md-5">
+            {{ purchaseOrderInfo.deliveryDate | date: "yyyy-MM-dd" }}
+          </div>
         </div>
         <div class="row mt-2 ml-3 mr-3">
           <table class="table">
@@ -161,13 +176,13 @@
               <th>line Total</th>
             </thead>
             <tbody>
-                <tr *ngFor="let row of purchaseOrderInfo.poDetail">
-                  <td>{{row.item}}</td>
-                  <td>{{row.dueDate}}</td>
-                  <td>{{row.orderQty}}</td>
-                  <td>{{row.unitPrice}}</td>
-                  <td>{{row.lineTotal}}</td>
-                </tr>
+              <tr *ngFor="let row of purchaseOrderInfo.poDetail">
+                <td>{{ row.item }}</td>
+                <td>{{ row.dueDate }}</td>
+                <td>{{ row.orderQty }}</td>
+                <td>{{ row.unitPrice }}</td>
+                <td>{{ row.lineTotal }}</td>
+              </tr>
             </tbody>
           </table>
         </div>

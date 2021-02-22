@@ -1,7 +1,6 @@
 import { Component, OnInit, ɵConsole } from '@angular/core';
 import { FormArray, FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
-import { Router } from '@angular/router';
-import { Observable } from 'rxjs';
+import { ActivatedRoute, Router } from '@angular/router';
 import { ItemForDropdown } from '../../../_models/item';
 import { PODRow, PurchaseOrderDetail, PurchaseOrderHeader } from '../../../_models/purchaseOrder';
 import { SupplierForDropdown } from '../../../_models/supplier';
@@ -29,6 +28,8 @@ export class PurchaseOrderCreateComponent implements OnInit {
   totalValue = 0;
   $totalRows = 0;
   type: number;
+  isEditForm: boolean = false;
+  PurchaseOrderID: number;
 
   get gettableRowArray(): FormArray {
     return this.pOCreateForm.get('poDetail') as FormArray;
@@ -38,6 +39,7 @@ export class PurchaseOrderCreateComponent implements OnInit {
     private alertify: AlertifyService,
     private fb: FormBuilder,
     private router: Router,
+    private route: ActivatedRoute,
     private utiService: UtilityService,
     private inventoryService: InventoryService,
     private masterService: MasterService) {
@@ -47,7 +49,7 @@ export class PurchaseOrderCreateComponent implements OnInit {
 
   }
 
-  ngOnInit() {
+  async ngOnInit() {
 
     if (this.authService.isUserAdmin()) {
       this.type = null;
@@ -77,9 +79,18 @@ export class PurchaseOrderCreateComponent implements OnInit {
 
     this.setInitialValues(this.pOCreateForm);
 
+    // for edit Form
+    this.route.paramMap.subscribe(params => {
+      const pOID = +params.get('id');
+
+      if (pOID) {
+        this.getPurchaseOrder(pOID);
+        this.isEditForm = true;
+        this.PurchaseOrderID = pOID;
+      }
+    });
+
   }
-
-
 
   createPurchaseOrderForm() {
     this.pOCreateForm = this.fb.group({
@@ -109,20 +120,122 @@ export class PurchaseOrderCreateComponent implements OnInit {
       // , suppArray: this.suppliers
     });
   }
-  createPO() {
-    // set status,
-    this.purchaseOrder = Object.assign({}, this.pOCreateForm.getRawValue());
-    console.log(this.purchaseOrder);
-    this.inventoryService.CreatePurchaseOrder(this.purchaseOrder).subscribe(() => {
-      this.alertify.success('successfully Created');
-    }, error => {
-      this.alertify.error('failed to create');
-      this.alertify.error('Some error occured :' + error.error);
-    }, () => {
-      this.backToList();
+
+  getPurchaseOrder(id: number) {
+    this.inventoryService.getPurchaseOrder(id).subscribe(
+      (purchaseOrder: PurchaseOrderHeader) => {
+        this.createEditPOForm(purchaseOrder);
+        console.log(purchaseOrder);
+
+      },
+      (error: any) => {
+        console.log(error);
+        this.alertify.error('some error occured');
+        this.router.navigate(['/inventory/purchaseOrder']);
+      }
+    );
+  }
+  createEditPOForm(purchaseOrder: PurchaseOrderHeader) {
+    this.pOCreateForm.patchValue({
+      supplierId: purchaseOrder.supplierId,
+      userId: this.authService.decodedToken.nameid,
+      deliveryMethod: purchaseOrder.deliveryMethod,
+      orderDate: purchaseOrder.orderDate,
+      deliveryDate: purchaseOrder.deliveryDate,
+      username:
+        this.utiService.titleCase(this.authService.decodedToken.unique_name) + ' - ' + this.authService.decodedToken.role.join(', '),
+      // poDetail: this.fb.array([
+      //   this.initiatePodRowValues()
+      // ])
+    });
+    this.ClearRows();
+    this.onDeleteRow(0);
+    this.totalValue = 0;
+    purchaseOrder.poDetail.forEach((podRow) => {
+      this.gettableRowArray.push(this.initiateEditPodRowValues(podRow));
+      this.totalValue = this.totalValue + podRow.lineTotal;
     });
 
-    // this.alertify.success('submit clicked');
+
+  }
+  async createPO(isForSending: boolean) {
+    // set status,
+    if (this.pOCreateForm.valid) {
+
+      this.purchaseOrder = Object.assign({}, this.pOCreateForm.getRawValue());
+
+      this.masterService.getSupplier(this.purchaseOrder.supplierId).subscribe((result) => {
+        if (result.type === 2) {
+          this.purchaseOrder.isForOutlet = false;
+        } else if (result.type === 1) {
+          this.purchaseOrder.isForOutlet = true;
+        }
+
+        console.log(this.purchaseOrder);
+
+        if (this.isEditForm === false) {
+          if (isForSending === false) {
+            this.inventoryService.createPurchaseOrder(this.purchaseOrder).subscribe(() => {
+              this.alertify.success('successfully Created');
+            }, error => {
+              this.alertify.error('failed to create');
+              this.alertify.error('Some error occured :' + error.error);
+            }, () => {
+              this.backToList();
+            });
+
+          } else {
+
+            this.inventoryService.createPurchaseOrderAndSend(this.purchaseOrder).subscribe((res) => {
+              // if (res.hasOwnProperty('error')) {
+              //   this.alertify.warning('PO was created but not sent');
+              // } else {
+                this.alertify.success('successfully Created and sent');
+              // }
+            }, error => {
+              this.alertify.error('failed to create');
+              this.alertify.error('Some error occured :' + error.error);
+            }, () => {
+              this.backToList();
+            });
+            // this.alertify.success('successfully saved and sent');
+          }
+
+        } else {
+
+          if (isForSending === false) {
+            this.inventoryService.updatePurchaseOrder(this.PurchaseOrderID, this.purchaseOrder).subscribe(() => {
+              this.alertify.success('successfully Updated');
+            }, error => {
+              this.alertify.error('failed to Update');
+              this.alertify.error('Some error occured :' + error.error);
+            }, () => {
+              this.backToList();
+            });
+
+          } else {
+            this.inventoryService.updatePurchaseOrderAndSend(this.PurchaseOrderID, this.purchaseOrder).subscribe((res) => {
+              // if (res) {
+              //   this.alertify.warning('PO was created but not sent');
+              // } else {
+              this.alertify.success('successfully updated and sent');
+              // }
+
+              // handle email not sent
+
+            }, error => {
+              this.alertify.error('failed to update');
+              this.alertify.error('Some error occured :' + error.error);
+            }, () => {
+              this.backToList();
+            });
+          }
+        }
+
+      }, (error) => {
+        this.alertify.error('some error occured, try selecting supplier again or refresh');
+      });
+    }
   }
 
   initiatePodRowValues(): FormGroup {
@@ -145,6 +258,33 @@ export class PurchaseOrderCreateComponent implements OnInit {
       })
     },
     );
+    return formRow;
+
+  }
+  initiateEditPodRowValues(pORow: PurchaseOrderDetail): FormGroup {
+
+    const formRow = this.fb.group({
+      itemid: new FormControl(<any>pORow.itemId, {
+        validators: [Validators.required]
+      }),
+      dueDate: new FormControl(pORow.dueDate, {
+        validators: [Validators.required]
+      }),
+      orderQty: new FormControl(pORow.orderQty.toFixed(2), {
+        validators: [Validators.required, Validators.pattern(/^\d+\.\d{2}$/)]
+      }),
+      unitPrice: new FormControl(pORow.unitPrice.toFixed(2), {
+        validators: [Validators.required, Validators.pattern(/^\d+\.\d{2}$/)]
+      }),
+      lineTotal: new FormControl({ value: pORow.lineTotal.toFixed(2), disabled: true }, {
+        validators: [Validators.pattern(/^\d+\.\d{2}$/)]
+      })
+    },
+    );
+
+    // formRow.patchValue({
+    //   itemid: pORow.itemid
+    // });
     return formRow;
 
   }

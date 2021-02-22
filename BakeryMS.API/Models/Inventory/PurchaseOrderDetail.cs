@@ -26,6 +26,8 @@ namespace BakeryMS.API.Models.Inventory
         public decimal? StockedQuantity { get; set; }
         public DateTime? ModifiedTime { get; set; }
 
+        public bool IsDeleted { get; set; }
+
 
     }
 }

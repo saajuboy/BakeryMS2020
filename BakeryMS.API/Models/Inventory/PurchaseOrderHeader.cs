@@ -16,6 +16,7 @@ namespace BakeryMS.API.Models.Inventory
         public DateTime? ModifiedDate { get; set; }
         public bool Status { get; set; }
         public bool isFromOutlet { get; set; }
+        public bool IsDeleted { get; set; }
 
         public IList<PurchaseOrderDetail> PurchaseOrderDetail { get; set; }
 

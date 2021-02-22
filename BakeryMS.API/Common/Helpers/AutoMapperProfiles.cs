@@ -29,14 +29,25 @@ namespace BakeryMS.API.Common.Helpers
             {
                 opt.MapFrom(src => src.DeliveryDate.ToShortDateString());
             });
+
             CreateMap<PurchaseOrderHeader, POHForDetailDto>()
             .ForMember(dest => dest.SupplierId, opt =>
             {
                 opt.MapFrom(src => src.Supplier.Id);
-            }).ForMember(dest => dest.PODetail, opt =>
+            })
+            .ForMember(dest => dest.OrderDate, opt =>
+            {
+                opt.MapFrom(src => src.OrderDate.DashedDate());
+            })
+            .ForMember(dest => dest.DeliveryDate, opt =>
+            {
+                opt.MapFrom(src => src.DeliveryDate.DashedDate());
+            })
+            .ForMember(dest => dest.PODetail, opt =>
             {
                 opt.MapFrom(src => src.PurchaseOrderDetail);
             });
+
             CreateMap<PurchaseOrderDetail, PODForDetailDto>()
             .ForMember(dest => dest.Item, opt =>
             {
@@ -44,13 +55,21 @@ namespace BakeryMS.API.Common.Helpers
             })
             .ForMember(dest => dest.DueDate, opt =>
             {
-                opt.MapFrom(src => src.DueDate.ToShortDateString());
+                opt.MapFrom(src => src.DueDate.DashedDate());
             });
 
             CreateMap<POHForDetailDto, PurchaseOrderHeader>()
             .ForMember(dest => dest.PurchaseOrderDetail, opt =>
             {
                 opt.MapFrom(src => src.PODetail);
+            })
+            .ForMember(dest => dest.OrderDate, opt =>
+            {
+                opt.MapFrom(src => DateTime.Parse(src.OrderDate));
+            })
+            .ForMember(dest => dest.DeliveryDate, opt =>
+            {
+                opt.MapFrom(src => DateTime.Parse(src.DeliveryDate));
             });
 
             CreateMap<PODForDetailDto, PurchaseOrderDetail>()

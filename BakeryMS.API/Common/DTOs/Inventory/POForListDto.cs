@@ -13,5 +13,6 @@ namespace BakeryMS.API.Common.DTOs.Inventory
         public string OrderDate { get; set; }
         public string DeliveryDate { get; set; }
         public bool Status { get; set; }
+        public bool isFromOutlet { get; set; }
     }
 }

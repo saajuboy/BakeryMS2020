@@ -18,9 +18,9 @@ namespace BakeryMS.API.Common.DTOs.Inventory
         public bool Status { get; set; }
         public string DeliveryMethod { get; set; }
         [Required]
-        public DateTime? OrderDate { get; set; }
+        public string OrderDate { get; set; }
         [Required]
-        public DateTime? DeliveryDate { get; set; }
+        public string DeliveryDate { get; set; }
         public DateTime? ModifiedDate { get; set; }
 
         public IList<PODForDetailDto> PODetail { get; set; }

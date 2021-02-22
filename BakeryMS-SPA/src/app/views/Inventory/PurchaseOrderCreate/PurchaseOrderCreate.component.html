@@ -3,9 +3,9 @@
   <div class="col-md-12 mx-auto">
     <div class="card mx-4">
       <div class="card-body p-4">
-        <form [formGroup]="pOCreateForm" (ngSubmit)="createPO()">
-          <h1>Create Purchase Order</h1>
-          <p class="text-muted">Create a new Purchase Order</p>
+        <form [formGroup]="pOCreateForm">
+          <h1>{{isEditForm===false?'Create':'Edit'}} Purchase Order</h1>
+          <p class="text-muted">{{isEditForm===false?'Create':'Edit'}} a Purchase Order</p>
           <div class="row">
             <div class="input-group col-md-4 mb-3">
               <div class="input-group-prepend">
@@ -63,7 +63,12 @@
                     !pOCreateForm.get('supplierId').errors &&
                     pOCreateForm.get('supplierId').touched
                 }"
-                (change)="supplierChange(pOCreateForm.get('supplierId').value,suppliers)"
+                (change)="
+                  supplierChange(
+                    pOCreateForm.get('supplierId').value,
+                    suppliers
+                  )
+                "
               >
                 <!-- <option value="0" selected="true">Please Select</option> -->
                 <option *ngFor="let sup of suppliers" [value]="sup.id">
@@ -193,10 +198,7 @@
                           'is-valid': !pod.get('itemid').errors
                         }"
                         (change)="
-                          ItemSelectedValidator(
-                            pod,
-                            pod.get('itemid').value
-                          )
+                          ItemSelectedValidator(pod, pod.get('itemid').value)
                         "
                       >
                         <option *ngFor="let item of items" [value]="item.id">
@@ -242,10 +244,7 @@
                           'is-valid': !pod.get('itemid').errors
                         }"
                         (change)="
-                          ItemSelectedValidator(
-                            pod,
-                            pod.get('itemid').value
-                          )
+                          ItemSelectedValidator(pod, pod.get('itemid').value)
                         "
                       >
                         <option *ngFor="let item of items" [value]="item.id">
@@ -309,7 +308,7 @@
                         class="form-control"
                         placeholder="0.00"
                         formControlName="orderQty"
-                        (change)="getTotal(pod,$index)"
+                        (change)="getTotal(pod, $index)"
                       />
                       <div class="invalid-feedback">
                         Enter a valid quantity eg - 1.24
@@ -329,7 +328,7 @@
                         class="form-control"
                         placeholder="0.00"
                         formControlName="unitPrice"
-                        (change)="getTotal(pod,$index)"
+                        (change)="getTotal(pod, $index)"
                       />
                       <div class="invalid-feedback">
                         Enter a valid unit price eg - 1.24
@@ -341,7 +340,13 @@
                         class="form-control"
                         placeholder="0.00"
                         formControlName="lineTotal"
-                        [value]="(pod.get('unitPrice').value * pod.get('orderQty').value).toFixed(2)"/>
+                        [value]="
+                          (
+                            pod.get('unitPrice').value *
+                            pod.get('orderQty').value
+                          ).toFixed(2)
+                        "
+                      />
                     </td>
                     <td>
                       <button
@@ -408,20 +413,22 @@
             <div class="col-md-6"></div>
             <div class="col-md-2">
               <button
-                type="submit"
+                type="button"
                 [disabled]="pOCreateForm.invalid"
                 class="btn btn-block btn-outline-success"
+                (click)="createPO(false)"
               >
-                Create
+              {{isEditForm===false?'Create':'Update'}}
               </button>
             </div>
             <div class="col-md-2">
               <button
-                type="submit"
+                type="button"
                 [disabled]="pOCreateForm.invalid"
                 class="btn btn-block btn-success"
+                (click)="createPO(true)"
               >
-                Create and send
+              {{isEditForm===false?'Create':'Update'}} and send
               </button>
             </div>
           </div>

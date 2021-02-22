@@ -45,22 +45,22 @@ export class PurchaseOrderListComponent implements OnInit {
 
   delete(id: number) {
     this.alertify.confirm('Are you sure?',
-      'Are you sure you want to delete this item? This action cannot be undone',
+      'Are you sure you want to delete this Purchase Order? This action cannot be undone',
       () => {
-        // this.masterService.deleteItem(id).subscribe((next) => {
-        //   this.alertify.success('Item deleted succesfully');
-        //   this.items = this.items.filter(function (obj) {
-        //     return obj.id !== id;
-        //   });
-        // }, () => {
-        //   this.alertify.error('Failed to Delete Item');
-        // });
+        this.inventoryService.deletePurchaseOrder(id).subscribe((next) => {
+          this.alertify.success('Purchase Order deleted succesfully');
+          this.purchaseOrders = this.purchaseOrders.filter(function (obj) {
+            return obj.id !== id;
+          });
+        }, () => {
+          this.alertify.error('Failed to Delete Purchase Order');
+        });
       },
       () => { });
 
   }
   edit(id: number) {
-    // this.router.navigate(['inventory/item/edit', id]);
+    this.router.navigate(['/inventory/purchaseOrder/edit', id]);
   }
   ShowInfo(id: number) {
 

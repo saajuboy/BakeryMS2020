@@ -12,6 +12,8 @@ export interface PurchaseOrderHeader {
     modifiedDate: Date;
     supplierName?: string;
     userName?: string;
+    isForOutlet?: boolean;
+    isFromOutlet?: boolean;
 
     poDetail?: PurchaseOrderDetail[];
 }
@@ -19,7 +21,7 @@ export interface PurchaseOrderHeader {
 export interface PurchaseOrderDetail {
     id: number;
     orderQty: number;
-    itemid: number;
+    itemId: number;
     unitPrice: number;
     lineTotal: number;
     receivedQuantity: number;

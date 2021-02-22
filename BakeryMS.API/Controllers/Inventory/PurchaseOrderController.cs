@@ -1,3 +1,4 @@
+using System.Text;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -8,13 +9,21 @@ using BakeryMS.API.Common.DTOs.Inventory;
 using BakeryMS.API.Common.Params;
 using BakeryMS.API.Data;
 using BakeryMS.API.Data.Interfaces;
+using BakeryMS.API.Models;
 using BakeryMS.API.Models.Inventory;
 using BakeryMS.API.Models.Profile;
+using MailKit.Net.Smtp;
+using MailKit.Security;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using MimeKit;
+using MimeKit.Text;
 
 namespace BakeryMS.API.Controllers.Inventory
 {
+
+
+
     [ApiController]
     [Route("[controller]")]
     [Authorize]
@@ -35,21 +44,7 @@ namespace BakeryMS.API.Controllers.Inventory
         [HttpGet("{id}", Name = "GetPurchaseOrder")]
         public async Task<IActionResult> GetPurchaseOrder(int id)
         {
-            POFilterParams filterParams = new POFilterParams()
-            {
-                isFromOutlet = 2,
-                containNotActive = false
-            };
-
-            if (User.FindAll(ClaimTypes.Role).Any(a => a.Value == "Admin"))
-            {
-                filterParams.isFromOutlet = 2;
-                filterParams.containNotActive = true;
-            }
-            else
-            {
-                filterParams.isFromOutlet = User.FindAll(ClaimTypes.Role).Any(a => a.Value == "OutletManager") ? 0 : 1;
-            }
+            var filterParams = GetFilterParams();
 
             var purOrderFromRepo = await _repository.GetPurchaseOrder(id, filterParams);
 
@@ -62,24 +57,10 @@ namespace BakeryMS.API.Controllers.Inventory
         [Authorize(Roles = "Admin,OutletManager,BakeryManager")]
         public async Task<IActionResult> GetPurchaseOrders()
         {
-            POFilterParams filterParams = new POFilterParams()
-            {
-                isFromOutlet = 2,
-                containNotActive = false
-            };
-
-            if (User.FindAll(ClaimTypes.Role).Any(a => a.Value == "Admin"))
-            {
-                filterParams.isFromOutlet = 2;
-                filterParams.containNotActive = true;
-            }
-            else
-            {
-                filterParams.isFromOutlet = User.FindAll(ClaimTypes.Role).Any(a => a.Value == "OutletManager") ? 0 : 1;
-            }
+            var filterParams = GetFilterParams();
 
             var pOsFromRepo = await _repository.GetPurchaseOrders(filterParams);
-            var pOsToReturn = _mapper.Map<IEnumerable<POForListDto>>(pOsFromRepo); // check with list automapping
+            var pOsToReturn = _mapper.Map<IEnumerable<POForListDto>>(pOsFromRepo);
 
             var index = 0;
             var users = await _repository.GetAll<User>();
@@ -94,7 +75,7 @@ namespace BakeryMS.API.Controllers.Inventory
 
         [HttpPost]
         [Authorize(Roles = "Admin,OutletManager,BakeryManager")]
-        public async Task<IActionResult> CreatePurchaseOrder(POHForDetailDto pOHForDetailDto)
+        public async Task<IActionResult> CreatePurchaseOrder(POHForDetailDto pOHForDetailDto, [FromQuery] bool isForSending)
         {
             if (pOHForDetailDto == null)
                 return BadRequest("Empty Body");
@@ -110,17 +91,271 @@ namespace BakeryMS.API.Controllers.Inventory
                 pOHToCreate.isFromOutlet = User.FindAll(ClaimTypes.Role).Any(a => a.Value == "OutletManager") ? true : false;
             }
 
+            pOHToCreate.Status = false;
             // pOHToCreate.Supplier = await _repository.GetSupplier(pOHForDetailDto.SupplierId);
 
             await _repository.CreatePurchaseOrder(pOHToCreate);
 
             if (await _repository.SaveAll())
             {
+                //sending mail
+                var filterParams = GetFilterParams();
+
+                var pOHFromRepository = await _repository.GetPurchaseOrder(pOHToCreate.Id, filterParams);
+                if (isForSending)
+                {
+                    var htmlBody = GenerateMailHtml(pOHFromRepository.PONumber, User.FindAll(ClaimTypes.Name).FirstOrDefault().ToString(),
+                                                 pOHFromRepository.Supplier.Name, pOHFromRepository.DeliveryMethod, pOHFromRepository.OrderDate,
+                                                 pOHFromRepository.DeliveryDate, pOHFromRepository.PurchaseOrderDetail);
+
+                    if (await SendMail("hyeah227@gmail.com", "saajidhumar@gmail.com", "Purchase Order From Upland Bake house",
+                                    htmlBody, "hyeah227@gmail.com", "hell123boy"))
+                    {
+                        pOHFromRepository.Status = true;
+                    }
+                    else
+                    {
+                        pOHFromRepository.Status = false;
+                    }
+
+
+                }
+
+                if (isForSending == true && pOHFromRepository.Status == false)
+                {
+                    return Ok(new { error = "Failed to send" });
+                }
+
+                await _repository.SaveAll();
+
                 var pOHtoReturn = _mapper.Map<POHForDetailDto>(pOHToCreate);
                 return CreatedAtRoute(nameof(GetPurchaseOrder), new { pOHToCreate.Id }, pOHtoReturn);
             }
 
             return BadRequest("Could not create Purchase Order");
+        }
+
+        [HttpPut("{id}")]
+        public async Task<IActionResult> UpdatePurchaseOrder(int id, POHForDetailDto pOHForDetailDto, [FromQuery] bool isForSending)
+        {
+
+            if (pOHForDetailDto == null)
+                return BadRequest("Empty Body");
+
+            var filterParams = GetFilterParams();
+
+            var pOHFromRepository = await _repository.GetPurchaseOrder(id, filterParams);
+
+            if (pOHFromRepository == null)
+                return BadRequest("Purchase Order not available");
+
+            var supFromRepo = await _repository.Get<Supplier>(pOHForDetailDto.SupplierId);
+
+
+            if (User.FindAll(ClaimTypes.Role).Any(a => a.Value == "Admin"))
+            {
+                pOHFromRepository.isFromOutlet = pOHForDetailDto.isForOutlet;
+            }
+            else
+            {
+                pOHFromRepository.isFromOutlet = User.FindAll(ClaimTypes.Role).Any(a => a.Value == "OutletManager") ? true : false;
+            }
+
+            pOHFromRepository.UserId = pOHForDetailDto.UserId;
+            pOHFromRepository.Supplier = supFromRepo;
+            pOHFromRepository.DeliveryMethod = pOHForDetailDto.DeliveryMethod;
+            pOHFromRepository.DeliveryDate = DateTime.Parse(pOHForDetailDto.DeliveryDate);
+            pOHFromRepository.OrderDate = DateTime.Parse(pOHForDetailDto.OrderDate);
+            pOHFromRepository.ModifiedDate = pOHForDetailDto.ModifiedDate;
+            pOHFromRepository.Status = false;
+
+            foreach (var pod in pOHFromRepository.PurchaseOrderDetail)
+            {
+                _repository.Delete(pod);
+            }
+
+            pOHFromRepository.PurchaseOrderDetail.Clear();
+
+            foreach (var pod in pOHForDetailDto.PODetail)
+            {
+
+                pOHFromRepository.PurchaseOrderDetail.Add(new PurchaseOrderDetail
+                {
+                    DueDate = DateTime.Parse(pod.DueDate),
+                    Item = await _repository.Get<Item>(pod.ItemId),
+                    OrderQty = pod.OrderQty,
+                    UnitPrice = (decimal)pod.UnitPrice,
+                    LineTotal = (decimal)pod.LineTotal,
+                    ModifiedTime = pod.ModifiedTime
+                });
+            }
+            //sending mail
+            if (isForSending)
+            {
+                var htmlBody = GenerateMailHtml(pOHFromRepository.PONumber, User.FindAll(ClaimTypes.Name).FirstOrDefault().ToString(),
+                                             pOHFromRepository.Supplier.Name, pOHFromRepository.DeliveryMethod, pOHFromRepository.OrderDate,
+                                             pOHFromRepository.DeliveryDate, pOHFromRepository.PurchaseOrderDetail);
+
+                if (await SendMail("hyeah227@gmail.com", "saajidhumar@gmail.com", "Purchase Order From Upland Bake house",
+                                htmlBody, "hyeah227@gmail.com", "hell123boy"))
+                {
+                    pOHFromRepository.Status = true;
+                }
+                else
+                {
+                    pOHFromRepository.Status = false;
+                }
+            }
+            else
+            {
+                pOHFromRepository.Status = false;
+            }
+
+            if (await _repository.SaveAll())
+            {
+                if (isForSending == true && pOHFromRepository.Status == false)
+                {
+                    return Ok(new { error = "Failed to send" });
+                }
+                else
+                {
+                    return NoContent();
+                }
+            }
+
+
+            throw new System.Exception($"Updating item {id} failed on save");
+        }
+
+        [HttpDelete("{id}")]
+        [Authorize(Roles = "Admin,OutletManager,BakeryManager,Cashier")]
+        public async Task<IActionResult> DeletePurchaseOrder(int id)
+        {
+            var filterParams = GetFilterParams();
+            var PO = await _repository.GetPurchaseOrder(id, filterParams);
+            PO.IsDeleted = true;
+            foreach (var pod in PO.PurchaseOrderDetail)
+            {
+                pod.IsDeleted = true;
+            }
+            if (await _repository.SaveAll())
+                return Ok();
+
+            throw new System.Exception($"Failed to delete item {id}");
+        }
+
+        private POFilterParams GetFilterParams()
+        {
+            POFilterParams filterParams = new POFilterParams()
+            {
+                isFromOutlet = 2,// containNotActive = false
+            };
+            if (User.FindAll(ClaimTypes.Role).Any(a => a.Value == "Admin"))
+            {
+                filterParams.isFromOutlet = 2;// filterParams.containNotActive = true;
+            }
+            else { filterParams.isFromOutlet = User.FindAll(ClaimTypes.Role).Any(a => a.Value == "OutletManager") ? 0 : 1; }
+
+            return filterParams;
+        }
+
+        private async Task<bool> SendMail(string from, string to, string subject, string html, string username, string password)
+        {
+            // create message
+            var email = new MimeMessage();
+            email.From.Add(MailboxAddress.Parse(from));
+            email.To.Add(MailboxAddress.Parse(to));
+            email.Subject = subject;
+            email.Body = new TextPart(TextFormat.Html) { Text = html };
+
+            // send email
+            using var smtp = new SmtpClient();
+            await smtp.ConnectAsync("smtp.gmail.com", 587, SecureSocketOptions.StartTls);
+            if (!smtp.IsConnected)
+                return false;
+            await smtp.AuthenticateAsync(username, password);
+            if (!smtp.IsAuthenticated)
+                return false;
+            await smtp.SendAsync(email);
+
+            await smtp.DisconnectAsync(true);
+
+            return true;
+        }
+
+        private string GenerateMailHtml(int pONumber, string username, string supplier,
+                                        string deliveryMethod, DateTime orderDate, DateTime deliveryDate,
+                                        IEnumerable<PurchaseOrderDetail> poDetail)
+        {
+            StringBuilder html = new StringBuilder();
+            html.AppendFormat(@"<link rel=""stylesheet"" href=""https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"" integrity=""sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T"" crossorigin=""anonymous"">
+            <div class=""row mt-3"">
+          <div class=""col-md-6 font-weight-bold"">PO Number</div>
+          <div class=""col-md-1"">-</div>
+          <div class=""col-md-5"">{0}</div>
+        </div>
+        <div class=""row mt-2"">
+          <div class=""col-md-6 font-weight-bold"">User</div>
+          <div class=""col-md-1"">-</div>
+          <div class=""col-md-5"">
+            {1}
+          </div>
+        </div>
+        <div class=""row mt-2"">
+          <div class=""col-md-6 font-weight-bold"">Supplier</div>
+          <div class=""col-md-1"">-</div>
+          <div class=""col-md-5"">
+            {2}
+          </div>
+        </div>
+        <div class=""row mt-2"">
+          <div class=""col-md-6 font-weight-bold"">Delivery Method</div>
+          <div class=""col-md-1"">-</div>
+          <div class=""col-md-5"">{3}</div>
+        </div>
+        <div class=""row mt-2"">
+          <div class=""col-md-6 font-weight-bold"">Order Date</div>
+          <div class=""col-md-1"">-</div>
+          <div class=""col-md-5"">
+            {4}
+          </div>
+        </div>
+        <div class=""row mt-2"">
+          <div class=""col-md-6 font-weight-bold"">Delivery Date</div>
+          <div class=""col-md-1"">-</div>
+          <div class=""col-md-5"">
+            {5}
+          </div>
+        </div>
+        <div class=""row mt-2 ml-3 mr-3"">
+          <table class=""table"">
+            <thead>
+              <th>Item</th>
+              <th>Due Date</th>
+              <th>Quantity</th>
+              <th>Price</th>
+              <th>line Total</th>
+            </thead>
+            <tbody>", pONumber.ToString(), username, supplier, deliveryMethod, orderDate.ToShortDateString(), deliveryDate.ToShortDateString());
+
+            foreach (var pod in poDetail)
+            {
+                html.AppendFormat(@"<tr>
+                <td>{0}</td>
+                <td>{1}</td>
+                <td>{2}</td>
+                <td>{3}</td>
+                <td>{4}</td>
+              </tr>", pod.Item.Name, pod.DueDate.ToShortDateString(), pod.OrderQty.ToString(), pod.UnitPrice.ToString(), pod.LineTotal.ToString());
+            }
+
+
+            html.AppendFormat(@"</tbody>
+          </table>
+        </div> ");
+
+
+            return html.ToString();
         }
     }
 }

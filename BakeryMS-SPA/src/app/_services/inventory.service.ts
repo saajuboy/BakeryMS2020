@@ -1,4 +1,4 @@
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
@@ -13,11 +13,11 @@ export class InventoryService {
 
   constructor(private http: HttpClient) { }
 
-  getPurchaseOrders(status?: boolean): Observable<PurchaseOrderHeader[]> {
+  getPurchaseOrders(isFromOutlet?: boolean): Observable<PurchaseOrderHeader[]> {
     return this.http.get<PurchaseOrderHeader[]>(this.baseUrl + 'purchaseOrder').pipe(
       map(response => {
-        if (status != null) {
-          return response.filter(a => a.status === status);
+        if (isFromOutlet != null) {
+          return response.filter(a => a.status === isFromOutlet);
         }
         return response;
       }));
@@ -32,17 +32,31 @@ export class InventoryService {
         return response.poDetail;
       }));
   }
-  CreatePurchaseOrder(purchaseOrder: PurchaseOrderHeader) {
+  createPurchaseOrder(purchaseOrder: PurchaseOrderHeader) {
+    let params = new HttpParams();
+    params = params.append('isForSending', 'false');
     return this.http.post(this.baseUrl + 'purchaseOrder', purchaseOrder);
   }
-  // updateItem(id: number, item: Item) {
-  //   return this.http.put(this.baseUrl + 'items/' + id, item);
-  // }
+  createPurchaseOrderAndSend(purchaseOrder: PurchaseOrderHeader) {
+    let params = new HttpParams();
+    params = params.append('isForSending', 'true');
+    return this.http.post(this.baseUrl + 'purchaseOrder', purchaseOrder, { params });
+  }
+  updatePurchaseOrder(id: number, purchaseOrder: PurchaseOrderHeader) {
+    let params = new HttpParams();
+    params = params.append('isForSending', 'false');
+    return this.http.put(this.baseUrl + 'purchaseOrder/' + id, purchaseOrder);
+  }
+  updatePurchaseOrderAndSend(id: number, purchaseOrder: PurchaseOrderHeader) {
+    let params = new HttpParams();
+    params = params.append('isForSending', 'true');
+    return this.http.put(this.baseUrl + 'purchaseOrder/' + id, purchaseOrder, { params });
+  }
   // patchItem(id: number, item: any) {
   //   return this.http.patch(this.baseUrl + 'items/' + id, item);
   // }
-  // deleteItem(id: number) {
-  //   return this.http.delete(this.baseUrl + 'items/' + id);
-  // }
+  deletePurchaseOrder(id: number) {
+    return this.http.delete(this.baseUrl + 'purchaseOrder/' + id);
+  }
 
 }
