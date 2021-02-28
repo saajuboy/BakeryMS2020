@@ -21,6 +21,8 @@ import { ItemCreateComponent } from './views/Inventory/Item/ItemCreate/ItemCreat
 import { ItemCategoryComponent } from './views/MasterData/itemCategory/itemCategory.component';
 import { SupplierComponent } from './views/MasterData/supplier/supplier.component';
 import { UnitComponent } from './views/MasterData/unit/unit.component';
+import { ProductionOrderListComponent } from './views/Manufacturing/ProductionOrderList/ProductionOrderList.component';
+import { ProductionOrderCreateComponent } from './views/Manufacturing/ProductionOrderCreate/ProductionOrderCreate.component';
 
 
 export const routes: Routes = [
@@ -105,6 +107,36 @@ export const routes: Routes = [
         data: {
           title: 'Edit Pur.Order',
           allowedRoles: ['Admin', 'OutletManager', 'BakeryManager']
+        }
+      },
+      {
+        path: 'manufacturing/productionOrder',
+        runGuardsAndResolvers: 'always',
+        canActivate: [RoleGuard],
+        component: ProductionOrderListComponent,
+        data: {
+          title: 'Production Order List',
+          allowedRoles: ['Admin', 'OutletManager', 'BakeryManager', 'Cashier']
+        }
+      },
+      {
+        path: 'manufacturing/productionOrder/create',
+        runGuardsAndResolvers: 'always',
+        canActivate: [RoleGuard],
+        component: ProductionOrderCreateComponent,
+        data: {
+          title: 'Create Prod.Order',
+          allowedRoles: ['Admin', 'OutletManager', 'BakeryManager', 'Cashier']
+        }
+      },
+      {
+        path: 'manufacturing/productionOrder/edit/:id',
+        runGuardsAndResolvers: 'always',
+        canActivate: [RoleGuard],
+        component: ProductionOrderCreateComponent,
+        data: {
+          title: 'Edit Prod.Order',
+          allowedRoles: ['Admin', 'OutletManager', 'BakeryManager', 'Cashier']
         }
       },
       {

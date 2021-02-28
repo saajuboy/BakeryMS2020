@@ -3,6 +3,7 @@ import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { environment } from '../../environments/environment';
+import { BusinessPlace } from '../_models/businessPlace';
 import { Item, ItemCategory, ItemForDropdown, Unit } from '../_models/item';
 import { Supplier, SupplierForDropdown } from '../_models/supplier';
 
@@ -112,4 +113,11 @@ export class MasterService {
     return this.http.delete(this.baseUrl + 'units/' + id);
   }
 
+
+  getBusinessPlaces(): Observable<BusinessPlace[]> {
+    return this.http.get<BusinessPlace[]>(this.baseUrl + 'businessPlaces');
+  }
+  getBusinessPlace(id): Observable<BusinessPlace> {
+    return this.http.get<BusinessPlace>(this.baseUrl + 'businessPlaces/' + id);
+  }
 }

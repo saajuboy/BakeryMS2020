@@ -104,7 +104,24 @@ export class PurchaseOrderCreateComponent implements OnInit {
       poDetail: this.fb.array([
         this.initiatePodRowValues()
       ])
-    });
+    }, { validators: this.datesValidator(this.utiService) });
+  }
+
+  datesValidator(uti: UtilityService) {
+    return (g: FormGroup) => {
+      const today = uti.currentDate();
+      // console.log(uti.currentDate());
+      if (Date.parse(g.get('orderDate').value) > Date.parse(g.get('deliveryDate').value)) {
+        return { greaterThanDelivery: true };
+      }
+      if (Date.parse(g.get('orderDate').value) < Date.parse(today)) {
+        return { lessThanToday: true };
+      }
+      if (Date.parse(g.get('deliveryDate').value) < Date.parse(today)) {
+        return { deliveryLessThanToday: true };
+      }
+      return null;
+    };
   }
 
   setInitialValues(g: FormGroup) {
@@ -190,7 +207,7 @@ export class PurchaseOrderCreateComponent implements OnInit {
               // if (res.hasOwnProperty('error')) {
               //   this.alertify.warning('PO was created but not sent');
               // } else {
-                this.alertify.success('successfully Created and sent');
+              this.alertify.success('successfully Created and sent');
               // }
             }, error => {
               this.alertify.error('failed to create');
@@ -281,12 +298,7 @@ export class PurchaseOrderCreateComponent implements OnInit {
       })
     },
     );
-
-    // formRow.patchValue({
-    //   itemid: pORow.itemid
-    // });
     return formRow;
-
   }
 
   ItemSelectedValidator(g: FormGroup, value: any) {

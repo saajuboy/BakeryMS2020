@@ -1,0 +1,492 @@
+<!-- <div class="container"> -->
+<div class="row">
+  <div class="col-md-12 mx-auto">
+    <div class="card mx-4">
+      <div class="card-body p-4">
+        <form [formGroup]="pOCreateForm">
+          <h1>
+            {{ isEditForm === false ? "Create" : "Edit" }} Production Order
+          </h1>
+          <p class="text-muted">
+            {{ isEditForm === false ? "Create" : "Edit" }} a Production Order
+          </p>
+          <div class="row">
+            <div class="col-md">
+              <div class="row">
+                <div class="input-group col-md-4 mb-3">
+                  <div class="input-group-prepend">
+                    <span class="input-group-text"
+                      ><i class="icon-plane"> &nbsp; Business Place</i></span
+                    >
+                  </div>
+                  <select
+                    class="form-control"
+                    formControlName="businessPlaceId"
+                    [ngClass]="{
+                      'is-invalid':
+                        pOCreateForm.get('businessPlaceId').errors &&
+                        pOCreateForm.get('businessPlaceId').touched,
+                      'is-valid': !pOCreateForm.get('businessPlaceId').errors
+                    }"
+                  >
+                    <option
+                      *ngFor="let place of businessPlaces"
+                      [value]="place.id"
+                    >
+                      {{ place.name }}
+                    </option>
+                  </select>
+                  <div class="invalid-feedback">
+                    Please choose a valid Business Place
+                  </div>
+                </div>
+
+                <div class="input-group col-md-4 mb-3">
+                  <div class="input-group-prepend">
+                    <span class="input-group-text"
+                      ><i class="icon-plane"> &nbsp; Session</i></span
+                    >
+                  </div>
+                  <select
+                    class="form-control"
+                    formControlName="sessionId"
+                    [ngClass]="{
+                      'is-invalid':
+                        pOCreateForm.get('sessionId').errors &&
+                        pOCreateForm.get('sessionId').touched,
+                      'is-valid': !pOCreateForm.get('sessionId').errors
+                    }"
+                  >
+                    <option
+                      *ngFor="let session of productionSessions"
+                      [value]="session.id"
+                    >
+                      {{
+                        session.session +
+                          "=>" +
+                          session.startTime +
+                          "-" +
+                          session.endTime
+                      }}
+                    </option>
+                  </select>
+                  <div class="invalid-feedback">
+                    Please choose a valid session
+                  </div>
+                </div>
+
+                <div class="input-group col-md-4 mb-3">
+                  <div class="input-group-prepend">
+                    <span class="input-group-text"
+                      ><i class="icon-user">&nbsp; User</i></span
+                    >
+                  </div>
+                  <input
+                    type="text"
+                    class="form-control"
+                    placeholder="userName"
+                    autocomplete="userName"
+                    formControlName="userName"
+                  />
+                  <div class="invalid-feedback">Please choose a username</div>
+                </div>
+              </div>
+              <div class="row">
+                <div class="input-group col-md-4 mb-3">
+                  <div class="input-group-prepend">
+                    <span class="input-group-text"
+                      ><i class="icon-calendar"> &nbsp; Entering Date</i></span
+                    >
+                  </div>
+                  <input
+                    [ngClass]="{
+                      'is-invalid':
+                        (pOCreateForm.get('enteredDate').errors ||
+                          pOCreateForm.hasError('greaterThanRequired') ||
+                          pOCreateForm.hasError('lessThanToday')) &&
+                        pOCreateForm.get('enteredDate').touched,
+                      'is-valid': !pOCreateForm.get('enteredDate').errors
+                    }"
+                    class="form-control"
+                    formControlName="enteredDate"
+                    type="date"
+                  />
+                  <div
+                    *ngIf="pOCreateForm.get('enteredDate').hasError('required')"
+                    class="invalid-feedback"
+                  >
+                    Please choose a valid entered date
+                  </div>
+                  <div
+                    *ngIf="pOCreateForm.hasError('greaterThanRequired')"
+                    class="invalid-feedback"
+                  >
+                    entering date cannot be greater than required date
+                  </div>
+                  <div
+                    *ngIf="pOCreateForm.hasError('lessThanToday')"
+                    class="invalid-feedback"
+                  >
+                    entering date cannot be lesser than today
+                  </div>
+                </div>
+                <div class="input-group col-md-4 mb-3">
+                  <div class="input-group-prepend">
+                    <span class="input-group-text"
+                      ><i class="icon-calendar"> &nbsp; Required Date</i></span
+                    >
+                  </div>
+                  <input
+                    [ngClass]="{
+                      'is-invalid':
+                        (pOCreateForm.get('requiredDate').errors ||
+                          pOCreateForm.hasError('greaterThanRequired') ||
+                          pOCreateForm.hasError('requiredLessThanToday')) &&
+                        pOCreateForm.get('requiredDate').touched,
+                      'is-valid': !pOCreateForm.get('requiredDate').errors
+                    }"
+                    class="form-control"
+                    formControlName="requiredDate"
+                    type="date"
+                  />
+                  <div
+                    *ngIf="
+                      pOCreateForm.get('requiredDate').hasError('required')
+                    "
+                    class="invalid-feedback"
+                  >
+                    Please choose a valid required date
+                  </div>
+                  <div
+                    *ngIf="pOCreateForm.hasError('greaterThanRequired')"
+                    class="invalid-feedback"
+                  >
+                    required date cannot be Less than Entering date
+                  </div>
+                  <div
+                    *ngIf="pOCreateForm.hasError('requiredLessThanToday')"
+                    class="invalid-feedback"
+                  >
+                    Required date cannot be lesser than today
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div *ngIf="isEditForm === false" class="col-md-2 card-">
+              <div class="row mt-">
+                <div class="col">
+                  <button
+                    type="button"
+                    name=""
+                    id=""
+                    class="btn btn-primary btn-block"
+                    (click)="getPreviousProdOrders()"
+                  >
+                    Retrieve Previous
+                  </button>
+                </div>
+              </div>
+              <div class="row mt-3">
+                <div class="col">
+                  <button
+                    type="button"
+                    name=""
+                    id=""
+                    class="btn btn-primary btn-block"
+                    [disabled]="
+                      pOCreateForm.get('sessionId').value === '' ||
+                      pOCreateForm.get('businessPlaceId').value === ''
+                    "
+                    (click)="autoGenerateProdOrder(pOCreateForm.get('sessionId').value,pOCreateForm.get('businessPlaceId').value,pOCreateForm.get('requiredDate').value)"
+                  >
+                    Auto Generate
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="row mt-4">
+            <div class="col-md-4" style="display: flex">
+              <div class="col-md-5">
+                <button
+                  type="button"
+                  class="btn btn-pill btn-block btn-primary"
+                  (click)="addNewRow()"
+                  [disabled]="
+                    pOCreateForm.get('sessionId').value === '' ||
+                    pOCreateForm.get('businessPlaceId').value === ''
+                  "
+                >
+                  Add row
+                </button>
+              </div>
+              <div class="col-md-5 pull-right">
+                <button
+                  type="button"
+                  class="btn btn-pill btn-block btn-warning"
+                  (click)="ClearRows()"
+                  [disabled]="
+                    pOCreateForm.get('sessionId').value === '' ||
+                    pOCreateForm.get('businessPlaceId').value === ''
+                  "
+                >
+                  Clear
+                </button>
+              </div>
+            </div>
+          </div>
+          <div class="row mt-2">
+            <table class="table table-bordered">
+              <thead>
+                <tr>
+                  <th *ngFor="let column of columns">{{ column }}</th>
+                </tr>
+              </thead>
+              <tbody #rows>
+                <ng-container
+                  formArrayName="productionOrderDetails"
+                  *ngFor="
+                    let pod of gettableRowArray.controls;
+                    let $index = index
+                  "
+                >
+                  <tr [formGroupName]="$index">
+                    <td>
+                      <select
+                        class="form-control"
+                        id="itemCode"
+                        formControlName="itemId"
+                        [ngClass]="{
+                          'is-invalid':
+                            (pod.get('itemId').errors &&
+                              pod.get('itemId').touched) ||
+                            pod.get('itemId').hasError('mismatch'),
+                          'is-valid': !pod.get('itemId').errors
+                        }"
+                        (change)="
+                          ItemSelectedValidator(pod, pod.get('itemId').value)
+                        "
+                      >
+                        <option *ngFor="let item of items" [value]="item.id">
+                          {{ item.code }}
+                        </option>
+                      </select>
+                      <div class="invalid-feedback">
+                        Please choose a valid code
+                      </div>
+                    </td>
+                    <td>
+                      <select
+                        class="form-control"
+                        id="itemName"
+                        formControlName="itemId"
+                        [ngClass]="{
+                          'is-invalid':
+                            (pod.get('itemId').errors &&
+                              pod.get('itemId').touched) ||
+                            pod.get('itemId').hasError('mismatch'),
+                          'is-valid': !pod.get('itemId').errors
+                        }"
+                        (change)="
+                          ItemSelectedValidator(pod, pod.get('itemId').value)
+                        "
+                      >
+                        <option *ngFor="let item of items" [value]="item.id">
+                          {{ item.name }}
+                        </option>
+                      </select>
+                      <div class="invalid-feedback">
+                        Please choose a valid item
+                      </div>
+                    </td>
+                    <td>
+                      <input
+                        [ngClass]="{
+                          'is-invalid':
+                            pod.get('description').errors &&
+                            pod.get('description').touched,
+                          'is-valid':
+                            !pod.get('description').errors &&
+                            pod.get('description').touched
+                        }"
+                        type="text"
+                        class="form-control"
+                        placeholder="description"
+                        formControlName="description"
+                      />
+                      <div class="invalid-feedback">
+                        description is required
+                      </div>
+                    </td>
+                    <td>
+                      <input
+                        [ngClass]="{
+                          'is-invalid':
+                            pod.get('quantity').errors &&
+                            pod.get('quantity').touched,
+                          'is-valid':
+                            !pod.get('quantity').errors &&
+                            pod.get('quantity').touched
+                        }"
+                        type="text"
+                        class="form-control"
+                        placeholder="0.00"
+                        formControlName="quantity"
+                      />
+                      <div class="invalid-feedback">
+                        Enter a valid quantity eg - 1.24
+                      </div>
+                    </td>
+                    <td>
+                      <button
+                        class="btn btn-ghost-danger"
+                        type="button"
+                        (click)="onDeleteRow($index)"
+                      >
+                        <i class="icon-close"></i>
+                      </button>
+                    </td>
+                  </tr>
+                </ng-container>
+              </tbody>
+            </table>
+          </div>
+          <div class="row">
+            <div class="col-md-9" style="display: flex">
+              <div class="col-md-2">
+                <button
+                  type="button"
+                  class="btn btn-pill btn-block btn-primary"
+                  (click)="addNewRow()"
+                  [disabled]="
+                    pOCreateForm.get('sessionId').value === '' ||
+                    pOCreateForm.get('businessPlaceId').value === ''
+                  "
+                >
+                  Add Row
+                </button>
+              </div>
+              <div class="col-md-2 pull-left">
+                <button
+                  type="button"
+                  class="btn btn-pill btn-block btn-warning"
+                  (click)="ClearRows()"
+                  [disabled]="
+                    pOCreateForm.get('sessionId').value === '' ||
+                    pOCreateForm.get('businessPlaceId').value === ''
+                  "
+                >
+                  Clear
+                </button>
+              </div>
+            </div>
+            <div class="card-header col-md-3">
+              <div class="align-left">
+                <label class="h5"
+                  >Total No of Rows: {{ gettableRowArray.length }}</label
+                >
+              </div>
+            </div>
+          </div>
+          <br />
+          <br />
+          <div class="row">
+            <div class="col-md-2">
+              <button
+                type="button"
+                class="btn btn-block btn-light"
+                (click)="backToList()"
+              >
+                Back to list
+              </button>
+            </div>
+            <div class="col-md-8"></div>
+            <div class="col-md-2">
+              <button
+                type="button"
+                [disabled]="pOCreateForm.invalid"
+                class="btn btn-block btn-success"
+                (click)="createPO()"
+              >
+                {{ isEditForm === false ? "Create" : "Update" }}
+              </button>
+            </div>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div
+  bsModal
+  #infoModal="bs-modal"
+  class="modal fade"
+  tabindex="-1"
+  role="dialog"
+  aria-labelledby="myModalLabel"
+  aria-hidden="true"
+>
+  <div class="modal-dialog modal-info" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h4 class="modal-title">Retreive Production Order</h4>
+        <button
+          type="button"
+          class="close"
+          (click)="infoModal.hide()"
+          aria-label="Close"
+        >
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <div class="row mt-2">
+          <table class="table">
+            <thead>
+              <th>Prod Ordr No.</th>
+              <th>Date</th>
+              <th>Session</th>
+              <th>For (Place)</th>
+              <th>Action</th>
+            </thead>
+            <tbody>
+              <tr *ngFor="let row of productionOrderList">
+                <td>{{ row.productionOrderNo }}</td>
+                <td>{{ row.requiredDate }}</td>
+                <td>{{ row.sessionName }}</td>
+                <td>{{ row.businessPlaceName }}</td>
+                <td>
+                  <button
+                    (click)="retrievePO(row.id)"
+                    class="btn btn-ghost-info"
+                    type="button"
+                  >
+                    <i class="icon-cloud-download"></i>
+                  </button>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button
+          type="button"
+          class="btn btn-secondary"
+          (click)="infoModal.hide()"
+        >
+          Close
+        </button>
+      </div>
+    </div>
+    <!-- /.modal-content -->
+  </div>
+  <!-- /.modal-dialog -->
+</div>
+<!-- <div class="output">
+  <p>Form Data: {{ pOCreateForm.getRawValue() | json }}</p>
+  <p>Is Valid: {{ pOCreateForm.valid }}</p>
+  <p>value : {{ totalValue.toString() }}</p>
+</div> -->

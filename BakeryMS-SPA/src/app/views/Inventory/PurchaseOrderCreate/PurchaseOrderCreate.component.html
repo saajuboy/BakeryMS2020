@@ -4,8 +4,10 @@
     <div class="card mx-4">
       <div class="card-body p-4">
         <form [formGroup]="pOCreateForm">
-          <h1>{{isEditForm===false?'Create':'Edit'}} Purchase Order</h1>
-          <p class="text-muted">{{isEditForm===false?'Create':'Edit'}} a Purchase Order</p>
+          <h1>{{ isEditForm === false ? "Create" : "Edit" }} Purchase Order</h1>
+          <p class="text-muted">
+            {{ isEditForm === false ? "Create" : "Edit" }} a Purchase Order
+          </p>
           <div class="row">
             <div class="input-group col-md-4 mb-3">
               <div class="input-group-prepend">
@@ -15,7 +17,10 @@
               </div>
               <input
                 [ngClass]="{
-                  'is-invalid': pOCreateForm.get('orderDate').errors,
+                  'is-invalid':
+                    pOCreateForm.get('orderDate').errors ||
+                    pOCreateForm.hasError('greaterThanDelivery') ||
+                    pOCreateForm.hasError('lessThanToday'),
                   'is-valid': !pOCreateForm.get('orderDate').errors
                 }"
                 class="form-control"
@@ -24,8 +29,23 @@
                 placeholder="date"
                 type="date"
               />
-              <div class="invalid-feedback">
+              <div
+                *ngIf="pOCreateForm.get('orderDate').hasError('required')"
+                class="invalid-feedback"
+              >
                 Please choose a valid Order date
+              </div>
+              <div
+                *ngIf="pOCreateForm.hasError('greaterThanDelivery')"
+                class="invalid-feedback"
+              >
+                order date cannot be greater than delivery date
+              </div>
+              <div
+                *ngIf="pOCreateForm.hasError('lessThanToday')"
+                class="invalid-feedback"
+              >
+                order date cannot be lesser than today
               </div>
             </div>
             <div class="input-group col-md-4 mb-3">
@@ -75,31 +95,6 @@
                   {{ sup.name + " - " + sup.email }}
                 </option>
               </select>
-              <!-- <input
-                [ngClass]="{
-                  'is-invalid':
-                    pOCreateForm.get('supplier').errors &&
-                    pOCreateForm.get('supplier').touched &&
-                    pOCreateForm.get('supplier').hasError('mismatch'),
-                  'is-valid':
-                    !pOCreateForm.get('supplier').errors &&
-                    pOCreateForm.get('supplier').touched
-                }"
-                class="form-control"
-                list="datalistOptions"
-                id="exampleDataList"
-                placeholder="Type to search suppliers ..."
-                formControlName="supplier"
-                autocomplete="off"
-              />
-              <datalist id="datalistOptions">
-                <option
-                  *ngFor="let sup of suppliers"
-                  [value]="sup.name + ' - ' + sup.email"
-                >
-                  {{ sup.name }}
-                </option>
-              </datalist> -->
 
               <div class="invalid-feedback">Please select a supplier</div>
             </div>
@@ -111,7 +106,10 @@
               </div>
               <input
                 [ngClass]="{
-                  'is-invalid': pOCreateForm.get('deliveryDate').errors,
+                  'is-invalid':
+                    pOCreateForm.get('deliveryDate').errors ||
+                    pOCreateForm.hasError('deliveryLessThanToday') ||
+                    pOCreateForm.hasError('greaterThanDelivery'),
                   'is-valid': !pOCreateForm.get('deliveryDate').errors
                 }"
                 class="form-control"
@@ -120,8 +118,23 @@
                 placeholder="date"
                 type="date"
               />
-              <div class="invalid-feedback">
-                Please choose a valid Delivery date
+              <div
+                *ngIf="pOCreateForm.get('deliveryDate').hasError('required')"
+                class="invalid-feedback"
+              >
+                Please choose a valid delivery date
+              </div>
+              <div
+                *ngIf="pOCreateForm.hasError('greaterThanDelivery')"
+                class="invalid-feedback"
+              >
+                delivery date cannot be lesser than order date
+              </div>
+              <div
+                *ngIf="pOCreateForm.hasError('deliveryLessThanToday')"
+                class="invalid-feedback"
+              >
+                delivery date cannot be lesser than today
               </div>
             </div>
             <div class="input-group col-md-4 mb-3">
@@ -205,28 +218,6 @@
                           {{ item.code }}
                         </option>
                       </select>
-                      <!-- <input
-                        [ngClass]="{
-                          'is-invalid':
-                            pod.get('itemCode').errors &&
-                            pod.get('itemCode').touched,
-                          'is-valid':
-                            !pod.get('itemCode').errors &&
-                            pod.get('itemCode').touched
-                        }"
-                        class="form-control"
-                        list="datalistOptions2"
-                        id="exampleDataList"
-                        placeholder="Search for Item Code ..."
-                        formControlName="itemCode"
-                      />
-                      <datalist id="datalistOptions2">
-                        <option value="San Francisco"></option>
-                        <option value="New York"></option>
-                        <option value="Seattle"></option>
-                        <option value="Los Angeles"></option>
-                        <option value="Chicago"></option>
-                      </datalist> -->
                       <div class="invalid-feedback">
                         Please choose a valid code
                       </div>
@@ -251,28 +242,6 @@
                           {{ item.name }}
                         </option>
                       </select>
-                      <!-- <input
-                        [ngClass]="{
-                          'is-invalid':
-                            pod.get('itemName').errors &&
-                            pod.get('itemName').touched,
-                          'is-valid':
-                            !pod.get('itemName').errors &&
-                            pod.get('itemName').touched
-                        }"
-                        class="form-control"
-                        list="datalistOptions3"
-                        id="exampleDataList"
-                        placeholder="Search for Items ..."
-                        formControlName="itemName"
-                      />
-                      <datalist id="datalistOptions3">
-                        <option value="San Francisco"></option>
-                        <option value="New York"></option>
-                        <option value="Seattle"></option>
-                        <option value="Los Angeles"></option>
-                        <option value="Chicago"></option>
-                      </datalist> -->
                       <div class="invalid-feedback">
                         Please choose a valid item
                       </div>
@@ -418,7 +387,7 @@
                 class="btn btn-block btn-outline-success"
                 (click)="createPO(false)"
               >
-              {{isEditForm===false?'Create':'Update'}}
+                {{ isEditForm === false ? "Create" : "Update" }}
               </button>
             </div>
             <div class="col-md-2">
@@ -428,7 +397,7 @@
                 class="btn btn-block btn-success"
                 (click)="createPO(true)"
               >
-              {{isEditForm===false?'Create':'Update'}} and send
+                {{ isEditForm === false ? "Create" : "Update" }} and send
               </button>
             </div>
           </div>
@@ -438,12 +407,8 @@
   </div>
 </div>
 
-<div class="output">
+<!-- <div class="output">
   <p>Form Data: {{ pOCreateForm.getRawValue() | json }}</p>
   <p>Is Valid: {{ pOCreateForm.valid }}</p>
   <p>value : {{ totalValue.toString() }}</p>
-</div>
-
-<!-- <p>register form value : {{ registerForm.value | json }}</p>
-  <p>register form status : {{ registerForm.status | json }}</p> -->
-<!-- </div> -->
+</div> -->

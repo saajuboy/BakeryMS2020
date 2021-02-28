@@ -1,7 +1,9 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using BakeryMS.API.Models;
 using BakeryMS.API.Models.Inventory;
+using BakeryMS.API.Models.Production;
 using BakeryMS.API.Models.Profile;
 using Newtonsoft.Json;
 
@@ -26,14 +28,95 @@ namespace BakeryMS.API.Data.SeedData
             {
                 SeedItemsCategoriesANDUnits();
             }
-            if(!_context.Suppliers.Any()){
+            if (!_context.Suppliers.Any())
+            {
                 SeedSupplier();
             }
             if (!_context.PurchaseOrderHeaders.Any())
             {
                 SeedPurchaseOrder();
             }
+            if (!_context.BusinessPlaces.Any())
+            {
+                SeedBusinessPlace();
+            }
+            if (!_context.ProductionSessions.Any())
+            {
+                SeedProductionOrderAndSession();
+            }
+        }
 
+        private void SeedProductionOrderAndSession()
+        {
+            // SupplierSeedData.Json
+            IList<ProductionSession> defaultProductionSessions = new List<ProductionSession>();
+
+            defaultProductionSessions.Add(new ProductionSession() { Session = "Special 2", StartTime = new TimeSpan(20, 0, 0), EndTime = new TimeSpan(23, 0, 0) });
+            defaultProductionSessions.Add(new ProductionSession() { Session = "Special 1", StartTime = new TimeSpan(6, 0, 0), EndTime = new TimeSpan(12, 0, 0) });
+            defaultProductionSessions.Add(new ProductionSession() { Session = "Evening", StartTime = new TimeSpan(12, 0, 0), EndTime = new TimeSpan(17, 0, 0) });
+            defaultProductionSessions.Add(new ProductionSession() { Session = "Morning", StartTime = new TimeSpan(1, 0, 0), EndTime = new TimeSpan(5, 0, 0) });
+            _context.ProductionSessions.AddRange(defaultProductionSessions);
+            _context.SaveChanges();
+
+
+
+            var productionItems = _context.Items.Where(a => a.Type == 0).ToList();
+
+            IList<ProductionOrderDetail> defaultProductionOrderDetails1 = new List<ProductionOrderDetail>();
+
+            defaultProductionOrderDetails1.Add(new ProductionOrderDetail() { Item = productionItems.ElementAt(0), Quantity = 4, Description = "Soft1" });
+            defaultProductionOrderDetails1.Add(new ProductionOrderDetail() { Item = productionItems.ElementAt(1), Quantity = 4, Description = "Soft2" });
+
+            IList<ProductionOrderDetail> defaultProductionOrderDetails2 = new List<ProductionOrderDetail>();
+
+            defaultProductionOrderDetails1.Add(new ProductionOrderDetail() { Item = productionItems.ElementAt(2), Quantity = 4, Description = "Soft3" });
+            defaultProductionOrderDetails1.Add(new ProductionOrderDetail() { Item = productionItems.ElementAt(3), Quantity = 4, Description = "Soft4" });
+
+
+
+            var user = _context.Users.FirstOrDefault(a => a.Username == "saajidh");
+            var businessPlaces = _context.BusinessPlaces.ToList();
+            var sessions = _context.ProductionSessions.ToList();
+
+            IList<ProductionOrderHeader> defaultProductionOrders = new List<ProductionOrderHeader>();
+
+            defaultProductionOrders.Add(new ProductionOrderHeader()
+            {
+                ProductionOrderNo = 2,
+                Session = sessions.ElementAt(1),
+                User = user,
+                EnteredDate = DateTime.Today,
+                RequiredDate = DateTime.Today.AddDays(4),
+                BusinessPlace = businessPlaces.ElementAt(1),
+                ProductionOrderDetails = defaultProductionOrderDetails2
+            });
+            defaultProductionOrders.Add(new ProductionOrderHeader()
+            {
+                ProductionOrderNo = 1,
+                Session = sessions.ElementAt(0),
+                User = user,
+                EnteredDate = DateTime.Today,
+                RequiredDate = DateTime.Today.AddDays(3),
+                BusinessPlace = businessPlaces.ElementAt(0),
+                ProductionOrderDetails = defaultProductionOrderDetails1
+            });
+
+
+
+            _context.ProductionOrderHeaders.AddRange(defaultProductionOrders);
+            _context.SaveChanges();
+        }
+        private void SeedBusinessPlace()
+        {
+            IList<BusinessPlace> defaultBusinessPlaces = new List<BusinessPlace>();
+
+            defaultBusinessPlaces.Add(new BusinessPlace() { Name = "Nanu Oya Bakery", Address = "No 17 Main Street NuwaraEliya " });
+            defaultBusinessPlaces.Add(new BusinessPlace() { Name = "Main Outlet", Address = "No 17 Main Street NuwaraEliya " });
+            defaultBusinessPlaces.Add(new BusinessPlace() { Name = "Bus Stand Outlet", Address = "No 17 Main Street NuwaraEliya " });
+            defaultBusinessPlaces.Add(new BusinessPlace() { Name = "Mosque Outlet", Address = "No 17 Main Street NuwaraEliya " });
+
+            _context.BusinessPlaces.AddRange(defaultBusinessPlaces);
+            _context.SaveChanges();
         }
         private void SeedSupplier()
         {

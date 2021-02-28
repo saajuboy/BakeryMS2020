@@ -71,13 +71,25 @@ export const navItems: INavData[] = [
   },
   {
     name: 'Manufacturing',
-    url: '/inventory',
+    url: '/manufacturing',
     icon: 'icon-fire ',
     children: [
       {
-        name: 'Purchase Order',
-        url: '/inventory/purchaseOrder',
-        icon: 'icon-fire '
+        name: 'Production Order',
+        url: '/manufacturing/productionOrder',
+        icon: 'icon-briefcase',
+        children: [
+          {
+            name: 'Production Order List',
+            url: '/manufacturing/productionOrder',
+            icon: 'icon-list'
+          },
+          {
+            name: 'Create Prod.Order',
+            url: '/manufacturing/productionOrder/create',
+            icon: 'icon-note'
+          }
+        ]
       }
     ]
   },
