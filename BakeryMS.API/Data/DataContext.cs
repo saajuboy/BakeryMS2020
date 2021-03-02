@@ -27,11 +27,14 @@ namespace BakeryMS.API.Data
         //PurchaseOrder Header and detail
         public DbSet<PurchaseOrderHeader> PurchaseOrderHeaders { get; set; }
         public DbSet<PurchaseOrderDetail> PurchaseOrderDetails { get; set; }
-        
+
         //Production Order Header,detail and Session
         public DbSet<ProductionOrderHeader> ProductionOrderHeaders { get; set; }
         public DbSet<ProductionOrderDetail> ProductionOrderDetails { get; set; }
         public DbSet<ProductionSession> ProductionSessions { get; set; }
 
+        //Ingredients
+        public DbSet<IngredientHeader> IngredientHeaders { get; set; }
+        public DbSet<IngredientDetail> IngredientDetails { get; set; }
     }
 }

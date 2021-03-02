@@ -82,5 +82,31 @@ namespace BakeryMS.API.Data.Repositories
 
             Add(productionOrderHeader);
         }
+
+        public async Task<IngredientHeader> GetIngredient(int id)
+        {
+            var ingredient = await _context.IngredientHeaders
+            .Where(a => a.IsDeleted == false)
+            .Include(a => a.Item)
+            .Include(a => a.IngredientsDetail).ThenInclude(a => a.Item)
+            .FirstOrDefaultAsync(a => a.Id == id);
+
+            return ingredient;
+        }
+
+        public async Task<IEnumerable<IngredientHeader>> GetIngredients()
+        {
+            var ingredients = await _context.IngredientHeaders
+            .Where(a => a.IsDeleted == false)
+            .Include(a => a.Item)
+            .ToListAsync();
+
+            return ingredients;
+        }
+
+        public async Task CreateIngredient(IngredientHeader ingredientHeader)
+        {
+            var ingredient = await _context.AddAsync(ingredientHeader);
+        }
     }
 }

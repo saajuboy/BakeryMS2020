@@ -73,6 +73,8 @@ import { UnitComponent } from './views/MasterData/unit/unit.component';
 import { SupplierComponent } from './views/MasterData/supplier/supplier.component';
 import { ProductionOrderCreateComponent } from './views/Manufacturing/ProductionOrderCreate/ProductionOrderCreate.component';
 import { ProductionOrderListComponent } from './views/Manufacturing/ProductionOrderList/ProductionOrderList.component';
+import { IngredientCreateComponent } from './views/Manufacturing/IngredientCreate/IngredientCreate.component';
+import { IngredientListComponent } from './views/Manufacturing/IngredientList/IngredientList.component';
 
 
 // token getter function to automatically intercept http requests
@@ -97,7 +99,7 @@ export function tokenGetter() {
     BsDropdownModule.forRoot(),
     ModalModule.forRoot(),
     TabsModule.forRoot(),
-    Ng2SearchPipeModule ,
+    Ng2SearchPipeModule,
     ChartsModule,
     HttpClientModule,
     JwtModule.forRoot({
@@ -125,7 +127,9 @@ export function tokenGetter() {
     UnitComponent,
     SupplierComponent,
     ProductionOrderCreateComponent,
-    ProductionOrderListComponent
+    ProductionOrderListComponent,
+    IngredientCreateComponent,
+    IngredientListComponent
   ],
   providers: [{
     provide: LocationStrategy,

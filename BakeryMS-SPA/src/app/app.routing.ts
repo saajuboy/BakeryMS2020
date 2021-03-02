@@ -23,6 +23,8 @@ import { SupplierComponent } from './views/MasterData/supplier/supplier.componen
 import { UnitComponent } from './views/MasterData/unit/unit.component';
 import { ProductionOrderListComponent } from './views/Manufacturing/ProductionOrderList/ProductionOrderList.component';
 import { ProductionOrderCreateComponent } from './views/Manufacturing/ProductionOrderCreate/ProductionOrderCreate.component';
+import { IngredientListComponent } from './views/Manufacturing/IngredientList/IngredientList.component';
+import { IngredientCreateComponent } from './views/Manufacturing/IngredientCreate/IngredientCreate.component';
 
 
 export const routes: Routes = [
@@ -137,6 +139,36 @@ export const routes: Routes = [
         data: {
           title: 'Edit Prod.Order',
           allowedRoles: ['Admin', 'OutletManager', 'BakeryManager', 'Cashier']
+        }
+      },
+      {
+        path: 'manufacturing/ingredient',
+        runGuardsAndResolvers: 'always',
+        canActivate: [RoleGuard],
+        component: IngredientListComponent,
+        data: {
+          title: 'Ingredient/Recipe List',
+          allowedRoles: ['Admin', 'BakeryManager']
+        }
+      },
+      {
+        path: 'manufacturing/ingredient/create',
+        runGuardsAndResolvers: 'always',
+        canActivate: [RoleGuard],
+        component: IngredientCreateComponent,
+        data: {
+          title: 'Create Ingredient/Recipe',
+          allowedRoles: ['Admin', 'BakeryManager']
+        }
+      },
+      {
+        path: 'manufacturing/ingredient/edit/:id',
+        runGuardsAndResolvers: 'always',
+        canActivate: [RoleGuard],
+        component: IngredientCreateComponent,
+        data: {
+          title: 'Edit Ingredient/Recipe',
+          allowedRoles: ['Admin', 'BakeryManager']
         }
       },
       {

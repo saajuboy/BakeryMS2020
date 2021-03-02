@@ -194,6 +194,36 @@ namespace BakeryMS.API.Common.Helpers
 
             CreateMap<BusinessPlace, BusinessPlaceForDetailDto>();
 
+            //Ingredients
+            CreateMap<IngredientHeader, IngredientHeaderForDetailDto>()
+            .ForMember(dest => dest.ItemName, opt =>
+            {
+                opt.MapFrom(src => src.Item.Name);
+            })
+            .ForMember(dest => dest.IngredientDetails, opt =>
+            {
+                opt.MapFrom(src => src.IngredientsDetail);
+            });
+            CreateMap<IngredientDetail, IngredientDetailForDetailDto>()
+            .ForMember(dest => dest.ItemName, opt =>
+            {
+                opt.MapFrom(src => src.Item.Name);
+            });
+
+            CreateMap<IngredientHeaderForDetailDto, IngredientHeader>()
+            .ForMember(dest => dest.IngredientsDetail, opt =>
+            {
+                opt.MapFrom(src => src.IngredientDetails);
+            });
+            CreateMap<IngredientDetailForDetailDto, IngredientDetail>();
+
+
+            CreateMap<IngredientHeader, IngredientForListDto>()
+            .ForMember(dest => dest.ItemName, opt =>
+            {
+                opt.MapFrom(src => src.Item.Name);
+            });
+
         }
     }
 }

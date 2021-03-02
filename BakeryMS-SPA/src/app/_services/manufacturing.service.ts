@@ -3,6 +3,7 @@ import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { environment } from '../../environments/environment';
+import { IngredientDetail, IngredientHeader } from '../_models/ingredient';
 import { ProductionOrderDetail, ProductionOrderHeader, ProductionSession } from '../_models/productionOrder';
 
 @Injectable({
@@ -16,9 +17,6 @@ export class ManufacturingService {
   getProductionOrders(): Observable<ProductionOrderHeader[]> {
     return this.http.get<ProductionOrderHeader[]>(this.baseUrl + 'productionOrder').pipe(
       map(response => {
-        // if (isFromOutlet != null) {
-        // return response.filter(a => a.status === isFromOutlet);
-        // }
         return response;
       }));
 
@@ -41,14 +39,10 @@ export class ManufacturingService {
     return this.http.get<ProductionOrderHeader>(this.baseUrl + 'productionOrder/GetAutoProductionOrder', { params });
   }
   createProductionOrder(productionOrder: ProductionOrderHeader) {
-    // let params = new HttpParams();
-    // params = params.append('isForSending', 'false');
     return this.http.post(this.baseUrl + 'productionOrder', productionOrder);
   }
 
   updateProductionOrder(id: number, productionOrder: ProductionOrderHeader) {
-    // let params = new HttpParams();
-    // params = params.append('isForSending', 'false');
     return this.http.put(this.baseUrl + 'productionOrder/' + id, productionOrder);
   }
 
@@ -62,6 +56,36 @@ export class ManufacturingService {
   }
   getProductionSession(id): Observable<ProductionSession> {
     return this.http.get<ProductionSession>(this.baseUrl + 'productionSessions/' + id);
+  }
+
+
+  getIngredients(): Observable<IngredientHeader[]> {
+    return this.http.get<IngredientHeader[]>(this.baseUrl + 'ingredients').pipe(
+      map(response => {
+        return response;
+      }));
+
+  }
+  getIngredient(id): Observable<IngredientHeader> {
+    return this.http.get<IngredientHeader>(this.baseUrl + 'ingredients/' + id);
+  }
+
+  getIngredientDetailsOfHeader(id): Observable<IngredientDetail[]> {
+    return this.http.get<IngredientHeader>(this.baseUrl + 'ingredients/' + id).pipe(
+      map(response => {
+        return response.ingredientDetails;
+      }));
+  }
+  createIngredient(ingredient: IngredientHeader) {
+    return this.http.post(this.baseUrl + 'ingredients', ingredient);
+  }
+
+  updateIngredient(id: number, ingredient: IngredientHeader) {
+    return this.http.put(this.baseUrl + 'ingredients/' + id, ingredient);
+  }
+
+  deleteIngredient(id: number) {
+    return this.http.delete(this.baseUrl + 'ingredients/' + id);
   }
 
 }

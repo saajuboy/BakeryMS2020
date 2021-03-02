@@ -90,6 +90,23 @@ export const navItems: INavData[] = [
             icon: 'icon-note'
           }
         ]
+      },
+      {
+        name: 'Recipe',
+        url: '/manufacturing/ingredient',
+        icon: 'icon-briefcase',
+        children: [
+          {
+            name: 'Ingredient List',
+            url: '/manufacturing/ingredient',
+            icon: 'icon-list'
+          },
+          {
+            name: 'Create Ingredients',
+            url: '/manufacturing/ingredient/create',
+            icon: 'icon-note'
+          }
+        ]
       }
     ]
   },
