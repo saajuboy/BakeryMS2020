@@ -2,7 +2,7 @@ import { Component, OnInit, ɵConsole } from '@angular/core';
 import { FormArray, FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { ItemForDropdown } from '../../../_models/item';
-import { PODRow, PurchaseOrderDetail, PurchaseOrderHeader } from '../../../_models/purchaseOrder';
+import { PurchaseOrderDetail, PurchaseOrderHeader } from '../../../_models/purchaseOrder';
 import { SupplierForDropdown } from '../../../_models/supplier';
 import { AlertifyService } from '../../../_services/alertify.service';
 import { AuthService } from '../../../_services/auth.service';
@@ -20,7 +20,6 @@ export class PurchaseOrderCreateComponent implements OnInit {
 
   purchaseOrder: PurchaseOrderHeader;
   pOCreateForm: FormGroup;
-  pOdetailRowList: PODRow[] = [];
   suppliers: SupplierForDropdown[] = [];
   items: ItemForDropdown[] = [];
   columns: string[];

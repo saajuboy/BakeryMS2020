@@ -32,15 +32,6 @@ export interface ProductionOrderDetail {
     description: string;
 }
 
-export interface ProductionOrderDetailRow {
-
-    itemCode: string;
-    itemName: string;
-    items: any;
-    quantity: number;
-    description: string;
-}
-
 export interface ProductionSession {
     id: number;
     session: string;
