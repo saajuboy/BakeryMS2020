@@ -45,6 +45,7 @@ namespace BakeryMS.API
             services.AddScoped<IInventoryRepository, InventoryRepository>();
             services.AddScoped<IReportRepository, ReportRepository>();
             services.AddScoped<IProductionRepository, ProductionRepository>();
+            services.AddScoped<IHumanResourceRepository, HumanResourceRepository>();
 
             services.AddAutoMapper(typeof(Startup));
             services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)

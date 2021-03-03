@@ -1,10 +1,12 @@
 using System;
 using AutoMapper;
 using BakeryMS.API.Common.DTOs;
+using BakeryMS.API.Common.DTOs.HumanResource;
 using BakeryMS.API.Common.DTOs.Inventory;
 using BakeryMS.API.Common.DTOs.Manufacturing;
 using BakeryMS.API.Common.DTOs.Master;
 using BakeryMS.API.Models;
+using BakeryMS.API.Models.HumanResource;
 using BakeryMS.API.Models.Inventory;
 using BakeryMS.API.Models.Production;
 using BakeryMS.API.Models.Profile;
@@ -222,6 +224,18 @@ namespace BakeryMS.API.Common.Helpers
             .ForMember(dest => dest.ItemName, opt =>
             {
                 opt.MapFrom(src => src.Item.Name);
+            });
+
+            CreateMap<EmployeeForDetailDto, Employee>();
+            CreateMap<Employee, EmployeeForDetailDto>();
+            CreateMap<Employee, EmployeeForListDto>()
+            .ForMember(dest => dest.TypeName, opt =>
+            {//0-permanent,1-daily,2-contract
+                opt.MapFrom(src => src.Type == 0 ? "Permanent" : src.Type == 1 ? "Daily" : src.Type == 2 ? "Contract" : "Other");
+            })
+            .ForMember(dest => dest.RoleName, opt =>
+            {//0-Manager,1-Cashier,2-Baker,3-counter,4-waiter
+                opt.MapFrom(src => src.Role == 0 ? "Manager" : src.Role == 1 ? "Cashier" : src.Role == 2 ? "Baker" : src.Role == 3 ? "Counter" : src.Role == 4 ? "Waiter" : "Random");
             });
 
         }

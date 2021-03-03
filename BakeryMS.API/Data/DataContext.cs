@@ -1,5 +1,6 @@
 using System.Linq;
 using BakeryMS.API.Models;
+using BakeryMS.API.Models.HumanResource;
 using BakeryMS.API.Models.Inventory;
 using BakeryMS.API.Models.Production;
 using BakeryMS.API.Models.Profile;
@@ -28,13 +29,15 @@ namespace BakeryMS.API.Data
         public DbSet<PurchaseOrderHeader> PurchaseOrderHeaders { get; set; }
         public DbSet<PurchaseOrderDetail> PurchaseOrderDetails { get; set; }
 
-        //Production Order Header,detail and Session
+        //Production Order Header,detail, Session and Ingredients
         public DbSet<ProductionOrderHeader> ProductionOrderHeaders { get; set; }
         public DbSet<ProductionOrderDetail> ProductionOrderDetails { get; set; }
         public DbSet<ProductionSession> ProductionSessions { get; set; }
-
-        //Ingredients
         public DbSet<IngredientHeader> IngredientHeaders { get; set; }
         public DbSet<IngredientDetail> IngredientDetails { get; set; }
+
+        //Employee and Routine
+        public DbSet<Employee> Employees { get; set; }
+        public DbSet<Routine> Routines { get; set; }
     }
 }

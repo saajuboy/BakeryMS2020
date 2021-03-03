@@ -112,13 +112,13 @@ export const navItems: INavData[] = [
   },
   {
     name: 'Employee Management',
-    url: '/inventory',
+    url: '/hr',
     icon: 'icon-people ',
     children: [
       {
-        name: 'Purchase Order',
-        url: '/inventory/purchaseOrder',
-        icon: 'icon-fire '
+        name: 'Employees',
+        url: '/hr/employees',
+        icon: 'icon-people '
       }
     ]
   },

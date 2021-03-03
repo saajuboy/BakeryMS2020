@@ -57,6 +57,7 @@ import { UtilityService } from './_services/utility.service';
 import { MasterService } from './_services/master.service';
 import { InventoryService } from './_services/inventory.service';
 import { ManufacturingService } from './_services/manufacturing.service';
+import { HumanResourceService } from './_services/humanResource.service';
 
 
 // import Components
@@ -75,6 +76,8 @@ import { ProductionOrderCreateComponent } from './views/Manufacturing/Production
 import { ProductionOrderListComponent } from './views/Manufacturing/ProductionOrderList/ProductionOrderList.component';
 import { IngredientCreateComponent } from './views/Manufacturing/IngredientCreate/IngredientCreate.component';
 import { IngredientListComponent } from './views/Manufacturing/IngredientList/IngredientList.component';
+import { EmployeeComponent } from './views/HumanResource/Employee/Employee.component';
+import { RoutineComponent } from './views/HumanResource/Routine/Routine.component';
 
 
 // token getter function to automatically intercept http requests
@@ -129,7 +132,9 @@ export function tokenGetter() {
     ProductionOrderCreateComponent,
     ProductionOrderListComponent,
     IngredientCreateComponent,
-    IngredientListComponent
+    IngredientListComponent,
+    EmployeeComponent,
+    RoutineComponent
   ],
   providers: [{
     provide: LocationStrategy,
@@ -141,6 +146,7 @@ export function tokenGetter() {
     MasterService,
     InventoryService,
     ManufacturingService,
+    HumanResourceService,
     AuthGuard,
     AdminGuard,
     RoleGuard

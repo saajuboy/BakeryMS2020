@@ -49,29 +49,29 @@ export const navItems: INavData[] = [
                 url: '/manufacturing/productionOrder',
                 icon: 'icon-briefcase',
                 children: [
-                  {
-                    name: 'Production Order List',
-                    url: '/manufacturing/productionOrder',
-                    icon: 'icon-list'
-                  },
-                  {
-                    name: 'Create Prod.Order',
-                    url: '/manufacturing/productionOrder/create',
-                    icon: 'icon-note'
-                  }
+                    {
+                        name: 'Production Order List',
+                        url: '/manufacturing/productionOrder',
+                        icon: 'icon-list'
+                    },
+                    {
+                        name: 'Create Prod.Order',
+                        url: '/manufacturing/productionOrder/create',
+                        icon: 'icon-note'
+                    }
                 ]
-              }
+            }
         ]
     },
     {
         name: 'Employee Management',
-        url: '/inventory',
+        url: '/hr',
         icon: 'icon-people ',
         children: [
             {
-                name: 'Purchase Order',
-                url: '/inventory/purchaseOrder',
-                icon: 'icon-fire '
+                name: 'Employee',
+                url: '/hr/employees',
+                icon: 'icon-people '
             }
         ]
     },
