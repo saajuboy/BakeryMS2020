@@ -1,3 +1,6 @@
+import { Time } from '@angular/common';
+import { TimeUnit } from 'chart.js';
+
 export interface Employee {
     id: number;
     employeeNumber: number;
@@ -12,4 +15,19 @@ export interface Employee {
 
     typeName?: string;
     roleName?: string;
+}
+
+export interface Routine {
+    id: number;
+    employeeId: number;
+    employee: Employee;
+    startTime: TimeUnit;
+    endTime: TimeUnit;
+    businessPlaceId: number;
+    date: Date;
+    roleId: number;
+}
+
+export interface RoutineList {
+    routines: Routine[];
 }

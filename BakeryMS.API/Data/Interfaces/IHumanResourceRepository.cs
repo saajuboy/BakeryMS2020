@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using BakeryMS.API.Models.HumanResource;
@@ -15,8 +16,8 @@ namespace BakeryMS.API.Data.Interfaces
         Task<Employee> GetEmployee(int id);
         Task<IEnumerable<Employee>> GetEmployees();
         Task CreateEmployee(Employee employee);
-        // Task<IngredientHeader> GetIngredient(int id);
-        // Task<IEnumerable<IngredientHeader>> GetIngredients();
-        // Task CreateIngredient(IngredientHeader ingredientHeader);
+        Task<Routine> GetRoutine(int id);
+        Task<IList<Routine>> GetRoutines(DateTime date);
+        Task CreateRoutine(IList<Routine> employee);
     }
 }

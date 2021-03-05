@@ -119,16 +119,16 @@ export const navItems: INavData[] = [
     },
     {
         name: 'Schedule Routine',
-        url: '/inventory',
+        url: '/hr',
         icon: 'icon-refresh ',
         children: [
-            {
-                name: 'Purchase Order',
-                url: '/inventory/purchaseOrder',
-                icon: 'icon-fire '
-            }
+          {
+            name: 'Schedule Routines',
+            url: '/hr/routines',
+            icon: 'icon-fire '
+          }
         ]
-    },
+      },
     {
         name: 'Quality Control',
         url: '/inventory',

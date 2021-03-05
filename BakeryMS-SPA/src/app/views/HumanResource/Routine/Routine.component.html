@@ -1,0 +1,220 @@
+<div class="card">
+  <div class="card-header">
+    <i class="fa fa-align-justify"></i> Routine Schedule
+  </div>
+  <div class="card-body">
+    <div class="row">
+      <div class="input-group col-md-3 mb-3">
+        <div class="input-group-prepend">
+          <span class="input-group-text"
+            ><i class="icon-calendar"> &nbsp;Date</i></span
+          >
+        </div>
+        <input
+          (change)="dateChange()"
+          class="form-control"
+          [(ngModel)]="date"
+          type="date"
+          [ngClass]="{
+            'is-invalid': date === '',
+            'is-valid': date !== ''
+          }"
+        />
+        <div class="invalid-feedback">Please choose a valid entered date</div>
+      </div>
+      <!-- <div class="col-md-1">
+        <button
+          class="btn btn-pill btn-block btn-secondary"
+          type="button"
+          (click)="dateChange(date)"
+        >
+          Search
+        </button>
+      </div> -->
+      <div class="col-md-2">
+        <button
+          class="btn btn-pill btn-block btn-primary"
+          type="button"
+          [disabled]="date === '' || routines.length > 0"
+          (click)="autoAssign()"
+        >
+          Auto Assign
+        </button>
+      </div>
+      <div class="col-md-5"></div>
+      <div class="col-md-2">
+        <button
+          class="btn btn-pill btn-block btn-success"
+          type="button"
+          [disabled]="date === '' || !routineForm.valid || routines.length == 0"
+          (click)="updateRoutine()"
+        >
+          Save Changes
+        </button>
+      </div>
+    </div>
+    <form [formGroup]="routineForm">
+      <table class="table table-bordered">
+        <thead>
+          <tr>
+            <th style="width: 10%">Employee No</th>
+            <th>Employee Name</th>
+            <th>Business Place</th>
+            <th>Role</th>
+            <th>Start Time</th>
+            <th>End Time</th>
+          </tr>
+        </thead>
+        <tbody #rows>
+          <ng-container
+            formArrayName="routines"
+            *ngFor="let rout of gettableRowArray.controls; let $index = index"
+          >
+            <tr *ngIf="routines.length > 0" [formGroupName]="$index">
+              <td>
+                <label class="form-control">{{
+                  routines[$index].employee.employeeNumber
+                }}</label>
+              </td>
+              <td>
+                <label class="form-control">{{
+                  routines[$index].employee.name
+                }}</label>
+              </td>
+              <td>
+                <select
+                  class="form-control"
+                  id="itemName"
+                  formControlName="businessPlaceId"
+                  [ngClass]="{
+                    'is-invalid':
+                      rout.get('businessPlaceId').errors &&
+                      rout.get('businessPlaceId').touched,
+                    'is-valid': !rout.get('businessPlaceId').errors
+                  }"
+                >
+                  <option *ngFor="let bp of businessPlaces" [value]="bp.id">
+                    {{ bp.name }}
+                  </option>
+                </select>
+                <div class="invalid-feedback">Please choose a valid Place</div>
+              </td>
+              <td>
+                <label class="form-control">{{
+                  routines[$index].roleId === 0
+                    ? "Manager"
+                    : routines[$index].roleId === 1
+                    ? "Cashier"
+                    : routines[$index].roleId === 2
+                    ? "Baker"
+                    : routines[$index].roleId === 3
+                    ? "Counter"
+                    : routines[$index].roleId === 4
+                    ? "Waiter"
+                    : "Random"
+                }}</label>
+              </td>
+              <td>
+                <input
+                  [ngClass]="{
+                    'is-invalid':
+                      (rout.get('startTime').errors &&
+                        rout.get('startTime').touched) ||
+                      rout.hasError('startTimeGreater'),
+                    'is-valid':
+                      !rout.get('startTime').errors &&
+                      rout.get('startTime').touched
+                  }"
+                  type="time"
+                  class="form-control"
+                  formControlName="startTime"
+                />
+                <div
+                  *ngIf="rout.get('startTime').hasError('required')"
+                  class="invalid-feedback"
+                >
+                  Start Time is required
+                </div>
+                <div
+                  *ngIf="rout.hasError('startTimeGreater')"
+                  class="invalid-feedback"
+                >
+                  start Time cannot be greater or equal to end time
+                </div>
+              </td>
+              <td>
+                <input
+                  [ngClass]="{
+                    'is-invalid':
+                      (rout.get('endTime').errors &&
+                        rout.get('endTime').touched) ||
+                      rout.hasError('startTimeGreater'),
+                    'is-valid':
+                      !rout.get('endTime').errors && rout.get('endTime').touched
+                  }"
+                  type="time"
+                  class="form-control"
+                  formControlName="endTime"
+                />
+                <div
+                  *ngIf="rout.get('endTime').hasError('required')"
+                  class="invalid-feedback"
+                >
+                  End Time is required
+                </div>
+                <div
+                  *ngIf="rout.hasError('startTimeGreater')"
+                  class="invalid-feedback"
+                >
+                  End Time cannot be lesser or equal to Start time
+                </div>
+              </td>
+              <!-- <td>
+                <button
+                  class="btn btn-ghost-danger"
+                  type="button"
+                  (click)="onDeleteRow($index)"
+                >
+                  <i class="icon-close"></i>
+                </button>
+              </td> -->
+            </tr>
+          </ng-container>
+        </tbody>
+      </table>
+      <h3 class="text-center" *ngIf="routines.length === 0">No Data Found</h3>
+      <br />
+      <div class="row">
+        <div class="col-md-2">
+          <button
+            class="btn btn-pill btn-block btn-primary"
+            type="button"
+            [disabled]="date === '' || routines.length > 0"
+            (click)="autoAssign()"
+          >
+            Auto Assign
+          </button>
+        </div>
+        <div class="col-md-8"></div>
+        <div class="col-md-2">
+          <button
+            class="btn btn-pill btn-block btn-success"
+            type="button"
+            [disabled]="
+              date === '' || !routineForm.valid || routines.length == 0
+            "
+            (click)="updateRoutine()"
+          >
+            Save Changes
+          </button>
+        </div>
+      </div>
+    </form>
+  </div>
+</div>
+<!-- /.modal -->
+
+<!-- <div class="output">
+  <p>Form Data: {{ routineForm.getRawValue() | json }}</p>
+  <p>Is Valid: {{ routineForm.valid }}</p>
+</div> -->

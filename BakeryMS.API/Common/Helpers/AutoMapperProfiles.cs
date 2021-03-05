@@ -238,6 +238,17 @@ namespace BakeryMS.API.Common.Helpers
                 opt.MapFrom(src => src.Role == 0 ? "Manager" : src.Role == 1 ? "Cashier" : src.Role == 2 ? "Baker" : src.Role == 3 ? "Counter" : src.Role == 4 ? "Waiter" : "Random");
             });
 
+            CreateMap<Routine, RoutineForDetailDto>()
+            .ForMember(dest => dest.EndTime, opt => opt.MapFrom(src => src.EndTime.Value.ToString()))
+            .ForMember(dest => dest.StartTime, opt => opt.MapFrom(src => src.StartTime.Value.ToString()))
+            .ForMember(src => src.Employee, opt => opt.MapFrom(src => src.Employee))
+            .ForMember(src => src.Date, opt => opt.MapFrom(src => src.Date.DashedDate()))
+            .ForMember(src => src.RoleId, opt => opt.MapFrom(src => src.Employee.Role));
+
+            CreateMap<RoutineForDetailDto, Routine>()
+            .ForMember(dest => dest.Date, opt => opt.MapFrom(dest => DateTime.Parse(dest.Date)))
+            .ForMember(dest => dest.StartTime, opt => opt.MapFrom(dest => TimeSpan.Parse(dest.StartTime)))
+            .ForMember(dest => dest.EndTime, opt => opt.MapFrom(dest => TimeSpan.Parse(dest.EndTime)));
         }
     }
 }

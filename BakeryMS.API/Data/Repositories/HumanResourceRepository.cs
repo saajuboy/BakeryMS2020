@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -77,5 +78,38 @@ namespace BakeryMS.API.Data.Repositories
             var result = await _context.Employees.AddAsync(employee);
         }
 
+        public async Task<Routine> GetRoutine(int id)
+        {
+            var routine = await _context.Routines.Include(a => a.Employee)
+            .FirstOrDefaultAsync(a => a.Id == id);
+
+            return routine;
+        }
+        public async Task<IList<Routine>> GetRoutines(DateTime date)
+        {
+
+            var routineQuery = _context.Routines.Include(a => a.Employee)
+            .AsQueryable();
+
+            if (date == null || date == DateTime.MinValue)
+            {
+                routineQuery = routineQuery.Where(a => a.Date == DateTime.Today);
+            }
+            else
+            {
+                routineQuery = routineQuery.Where(a => a.Date == date);
+            }
+
+            var routine = await routineQuery.ToListAsync();
+            return routine;
+        }
+        public async Task CreateRoutine(IList<Routine> routines)
+        {
+            foreach (var routine in routines)
+            {
+               await _context.Routines.AddAsync(routine);
+            }
+
+        }
     }
 }

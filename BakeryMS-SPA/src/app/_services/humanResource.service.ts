@@ -3,7 +3,7 @@ import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { environment } from '../../environments/environment';
-import { Employee } from '../_models/employee';
+import { Employee, Routine, RoutineList } from '../_models/employee';
 
 @Injectable({
   providedIn: 'root'
@@ -37,5 +37,31 @@ export class HumanResourceService {
   }
   deleteEmployee(id: number) {
     return this.http.delete(this.baseUrl + 'employees/' + id);
+  }
+
+  getRoutines(date: Date): Observable<Routine[]> {
+    let params = new HttpParams();
+    params = params.append('date', date.toString());
+
+    return this.http.get<Routine[]>(this.baseUrl + 'routines', { params });
+  }
+  getroutine(id): Observable<Routine> {
+    return this.http.get<Routine>(this.baseUrl + 'routines/' + id);
+  }
+  CreateRoutines(routines: Routine[]) {
+    return this.http.post(this.baseUrl + 'routines', routines);
+  }
+  updateRoutines(date: Date, routines: RoutineList) {
+    let params = new HttpParams();
+    params = params.append('date', date.toString());
+    return this.http.put(this.baseUrl + 'routines', routines, { params });
+  }
+  deleteRoutine(id: number) {
+    return this.http.delete(this.baseUrl + 'routines/' + id);
+  }
+  createAutoRoutine(date: Date) {
+    let params = new HttpParams();
+    params = params.append('date', date.toString());
+    return this.http.get(this.baseUrl + 'routines/CreateAutoRoutine', { params });
   }
 }

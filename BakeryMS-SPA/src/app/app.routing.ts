@@ -26,6 +26,7 @@ import { ProductionOrderCreateComponent } from './views/Manufacturing/Production
 import { IngredientListComponent } from './views/Manufacturing/IngredientList/IngredientList.component';
 import { IngredientCreateComponent } from './views/Manufacturing/IngredientCreate/IngredientCreate.component';
 import { EmployeeComponent } from './views/HumanResource/Employee/Employee.component';
+import { RoutineComponent } from './views/HumanResource/Routine/Routine.component';
 
 
 export const routes: Routes = [
@@ -179,6 +180,16 @@ export const routes: Routes = [
         component: EmployeeComponent,
         data: {
           title: 'Employee',
+          allowedRoles: ['Admin', 'BakeryManager', 'OutletManager']
+        }
+      },
+      {
+        path: 'hr/routines',
+        runGuardsAndResolvers: 'always',
+        canActivate: [RoleGuard],
+        component: RoutineComponent,
+        data: {
+          title: 'Routine',
           allowedRoles: ['Admin', 'BakeryManager', 'OutletManager']
         }
       },
