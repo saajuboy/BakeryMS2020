@@ -87,6 +87,23 @@ export const navItems: INavData[] = [
                 ]
             },
             {
+                name: 'Production Plan',
+                url: '/manufacturing/productionPlan',
+                icon: 'icon-briefcase',
+                children: [
+                    {
+                        name: 'Production Plan List',
+                        url: '/manufacturing/productionPlan',
+                        icon: 'icon-list'
+                    },
+                    {
+                        name: 'Create Prod.Plan',
+                        url: '/manufacturing/productionPlan/create',
+                        icon: 'icon-note'
+                    }
+                ]
+            },
+            {
                 name: 'Recipe',
                 url: '/manufacturing/ingredient',
                 icon: 'icon-briefcase',
@@ -122,13 +139,13 @@ export const navItems: INavData[] = [
         url: '/hr',
         icon: 'icon-refresh ',
         children: [
-          {
-            name: 'Schedule Routines',
-            url: '/hr/routines',
-            icon: 'icon-fire '
-          }
+            {
+                name: 'Schedule Routines',
+                url: '/hr/routines',
+                icon: 'icon-fire '
+            }
         ]
-      },
+    },
     {
         name: 'Quality Control',
         url: '/inventory',

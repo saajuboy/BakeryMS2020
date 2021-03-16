@@ -44,8 +44,25 @@ namespace BakeryMS.API.Data.SeedData
             {
                 SeedProductionOrderAndSession();
             }
+            if (!_context.Machineries.Any())
+            {
+                SeedMachineries();
+            }
         }
 
+        private void SeedMachineries()
+        {
+            IList<Machinery> defaultMachineries = new List<Machinery>();
+
+            defaultMachineries.Add(new Machinery() { Name = "Triple Deck Oven - Bakeline", BusinessPlaceId = 4, Capacity = 36, Model = "Deck Pro Power 5621", Value = 600000, PurchaseDate = new DateTime(2014, 05, 20) });
+            defaultMachineries.Add(new Machinery() { Name = "Bread Diesel Oven - Bakeline", BusinessPlaceId = 4, Capacity = 108, Model = "Single Pro Power 8521", Value = 1800000, PurchaseDate = new DateTime(2014, 05, 20) });
+            defaultMachineries.Add(new Machinery() { Name = "Double Deck Oven - Bakeline", BusinessPlaceId = 4, Capacity = 24, Model = "Deck Pro Power 3621", Value = 500000, PurchaseDate = new DateTime(2014, 05, 20) });
+            defaultMachineries.Add(new Machinery() { Name = "High Speed mixer", BusinessPlaceId = 4, Capacity = 36, Model = "Easy Mix K65", Value = 400000, PurchaseDate = new DateTime(2014, 05, 20) });
+            defaultMachineries.Add(new Machinery() { Name = "Medium mixer", BusinessPlaceId = 4, Capacity = 72, Model = "Easy Mix N45", Value = 430000, PurchaseDate = new DateTime(2014, 05, 20) });
+
+            _context.Machineries.AddRange(defaultMachineries);
+            _context.SaveChanges();
+        }
         private void SeedProductionOrderAndSession()
         {
             // SupplierSeedData.Json

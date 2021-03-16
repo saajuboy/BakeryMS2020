@@ -218,7 +218,7 @@ namespace BakeryMS.API.Controllers.Manufacturing
 
             if (prodOrderFromRepo == null)
             {
-                return BadRequest(new ErrorModel(7,400,"No previous production order from this session and place available to auto generate "));
+                return BadRequest(new ErrorModel(7, 400, "No previous production order from this session and place available to auto generate "));
             }
 
             prodOrderFromRepo.RequiredDate = reqDate;
@@ -233,6 +233,59 @@ namespace BakeryMS.API.Controllers.Manufacturing
             var prodOrderToReturn = _mapper.Map<ProdOrderHeaderForDetailDto>(prodOrderFromRepo);
 
             return Ok(prodOrderToReturn);
+        }
+
+        [Route("[action]")]
+        [HttpGet]
+        public async Task<IActionResult> GetFilteredProductionOrders(int sessionId, int placeId, string requiredDate, bool isReviewed)//place and plan are optional
+        {
+            DateTime reqDate;
+            DateTime.TryParse(requiredDate, out reqDate);
+
+            if (sessionId == 0)
+                return BadRequest(new ErrorModel(1, 400, "session Required"));
+            // if (placeId == 0)
+            //     return BadRequest(new ErrorModel(2, 400, "place Required"));
+            if (reqDate == null || reqDate < DateTime.Today)
+                return BadRequest(new ErrorModel(3, 400, "proper date Required"));
+
+            var ProdOrdsQuery = _context.ProductionOrderHeaders
+            .Where(a => a.RequiredDate == reqDate)
+            .Include(a => a.BusinessPlace)
+            .Include(a => a.ProductionOrderDetails).ThenInclude(a => a.Item)
+            .AsQueryable();
+
+            var session = await _context.ProductionSessions.FindAsync(sessionId);
+            if (session == null)
+                return BadRequest(new ErrorModel(4, 400, "session Not Valid"));
+
+            ProdOrdsQuery = ProdOrdsQuery.Where(a => a.Session == session);
+
+            // var place = await _context.BusinessPlaces.FindAsync(placeId);
+            // if (place == null)
+            //     return BadRequest(new ErrorModel(5, 400, "Place Not valid"));
+
+
+            if (placeId > 0)
+            {
+                var place = await _context.BusinessPlaces.FindAsync(placeId);
+                if (place != null)
+                    ProdOrdsQuery = ProdOrdsQuery.Where(a => a.BusinessPlace == place);
+            }
+
+            if (isReviewed == false)
+            {
+                ProdOrdsQuery = ProdOrdsQuery.Where(a => a.IsNotEditable == false);
+            }
+            // else
+            // {
+            // }
+
+            var prodOrds = await ProdOrdsQuery.ToListAsync();
+
+            var ordersToReturn = _mapper.Map<IEnumerable<ProdOrderHeaderForDetailDto>>(prodOrds); ;
+
+            return Ok(ordersToReturn);
         }
     }
 

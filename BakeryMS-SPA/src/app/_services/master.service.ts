@@ -5,6 +5,7 @@ import { map } from 'rxjs/operators';
 import { environment } from '../../environments/environment';
 import { BusinessPlace } from '../_models/businessPlace';
 import { Item, ItemCategory, ItemForDropdown, Unit } from '../_models/item';
+import { Machinery } from '../_models/machinery';
 import { Supplier, SupplierForDropdown } from '../_models/supplier';
 
 @Injectable({
@@ -119,5 +120,28 @@ export class MasterService {
   }
   getBusinessPlace(id): Observable<BusinessPlace> {
     return this.http.get<BusinessPlace>(this.baseUrl + 'businessPlaces/' + id);
+  }
+
+
+  getMachineries(placeId?: any): Observable<Machinery[]> {
+    let params = new HttpParams();
+    if (+placeId > 0) {
+      params = params.append('placeId', placeId.toString());
+    }
+
+    return this.http.get<Machinery[]>(this.baseUrl + 'machineries', { params });
+
+  }
+  getMachinery(id): Observable<Machinery> {
+    return this.http.get<Machinery>(this.baseUrl + 'machineries/' + id);
+  }
+  CreateMachinery(machinery: Machinery) {
+    return this.http.post(this.baseUrl + 'machineries', machinery);
+  }
+  updateMachinery(id: number, machinery: Machinery) {
+    return this.http.put(this.baseUrl + 'machineries/' + id, machinery);
+  }
+  deleteMachinery(id: number) {
+    return this.http.delete(this.baseUrl + 'machineries/' + id);
   }
 }

@@ -15,6 +15,8 @@ export interface Employee {
 
     typeName?: string;
     roleName?: string;
+
+    isChecked?: boolean; // Only used in production Plan
 }
 
 export interface Routine {

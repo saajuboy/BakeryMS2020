@@ -5,6 +5,7 @@ import { map } from 'rxjs/operators';
 import { environment } from '../../environments/environment';
 import { IngredientDetail, IngredientHeader } from '../_models/ingredient';
 import { ProductionOrderDetail, ProductionOrderHeader, ProductionSession } from '../_models/productionOrder';
+import { ProductionPlanDetailList, ProductionPlanHeader, ProductionPlanRecipe } from '../_models/productionPlan';
 
 @Injectable({
   providedIn: 'root'
@@ -37,6 +38,18 @@ export class ManufacturingService {
     params = params.append('placeId', placeId.toString());
     params = params.append('requiredDate', requiredDate.toString());
     return this.http.get<ProductionOrderHeader>(this.baseUrl + 'productionOrder/GetAutoProductionOrder', { params });
+  }
+  getFilteredProductionOrders(sessionId, requiredDate, isReviewed?: boolean, placeId?): Observable<ProductionOrderHeader[]> {
+    let params = new HttpParams();
+    params = params.append('sessionId', sessionId.toString());
+    params = params.append('requiredDate', requiredDate.toString());
+    if (isReviewed === true) {
+      params = params.append('isReviewed', isReviewed.toString());
+    }
+    if (+placeId > 0) {
+      params = params.append('placeId', placeId.toString());
+    }
+    return this.http.get<ProductionOrderHeader[]>(this.baseUrl + 'productionOrder/GetFilteredProductionOrders', { params });
   }
   createProductionOrder(productionOrder: ProductionOrderHeader) {
     return this.http.post(this.baseUrl + 'productionOrder', productionOrder);
@@ -86,6 +99,33 @@ export class ManufacturingService {
 
   deleteIngredient(id: number) {
     return this.http.delete(this.baseUrl + 'ingredients/' + id);
+  }
+  getIngredientForPlanDetail(planDetailList: ProductionPlanDetailList) {
+    return this.http.post<ProductionPlanRecipe[]>(this.baseUrl + 'ingredients/GetRecipeForPlanDetail', planDetailList);
+  }
+
+
+  getProductionplans(): Observable<ProductionPlanHeader[]> {
+    return this.http.get<ProductionPlanHeader[]>(this.baseUrl + 'productionPlans').pipe(
+      map(response => {
+        return response;
+      }));
+
+  }
+  getProductionPlan(id): Observable<ProductionPlanHeader> {
+    return this.http.get<ProductionPlanHeader>(this.baseUrl + 'productionPlans/' + id);
+  }
+
+  createProductionPlan(productionPlan: ProductionPlanHeader) {
+    return this.http.post(this.baseUrl + 'productionPlans', productionPlan);
+  }
+
+  updateProductionPlan(id: number, productionPlan: ProductionPlanHeader) {
+    return this.http.put(this.baseUrl + 'productionPlans/' + id, productionPlan);
+  }
+
+  deleteProductionPlan(id: number) {
+    return this.http.delete(this.baseUrl + 'productionPlans/' + id);
   }
 
 }

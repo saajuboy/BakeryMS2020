@@ -22,6 +22,10 @@ export interface ProductionOrderHeader {
     sessionName?: string;
     userName?: string;
     businessPlaceName?: string;
+
+    description?: string;
+    isChecked?: boolean; // Only used in production Plan
+
 }
 
 export interface ProductionOrderDetail {

@@ -4,14 +4,16 @@ using BakeryMS.API.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace BakeryMS.API.Migrations
 {
     [DbContext(typeof(DataContext))]
-    partial class DataContextModelSnapshot : ModelSnapshot
+    [Migration("20210309091639_AddedIsnotEditableColumn")]
+    partial class AddedIsnotEditableColumn
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -430,9 +432,6 @@ namespace BakeryMS.API.Migrations
                     b.Property<int?>("BusinessPlaceId")
                         .HasColumnType("int");
 
-                    b.Property<string>("Description")
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<DateTime?>("EnteredDate")
                         .HasColumnType("datetime2");
 
@@ -441,9 +440,6 @@ namespace BakeryMS.API.Migrations
 
                     b.Property<bool>("IsNotEditable")
                         .HasColumnType("bit");
-
-                    b.Property<int?>("PlanId")
-                        .HasColumnType("int");
 
                     b.Property<int>("ProductionOrderNo")
                         .HasColumnType("int");

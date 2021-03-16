@@ -38,6 +38,14 @@ export class HumanResourceService {
   deleteEmployee(id: number) {
     return this.http.delete(this.baseUrl + 'employees/' + id);
   }
+  getEmployeesForProductionPlan(sessionId, requiredDate, placeId): Observable<Employee[]> {
+    let params = new HttpParams();
+    params = params.append('sessionId', sessionId.toString());
+    params = params.append('requiredDate', requiredDate.toString());
+    params = params.append('placeId', placeId.toString());
+
+    return this.http.get<Employee[]>(this.baseUrl + 'employees/GetEmployeesForPlanDetail', { params });
+  }
 
   getRoutines(date: Date): Observable<Routine[]> {
     let params = new HttpParams();

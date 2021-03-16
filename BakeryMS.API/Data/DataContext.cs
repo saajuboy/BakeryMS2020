@@ -19,6 +19,7 @@ namespace BakeryMS.API.Data
         public DbSet<Unit> Units { get; set; }
         public DbSet<Supplier> Suppliers { get; set; }
         public DbSet<BusinessPlace> BusinessPlaces { get; set; }
+        public DbSet<Machinery> Machineries { get; set; }
 
         //User,Roles and User Roles Mapping
         public DbSet<User> Users { get; set; }
@@ -36,8 +37,16 @@ namespace BakeryMS.API.Data
         public DbSet<IngredientHeader> IngredientHeaders { get; set; }
         public DbSet<IngredientDetail> IngredientDetails { get; set; }
 
+        //Production Plan
+        public DbSet<ProductionPlanHeader> ProductionPlanHeaders { get; set; }
+        public DbSet<ProductionPlanDetail> ProductionPlanDetails { get; set; }
+        public DbSet<ProductionPlanRecipe> ProductionPlanRecipes { get; set; }
+        public DbSet<ProductionPlanWorker> ProductionPlanWorkers { get; set; }
+        public DbSet<ProductionPlanMachine> ProductionPlanMachines { get; set; }
+
         //Employee and Routine
         public DbSet<Employee> Employees { get; set; }
         public DbSet<Routine> Routines { get; set; }
+
     }
 }

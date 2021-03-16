@@ -1,0 +1,237 @@
+<div class="card">
+  <div class="card-header">
+    <i class="fa fa-align-justify"></i> Production Plan List
+  </div>
+  <div class="card-body">
+    <div class="row">
+      <div class="input-group col-md-4 mb-3">
+        <div class="input-group-prepend">
+          <span class="input-group-text"><i class="icon-magnifier"></i></span>
+        </div>
+        <input
+          type="text"
+          class="form-control"
+          placeholder="Search"
+          autocomplete="off"
+          [(ngModel)]="search"
+        />
+      </div>
+      <div class="col-md-1">
+        <button
+          class="btn btn-pill btn-block btn-primary"
+          (click)="add()"
+          type="button"
+        >
+          Add
+        </button>
+      </div>
+    </div>
+
+    <table class="table table-bordered">
+      <thead>
+        <tr>
+          <th><i (click)="sort(1)" class="icon-chart"></i> Date</th>
+          <th><i (click)="sort(2)" class="icon-chart"></i> Session</th>
+          <th><i (click)="sort(3)" class="icon-chart"></i> For (Place)</th>
+          <th><i (click)="sort(4)" class="icon-chart"></i> Status</th>
+          <th><i (click)="sort(5)" class="icon-chart"></i> User</th>
+          <th style="width: 15%">Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let pO of productionPlans | filter: search">
+          <td>{{ pO.date }}</td>
+          <td>{{ pO.sessionName }}</td>
+          <td>{{ pO.businessPlaceName }}</td>
+          <td>
+            <span
+              *ngIf="pO.isNotEditable == false"
+              class="badge badge-secondary"
+              >Not Produced</span
+            >
+            <span *ngIf="pO.isNotEditable == true" class="badge badge-success"
+              >Produced</span
+            >
+          </td>
+          <td>{{ pO.userName }}</td>
+          <td>
+            <button
+              class="btn btn-ghost-secondary"
+              (click)="edit(pO.id)"
+              type="button"
+              [disabled]="pO.isNotEditable === true"
+            >
+              <i class="icon-pencil"></i>
+            </button>
+            <button
+              (click)="ShowInfo(pO.id)"
+              class="btn btn-ghost-info"
+              type="button"
+            >
+              <i class="icon-info"></i>
+            </button>
+            <button
+              (click)="delete(pO.id)"
+              class="btn btn-ghost-danger"
+              type="button"
+              [disabled]="pO.isNotEditable === true"
+            >
+              <i class="icon-close"></i>
+            </button>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+    <h3 *ngIf="productionPlans.length === 0" class="text-center">
+      No Data Found
+    </h3>
+    <!-- <ul class="pagination">
+            <li class="page-item"><a class="page-link" href="#">Prev</a></li>
+            <li class="page-item active">
+              <a class="page-link" href="#">1</a>
+            </li>
+            <li class="page-item"><a class="page-link" href="#">2</a></li>
+            <li class="page-item"><a class="page-link" href="#">3</a></li>
+            <li class="page-item"><a class="page-link" href="#">4</a></li>
+            <li class="page-item"><a class="page-link" href="#">Next</a></li>
+          </ul> -->
+  </div>
+</div>
+
+<div
+  bsModal
+  #infoModal="bs-modal"
+  class="modal fade"
+  tabindex="-1"
+  role="dialog"
+  aria-labelledby="myModalLabel"
+  aria-hidden="true"
+>
+  <div class="modal-dialog modal-info" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h4 class="modal-title">Production Plan Info</h4>
+        <button
+          type="button"
+          class="close"
+          (click)="infoModal.hide()"
+          aria-label="Close"
+        >
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <div class="row mt-3">
+          <div class="col-md-6 font-weight-bold">Date</div>
+          <div class="col-md-1">-</div>
+          <div class="col-md-5">
+            {{ productionPlanInfo.date  | date: "yyyy-MM-dd" }}
+          </div>
+        </div>
+        <div class="row mt-2">
+          <div class="col-md-6 font-weight-bold">Production Session</div>
+          <div class="col-md-1">-</div>
+          <div class="col-md-5">
+            {{ productionPlanInfo.sessionName | titlecase }}
+          </div>
+        </div>
+        <div class="row mt-2">
+          <div class="col-md-6 font-weight-bold">Business Place</div>
+          <div class="col-md-1">-</div>
+          <div class="col-md-5">
+            {{ productionPlanInfo.businessPlaceName | titlecase }}
+          </div>
+        </div>
+        <!-- <div class="row mt-2">
+          <div class="col-md-6 font-weight-bold">Username</div>
+          <div class="col-md-1">-</div>
+          <div class="col-md-5">
+            {{ productionPlanInfo.userName | titlecase }}
+          </div>
+        </div> -->
+        <div class="row mt-2">
+          <div class="col-md-6 font-weight-bold">Description</div>
+          <div class="col-md-1">-</div>
+          <div class="col-md-5">
+            {{ productionPlanInfo.description }}
+          </div>
+        </div>
+        <div class="row mt-2 ml-3 mr-3">
+          <table class="table">
+            <thead>
+              <th>Item to produce</th>
+              <th>Description</th>
+              <th>Quantity</th>
+            </thead>
+            <tbody>
+              <tr
+                *ngFor="let row of productionPlanInfo.productionPlanDetails"
+              >
+                <td>{{ row.itemName }}</td>
+                <td>{{ row.description }}</td>
+                <td>{{ row.quantity }}</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="row mt-2 ml-3 mr-3">
+          <table class="table">
+            <thead>
+              <th>Raw Items</th>
+              <th>Quantity</th>
+              <th>Unit</th>
+            </thead>
+            <tbody>
+              <tr
+                *ngFor="let row of productionPlanInfo.productionPlanRecipes"
+              >
+                <td>{{ row.itemName }}</td>
+                <td>{{ row.quantity }}</td>
+                <td>{{ row.description }}</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="row mt-2 ml-3 mr-3">
+          <table class="table">
+            <thead>
+              <th>Machines Required</th>
+            </thead>
+            <tbody>
+              <tr
+                *ngFor="let row of productionPlanInfo.productionPlanMachines"
+              >
+                <td>{{ row.machineryName }}</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="row mt-2 ml-3 mr-3">
+          <table class="table">
+            <thead>
+              <th>Assigned Employees</th>
+            </thead>
+            <tbody>
+              <tr
+                *ngFor="let row of productionPlanInfo.productionPlanWorkers"
+              >
+                <td>{{ row.employeeName }}</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button
+          type="button"
+          class="btn btn-secondary"
+          (click)="infoModal.hide()"
+        >
+          Close
+        </button>
+      </div>
+    </div>
+    <!-- /.modal-content -->
+  </div>
+  <!-- /.modal-dialog -->
+</div>

@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using AutoMapper;
 using BakeryMS.API.Common.DTOs.Manufacturing;
@@ -8,6 +9,7 @@ using BakeryMS.API.Data.Interfaces;
 using BakeryMS.API.Models.Production;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
 namespace BakeryMS.API.Controllers.Manufacturing
 {
@@ -115,7 +117,7 @@ namespace BakeryMS.API.Controllers.Manufacturing
         {
             var ingredient = await _repository.GetIngredient(id);
             if (ingredient == null)
-                return BadRequest(new ErrorModel(3,400,"ingredient not available"));
+                return BadRequest(new ErrorModel(3, 400, "ingredient not available"));
 
             ingredient.IsDeleted = true;
             foreach (var ing in ingredient.IngredientsDetail)
@@ -126,6 +128,51 @@ namespace BakeryMS.API.Controllers.Manufacturing
                 return Ok();
 
             throw new System.Exception($"Failed to delete Ingredient {id}");
+        }
+
+        [Route("[action]")]
+        [HttpPost]
+        public async Task<IActionResult> GetRecipeForPlanDetail(ProductionPlanDetailListDto planDetailList)
+        {
+            if (planDetailList == null)
+                return BadRequest(new ErrorModel(1, 400, "empty body"));
+
+            IList<ProdPlanRecipeForDetailDto> recipeList = new List<ProdPlanRecipeForDetailDto>();
+
+            foreach (var detail in planDetailList.ProductionPlanDetails)
+            {
+                var recipe = await _context.IngredientHeaders
+                .Where(a => a.ItemId == detail.ItemId)
+                .Include(a => a.IngredientsDetail).ThenInclude(a => a.Item).ThenInclude(a => a.Unit)
+                .FirstOrDefaultAsync();
+
+                var ServingSize = recipe.ServingSize;
+                var currentServing = detail.Quantity;
+                var ratioOfServing = currentServing / ServingSize;
+                foreach (var item in recipe.IngredientsDetail)
+                {
+                    var itemFromRecipeList = recipeList.FirstOrDefault(a => a.ItemId == item.ItemId);
+                    if (itemFromRecipeList == null)
+                    {
+                        recipeList.Add(new ProdPlanRecipeForDetailDto
+                        {
+                            ItemId = item.ItemId,
+                            Quantity = (item.Quantity * ratioOfServing),
+                            ItemName = item.Item.Name,
+                            Description = item.Item.Unit.Description // unit description
+                        }
+                        );
+                    }
+                    else
+                    {
+                        var existingQty = itemFromRecipeList.Quantity;
+                        recipeList
+                        .FirstOrDefault(a => a.ItemId == item.ItemId).Quantity = existingQty + (item.Quantity * ratioOfServing);
+                    }
+                }
+            }
+
+            return Ok(recipeList);
         }
     }
 }

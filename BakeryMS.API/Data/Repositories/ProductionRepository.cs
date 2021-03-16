@@ -108,5 +108,43 @@ namespace BakeryMS.API.Data.Repositories
         {
             var ingredient = await _context.AddAsync(ingredientHeader);
         }
+
+
+        public async Task<ProductionPlanHeader> GetProductionPlan(int id)
+        {
+            var productionPlan = await _context.ProductionPlanHeaders
+            .Where(a => a.IsDeleted == false)
+            .Include(a => a.ProductionSession)
+            .Include(a => a.BusinessPlace)
+            .Include(a => a.User)
+            .FirstOrDefaultAsync(a => a.Id == id);
+
+            productionPlan.ProductionPlanDetails = await _context.ProductionPlanDetails.
+                            Where(a => a.ProductionPlanHeader.Id == id).Include(a => a.Item).ToListAsync();
+            productionPlan.ProductionPlanRecipes = await _context.ProductionPlanRecipes.
+                            Where(a => a.productionPlanHeader.Id == id).Include(a => a.Item).ToListAsync();
+            productionPlan.ProductionPlanMachines = await _context.ProductionPlanMachines.
+                            Where(a => a.ProductionPlanHeader.Id == id).Include(a => a.Machinery).ToListAsync();
+            productionPlan.ProductionPlanWorkers = await _context.ProductionPlanWorkers.
+                            Where(a => a.ProductionPlanHeader.Id == id).Include(a => a.Employee).ToListAsync();
+
+            return productionPlan;
+        }
+
+        public async Task<IEnumerable<ProductionPlanHeader>> GetProductionPlans()
+        {
+            var prodPlans = await _context.ProductionPlanHeaders
+            .Where(a => a.IsDeleted == false)
+            .Include(a => a.ProductionSession)
+            .Include(a => a.User)
+            .Include(a => a.BusinessPlace).ToListAsync();
+
+            return prodPlans;
+        }
+
+        public async Task CreateProductionPlan(ProductionPlanHeader productionPlanHeader)
+        {
+            var prodPlan = await _context.AddAsync(productionPlanHeader);
+        }
     }
 }

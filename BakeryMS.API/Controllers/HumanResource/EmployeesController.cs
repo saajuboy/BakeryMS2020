@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -117,10 +118,10 @@ namespace BakeryMS.API.Controllers.HumanResource
         public async Task<IActionResult> GetNextEmployeeNo()
         {
             int MaxNo = 0;
-            if(!_context.Employees.Any())
+            if (!_context.Employees.Any())
                 return Ok(MaxNo + 1);
 
-           MaxNo = await _context.Employees.MaxAsync(a => a.EmployeeNumber) + 1;
+            MaxNo = await _context.Employees.MaxAsync(a => a.EmployeeNumber) + 1;
             return Ok(MaxNo);
         }
 
@@ -136,6 +137,37 @@ namespace BakeryMS.API.Controllers.HumanResource
                 return NoContent();
 
             throw new System.Exception($"Updating user {id} status failed on save");
+        }
+
+        [Route("[action]")]
+        [HttpGet]
+        public async Task<IActionResult> GetEmployeesForPlanDetail(int sessionId, int placeId, string requiredDate)
+        {
+            DateTime reqDate;
+            DateTime.TryParse(requiredDate, out reqDate);
+
+            if (sessionId == 0)
+                return BadRequest(new ErrorModel(1, 400, "session Required"));
+            if (placeId == 0)
+                return BadRequest(new ErrorModel(2, 400, "place Required"));
+            if (reqDate == null || reqDate < DateTime.Today)
+                return BadRequest(new ErrorModel(3, 400, "proper date Required"));
+
+            var session = await _context.ProductionSessions.FindAsync(sessionId);
+            if (session == null)
+                return BadRequest(new ErrorModel(4, 400, "session Not Valid"));
+
+            var place = await _context.BusinessPlaces.FindAsync(placeId);
+            if (place == null)
+                return BadRequest(new ErrorModel(5, 400, "Place Not valid"));
+
+            var employees = await _context.Routines
+            .Where(a => a.BusinessPlace == place
+            && a.Date == reqDate
+            && (a.StartTime < session.StartTime && a.EndTime > session.EndTime)).Select(a => a.Employee).ToListAsync();
+
+            var employeeToReturn = _mapper.Map<IEnumerable<EmployeeForDetailDto>>(employees);
+            return Ok(employeeToReturn);
         }
     }
 }

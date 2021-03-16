@@ -1,0 +1,585 @@
+<!-- <div class="container"> -->
+<div class="row">
+  <div class="col-md-12 mx-auto">
+    <div class="card mx-4">
+      <form [formGroup]="planCreateForm">
+        <div class="card-body p-4">
+          <h1>
+            {{ isEditForm === false ? "Create" : "Edit" }} Production Plan
+          </h1>
+          <p class="text-muted">
+            {{ isEditForm === false ? "Create" : "Edit" }} a Production Plan
+          </p>
+
+          <ng-wizard [config]="config" (stepChanged)="stepChanged($event)">
+            <ng-wizard-step
+              [title]="'Main Info'"
+              [description]="'Select main info required for the plan'"
+              [canEnter]="isValidTypeBoolean"
+              [canExit]="
+                planCreateForm.get('businessPlaceId').valid &&
+                planCreateForm.get('productionSessionId').valid &&
+                planCreateForm.get('date').valid &&
+                !planCreateForm.hasError('lessThanToday')
+              "
+              [state]="checkStepState(1)"
+            >
+              <div class="row mt-3">
+                <div class="input-group col-md-4 mb-3">
+                  <div class="input-group-prepend">
+                    <span class="input-group-text"
+                      ><i class="icon-home"> &nbsp; Business Place</i></span
+                    >
+                  </div>
+                  <select
+                    class="form-control"
+                    formControlName="businessPlaceId"
+                    [ngClass]="{
+                      'is-invalid':
+                        planCreateForm.get('businessPlaceId').errors &&
+                        planCreateForm.get('businessPlaceId').touched,
+                      'is-valid': !planCreateForm.get('businessPlaceId').errors
+                    }"
+                    (change)="dateSessionChanged()"
+                  >
+                    <option
+                      *ngFor="let place of businessPlaces"
+                      [value]="place.id"
+                    >
+                      {{ place.name }}
+                    </option>
+                  </select>
+                  <div class="invalid-feedback">
+                    Please choose a valid Business Place
+                  </div>
+                </div>
+
+                <div class="input-group col-md-4 mb-3">
+                  <div class="input-group-prepend">
+                    <span class="input-group-text"
+                      ><i class="icon-hourglass"> &nbsp; Session</i></span
+                    >
+                  </div>
+                  <select
+                    class="form-control"
+                    formControlName="productionSessionId"
+                    [ngClass]="{
+                      'is-invalid':
+                        planCreateForm.get('productionSessionId').errors &&
+                        planCreateForm.get('productionSessionId').touched,
+                      'is-valid': !planCreateForm.get('productionSessionId')
+                        .errors
+                    }"
+                    (change)="dateSessionChanged()"
+                  >
+                    <option
+                      *ngFor="let session of productionSessions"
+                      [value]="session.id"
+                    >
+                      {{
+                        session.session +
+                          "=>" +
+                          session.startTime +
+                          "-" +
+                          session.endTime
+                      }}
+                    </option>
+                  </select>
+                  <div class="invalid-feedback">
+                    Please choose a valid session
+                  </div>
+                </div>
+
+                <div class="input-group col-md-4 mb-3">
+                  <div class="input-group-prepend">
+                    <span class="input-group-text"
+                      ><i class="icon-user">&nbsp; User</i></span
+                    >
+                  </div>
+                  <input
+                    type="text"
+                    class="form-control"
+                    placeholder="userName"
+                    autocomplete="userName"
+                    formControlName="userName"
+                  />
+                  <div class="invalid-feedback">Please choose a username</div>
+                </div>
+              </div>
+              <div class="row">
+                <div class="input-group col-md-4 mb-3">
+                  <div class="input-group-prepend">
+                    <span class="input-group-text"
+                      ><i class="icon-calendar"> &nbsp; For Date</i></span
+                    >
+                  </div>
+                  <input
+                    [ngClass]="{
+                      'is-invalid':
+                        (planCreateForm.get('date').errors ||
+                          planCreateForm.hasError('lessThanToday')) &&
+                        planCreateForm.get('date').touched,
+                      'is-valid': !planCreateForm.get('date').errors
+                    }"
+                    class="form-control"
+                    formControlName="date"
+                    type="date"
+                    (change)="dateSessionChanged()"
+                  />
+                  <div
+                    *ngIf="planCreateForm.get('date').hasError('required')"
+                    class="invalid-feedback"
+                  >
+                    Please choose a valid for date
+                  </div>
+                  <div
+                    *ngIf="planCreateForm.hasError('lessThanToday')"
+                    class="invalid-feedback"
+                  >
+                    For date cannot be lesser than today
+                  </div>
+                </div>
+                <div class="input-group col-md-8 mb-3">
+                  <div class="input-group-prepend">
+                    <span class="input-group-text"
+                      ><i class="icon-user">&nbsp; User</i></span
+                    >
+                  </div>
+                  <input
+                    type="text"
+                    class="form-control"
+                    placeholder="Description"
+                    autocomplete="off"
+                    formControlName="description"
+                  />
+                  <div class="invalid-feedback">Please choose a username</div>
+                </div>
+              </div>
+            </ng-wizard-step>
+
+            <ng-wizard-step
+              [title]="'Sub Info'"
+              [description]="'Assign Production Order for Plan'"
+              [canEnter]="
+                planCreateForm.get('businessPlaceId').valid &&
+                planCreateForm.get('productionSessionId').valid &&
+                !planCreateForm.hasError('lessThanToday') &&
+                planCreateForm.get('date').valid
+              "
+              [canExit]=""
+              [state]="checkStepState(2)"
+            >
+              <div class="clearfix">
+                <span class="float-left"
+                  ><h4>Available Production Orders</h4></span
+                >
+                <span class="float-right"
+                  >Select All &nbsp;<label
+                    class="switch-sm switch-label switch-primary float-right"
+                  >
+                    <input
+                      (change)="selectAll(1)"
+                      type="checkbox"
+                      class="switch-input"
+                    />
+                    <span
+                      class="switch-slider"
+                      data-checked="&#x2713;"
+                      data-unchecked="&#x2715;"
+                    ></span>
+                  </label>
+                  &nbsp;
+                </span>
+              </div>
+              <table class="table table-bordered">
+                <thead>
+                  <tr>
+                    <th style="width: 15%">Prod.Order Number</th>
+                    <th style="width: 10%">No of Items</th>
+                    <th>Description</th>
+                    <th>For (Place)</th>
+                    <th style="width: 5%">Select</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr *ngFor="let pO of productionOrdersAvailable">
+                    <td class="p-1">{{ pO.productionOrderNo }}</td>
+                    <td class="p-1">{{ pO.productionOrderDetails.length }}</td>
+                    <td class="p-1">{{ pO.description }}</td>
+                    <td class="p-1">{{ pO.businessPlaceName }}</td>
+                    <td class="p-1">
+                      <label class="switch-sm switch-label switch-primary">
+                        <input
+                          [(ngModel)]="pO.isChecked"
+                          [ngModelOptions]="{ standalone: true }"
+                          (change)="pOChecked()"
+                          type="checkbox"
+                          class="switch-input"
+                        />
+                        <span
+                          class="switch-slider"
+                          data-checked="&#x2713;"
+                          data-unchecked="&#x2715;"
+                        ></span>
+                      </label>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+              <h4
+                *ngIf="productionOrdersAvailable.length === 0"
+                class="text-center"
+              >
+                No data Found, Add production order, for selected session and
+                date in previous step
+              </h4>
+              <br />
+
+              <h4>Items and Quantities For plan</h4>
+              <table class="table table-bordered">
+                <thead>
+                  <tr>
+                    <th style="width: 20%">Item</th>
+                    <th>Quantiy</th>
+                    <th>Description</th>
+                  </tr>
+                </thead>
+                <tbody *ngIf="getDetailArray.length > 0">
+                  <ng-container
+                    formArrayName="productionPlanDetails"
+                    *ngFor="
+                      let detail of getDetailArray.controls;
+                      let $index = index
+                    "
+                  >
+                    <tr [formGroupName]="$index">
+                      <td class="p-1">
+                        <label>{{ detail.get("itemName").value }}</label>
+                      </td>
+                      <td class="p-1">
+                        <label>{{ detail.get("quantity").value }}</label>
+                      </td>
+                      <td class="p-1">
+                        <label>{{ detail.get("description").value }}</label>
+                      </td>
+                    </tr>
+                  </ng-container>
+                </tbody>
+              </table>
+              <h4 *ngIf="getDetailArray.length === 0" class="text-center">
+                No data Found, Select production orders to get items and
+                quantity
+              </h4>
+            </ng-wizard-step>
+
+            <ng-wizard-step
+              [title]="'Ingredients'"
+              [description]="'Raw materials required'"
+              [canEnter]="getDetailArray.length > 0"
+              [canExit]="isValidFunctionReturnsBoolean.bind(this)"
+              [state]="checkStepState(3)"
+            >
+              <h4>Recipe/Ingredients For plan</h4>
+              <table class="table table-bordered">
+                <thead>
+                  <tr>
+                    <th style="width: 60%">Item</th>
+                    <th style="width: 20%">Quantity</th>
+                    <th style="width: 20%">Unit</th>
+                  </tr>
+                </thead>
+                <tbody *ngIf="getRecipeArray.length > 0">
+                  <ng-container
+                    formArrayName="productionPlanRecipes"
+                    *ngFor="
+                      let recipe of getRecipeArray.controls;
+                      let $index = index
+                    "
+                  >
+                    <tr [formGroupName]="$index">
+                      <td class="p-1">
+                        <label>{{ recipe.get("itemName").value }}</label>
+                      </td>
+                      <td class="p-1">
+                        <label>{{ recipe.get("quantity").value }}</label>
+                      </td>
+                      <td class="p-1">
+                        <label>{{ recipe.get("description").value }}</label>
+                      </td>
+                    </tr>
+                  </ng-container>
+                </tbody>
+              </table>
+              <h4 *ngIf="getDetailArray.length === 0" class="text-center">
+                No data Found, Select production orders in previous step to get
+                ingredients
+              </h4>
+            </ng-wizard-step>
+
+            <ng-wizard-step
+              [title]="'Workers'"
+              [description]="'Assign Bakers for plan'"
+              [canEnter]="
+                getRecipeArray.length > 0 && getDetailArray.length > 0
+              "
+              [canExit]="isValidFunctionReturnsBoolean.bind(this)"
+              [state]="checkStepState(4)"
+            >
+              <div class="row">
+                <div class="col-md-8">
+                  <div class="clearfix">
+                    <span class="float-left"><h4>Available Workers</h4></span>
+                    <span class="float-right"
+                      >Select All &nbsp;<label
+                        class="switch-sm switch-label switch-primary float-right"
+                      >
+                        <input
+                          (change)="selectAll(2)"
+                          type="checkbox"
+                          class="switch-input"
+                        />
+                        <span
+                          class="switch-slider"
+                          data-checked="&#x2713;"
+                          data-unchecked="&#x2715;"
+                        ></span>
+                      </label>
+                      &nbsp;</span
+                    >
+                  </div>
+
+                  <table class="table table-bordered">
+                    <thead>
+                      <tr>
+                        <th style="width: 20%">Worker No</th>
+                        <th>Name</th>
+                        <th style="width: 20%">Role</th>
+                        <th style="width: 5%">Select</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr *ngFor="let emp of workersAvailable">
+                        <td class="p-1">{{ emp.employeeNumber }}</td>
+                        <td class="p-1">{{ emp.name }}</td>
+                        <td class="p-1">
+                          {{
+                            emp.role === 0
+                              ? "Manager"
+                              : emp.role === 1
+                              ? "Cashier"
+                              : emp.role === 2
+                              ? "Baker"
+                              : emp.role === 3
+                              ? "Counter"
+                              : emp.role === 4
+                              ? "Waiter"
+                              : "Random"
+                          }}
+                        </td>
+                        <td class="p-1">
+                          <label class="switch-sm switch-label switch-primary">
+                            <input
+                              [(ngModel)]="emp.isChecked"
+                              [ngModelOptions]="{ standalone: true }"
+                              (change)="empChecked()"
+                              type="checkbox"
+                              class="switch-input"
+                            />
+                            <span
+                              class="switch-slider"
+                              data-checked="&#x2713;"
+                              data-unchecked="&#x2715;"
+                            ></span>
+                          </label>
+                        </td>
+                      </tr>
+                    </tbody>
+                  </table>
+                  <h4 *ngIf="workersAvailable.length === 0" class="text-center">
+                    No data Found, Add worker in routine schedule, for selected
+                    session and date in 1st step
+                  </h4>
+                </div>
+                <div class="col-md-4">
+                  <h4>Workers For plan</h4>
+                  <table class="table table-bordered">
+                    <thead>
+                      <tr>
+                        <th>Name</th>
+                      </tr>
+                    </thead>
+                    <tbody *ngIf="getWorkersArray.length > 0">
+                      <ng-container
+                        formArrayName="productionPlanWorkers"
+                        *ngFor="
+                          let worker of getWorkersArray.controls;
+                          let $index = index
+                        "
+                      >
+                        <tr [formGroupName]="$index">
+                          <td class="p-1">
+                            <label>{{
+                              worker.get("employeeName").value
+                            }}</label>
+                          </td>
+                        </tr>
+                      </ng-container>
+                    </tbody>
+                  </table>
+                  <h4 *ngIf="getWorkersArray.length === 0" class="text-center">
+                    No data Found, Select workers from available workers
+                  </h4>
+                </div>
+              </div>
+            </ng-wizard-step>
+
+            <ng-wizard-step
+              [title]="'Machinery'"
+              [description]="'Assign Machinery for plan'"
+              [canEnter]="
+                getWorkersArray.length > 0 &&
+                getRecipeArray.length > 0 &&
+                getDetailArray.length > 0
+              "
+              [canExit]="isValidFunctionReturnsBoolean.bind(this)"
+              [state]="checkStepState(5)"
+            >
+              <div class="row">
+                <div class="col-md-8">
+                  <div class="clearfix">
+                    <span class="float-left"><h4>Available Machines</h4></span>
+                    <span class="float-right"
+                      >Select All &nbsp;<label
+                        class="switch-sm switch-label switch-primary float-right"
+                      >
+                        <input
+                          (change)="selectAll(3)"
+                          type="checkbox"
+                          class="switch-input"
+                        />
+                        <span
+                          class="switch-slider"
+                          data-checked="&#x2713;"
+                          data-unchecked="&#x2715;"
+                        ></span>
+                      </label>
+                      &nbsp;</span
+                    >
+                  </div>
+
+                  <table class="table table-bordered">
+                    <thead>
+                      <tr>
+                        <th>Name</th>
+                        <th>Model</th>
+                        <th style="width: 20%">Capacity</th>
+                        <th style="width: 5%">Select</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr *ngFor="let machn of machineriesAvailable">
+                        <td class="p-1">{{ machn.name }}</td>
+                        <td class="p-1">{{ machn.model }}</td>
+                        <td class="p-1">
+                          {{ machn.capacity }}
+                        </td>
+                        <td class="p-1">
+                          <label class="switch-sm switch-label switch-primary">
+                            <input
+                              [(ngModel)]="machn.isChecked"
+                              [ngModelOptions]="{ standalone: true }"
+                              (change)="mchnChecked()"
+                              type="checkbox"
+                              class="switch-input"
+                            />
+                            <span
+                              class="switch-slider"
+                              data-checked="&#x2713;"
+                              data-unchecked="&#x2715;"
+                            ></span>
+                          </label>
+                        </td>
+                      </tr>
+                    </tbody>
+                  </table>
+                  <h4
+                    *ngIf="machineriesAvailable.length === 0"
+                    class="text-center"
+                  >
+                    No data Found, Add machinery, for selected place in 1st step
+                  </h4>
+                </div>
+                <div class="col-md-4">
+                  <h4>Machineries For plan</h4>
+                  <table class="table table-bordered">
+                    <thead>
+                      <tr>
+                        <th>Name</th>
+                      </tr>
+                    </thead>
+                    <tbody *ngIf="getMachineArray.length > 0">
+                      <ng-container
+                        formArrayName="productionPlanMachines"
+                        *ngFor="
+                          let worker of getMachineArray.controls;
+                          let $index = index
+                        "
+                      >
+                        <tr [formGroupName]="$index">
+                          <td class="p-1">
+                            <label>{{
+                              worker.get("machineryName").value
+                            }}</label>
+                          </td>
+                        </tr>
+                      </ng-container>
+                    </tbody>
+                  </table>
+                  <h4 *ngIf="getMachineArray.length === 0" class="text-center">
+                    No data Found, Select workers from available workers
+                  </h4>
+                </div>
+              </div>
+            </ng-wizard-step>
+          </ng-wizard>
+        </div>
+        <div class="row mr-3 ml-3 mb-3">
+          <div class="col-md-2">
+            <button
+              type="button"
+              class="btn btn-block btn-light"
+              (click)="backToList()"
+            >
+              Back to list
+            </button>
+          </div>
+          <div class="col-md-6"></div>
+          <div class="col-md-2">
+            <button
+              type="button"
+              (click)="resetWizard()"
+              class="btn btn-block btn-warning"
+            >
+              Reset
+            </button>
+          </div>
+          <div class="col-md-2">
+            <button
+              [disabled]="!planCreateForm.valid"
+              type="button"
+              class="btn btn-block btn-success"
+              (click)="createPlan()"
+            >
+              {{ isEditForm === false ? "Create" : "Update" }}
+            </button>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+<!-- <div class="output">
+  <p>Form Data: {{ planCreateForm.getRawValue() | json }}</p>
+  <p>Is Valid: {{ planCreateForm.valid }}</p>
+</div> -->

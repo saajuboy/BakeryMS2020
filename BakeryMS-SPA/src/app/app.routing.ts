@@ -27,6 +27,8 @@ import { IngredientListComponent } from './views/Manufacturing/IngredientList/In
 import { IngredientCreateComponent } from './views/Manufacturing/IngredientCreate/IngredientCreate.component';
 import { EmployeeComponent } from './views/HumanResource/Employee/Employee.component';
 import { RoutineComponent } from './views/HumanResource/Routine/Routine.component';
+import { ProductionPlanListComponent } from './views/Manufacturing/ProductionPlanList/ProductionPlanList.component';
+import { ProductionPlanCreateComponent } from './views/Manufacturing/ProductionPlanCreate/ProductionPlanCreate.component';
 
 
 export const routes: Routes = [
@@ -141,6 +143,36 @@ export const routes: Routes = [
         data: {
           title: 'Edit Prod.Order',
           allowedRoles: ['Admin', 'OutletManager', 'BakeryManager', 'Cashier']
+        }
+      },
+      {
+        path: 'manufacturing/productionPlan',
+        runGuardsAndResolvers: 'always',
+        canActivate: [RoleGuard],
+        component: ProductionPlanListComponent,
+        data: {
+          title: 'Production Plan List',
+          allowedRoles: ['Admin', 'BakeryManager']
+        }
+      },
+      {
+        path: 'manufacturing/productionPlan/create',
+        runGuardsAndResolvers: 'always',
+        canActivate: [RoleGuard],
+        component: ProductionPlanCreateComponent,
+        data: {
+          title: 'Create Prod.Plan',
+          allowedRoles: ['Admin', 'BakeryManager']
+        }
+      },
+      {
+        path: 'manufacturing/productionPlan/edit/:id',
+        runGuardsAndResolvers: 'always',
+        canActivate: [RoleGuard],
+        component: ProductionPlanCreateComponent,
+        data: {
+          title: 'Edit Prod.Plan',
+          allowedRoles: ['Admin', 'BakeryManager']
         }
       },
       {

@@ -78,6 +78,9 @@ import { IngredientCreateComponent } from './views/Manufacturing/IngredientCreat
 import { IngredientListComponent } from './views/Manufacturing/IngredientList/IngredientList.component';
 import { EmployeeComponent } from './views/HumanResource/Employee/Employee.component';
 import { RoutineComponent } from './views/HumanResource/Routine/Routine.component';
+import { ProductionPlanCreateComponent } from './views/Manufacturing/ProductionPlanCreate/ProductionPlanCreate.component';
+import { ProductionPlanListComponent } from './views/Manufacturing/ProductionPlanList/ProductionPlanList.component';
+import { NgWizardConfig, NgWizardModule, THEME } from 'ng-wizard';
 
 
 // token getter function to automatically intercept http requests
@@ -85,6 +88,10 @@ export function tokenGetter() {
   // console.log(localStorage.getItem('token'));
   return localStorage.getItem('token');
 }
+
+const ngWizardConfig: NgWizardConfig = {
+  theme: THEME.circles
+};
 
 @NgModule({
   imports: [
@@ -103,6 +110,7 @@ export function tokenGetter() {
     ModalModule.forRoot(),
     TabsModule.forRoot(),
     Ng2SearchPipeModule,
+    NgWizardModule.forRoot(ngWizardConfig),
     ChartsModule,
     HttpClientModule,
     JwtModule.forRoot({
@@ -134,7 +142,9 @@ export function tokenGetter() {
     IngredientCreateComponent,
     IngredientListComponent,
     EmployeeComponent,
-    RoutineComponent
+    RoutineComponent,
+    ProductionPlanCreateComponent,
+    ProductionPlanListComponent
   ],
   providers: [{
     provide: LocationStrategy,

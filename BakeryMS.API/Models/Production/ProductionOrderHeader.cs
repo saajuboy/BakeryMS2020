@@ -14,8 +14,11 @@ namespace BakeryMS.API.Models.Production
         public DateTime? EnteredDate { get; set; }
         public DateTime? RequiredDate { get; set; }
         public BusinessPlace BusinessPlace { get; set; }
+        public string Description { get; set; }
         public bool IsNotEditable { get; set; }
-        public bool IsDeleted { get; set; } 
+        public bool IsDeleted { get; set; }
         public IList<ProductionOrderDetail> ProductionOrderDetails { get; set; }
+        public int? PlanId { get; set; }
+
     }
 }

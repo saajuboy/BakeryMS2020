@@ -18,6 +18,9 @@ namespace BakeryMS.API.Data.Interfaces
         Task<IngredientHeader> GetIngredient(int id);
         Task<IEnumerable<IngredientHeader>> GetIngredients();
         Task CreateIngredient(IngredientHeader ingredientHeader);
+        Task<ProductionPlanHeader> GetProductionPlan(int id);
+        Task<IEnumerable<ProductionPlanHeader>> GetProductionPlans();
+        Task CreateProductionPlan(ProductionPlanHeader productionPlanHeader);
 
     }
 }
