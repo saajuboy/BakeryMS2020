@@ -1,9 +1,11 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 import { Router } from '@angular/router';
 import { ModalDirective } from 'ngx-bootstrap/modal';
 import { ProductionPlanHeader } from '../../../_models/productionPlan';
 import { AlertifyService } from '../../../_services/alertify.service';
 import { ManufacturingService } from '../../../_services/manufacturing.service';
+import { jsPDF } from 'jspdf';
+import html2canvas from 'html2canvas';
 
 @Component({
   // tslint:disable-next-line: component-selector
@@ -13,6 +15,7 @@ import { ManufacturingService } from '../../../_services/manufacturing.service';
 })
 export class ProductionPlanListComponent implements OnInit {
   @ViewChild('infoModal') public infoModal: ModalDirective;
+  @ViewChild('pdfContent') public content: ElementRef;
 
   productionPlans: ProductionPlanHeader[] = [];
   search: string = '';
@@ -27,6 +30,8 @@ export class ProductionPlanListComponent implements OnInit {
 
     this.manufacturingService.getProductionplans().subscribe(result => {
       this.productionPlans = result;
+      this.productionPlans.sort((a, b) => b.id - a.id);
+
       // console.log(result);
       console.log(this.productionPlans);
     }, error => {
@@ -103,7 +108,7 @@ export class ProductionPlanListComponent implements OnInit {
         this.sortOrder.five = !this.sortOrder.five;
         break;
       default:
-        case 1:
+      case 1:
         this.productionPlans.sort((a, b) => {
           return this.sortOrder.one === false ?
             <any>new Date(b.date) - <any>new Date(a.date) :
@@ -114,5 +119,16 @@ export class ProductionPlanListComponent implements OnInit {
     }
   }
 
-
+  downloadPdf() {
+    const doc = new jsPDF('portrait', 'pt', 'a4', true);
+    const content = document.getElementById('pdfContent');
+    doc.setFontSize(12);
+    doc.html(content, {
+      callback: function (doc) {
+        doc.save('a4.pdf');
+      },
+      x: 10,
+      y: 10, margin: [100, 100, 100, 100], html2canvas: { svgRendering: true, width: 800, height: 1000 }
+    });
+  }
 }

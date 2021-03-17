@@ -44,6 +44,8 @@ import { TabsModule } from 'ngx-bootstrap/tabs';
 import { ChartsModule } from 'ng2-charts';
 import { Ng2SearchPipeModule } from 'ng2-search-filter';
 import { ModalModule } from 'ngx-bootstrap/modal';
+import { NgWizardConfig, NgWizardModule, THEME } from 'ng-wizard';
+import { JwPaginationModule } from 'jw-angular-pagination';
 
 // Import services, guards
 import { AuthService } from './_services/auth.service';
@@ -80,7 +82,6 @@ import { EmployeeComponent } from './views/HumanResource/Employee/Employee.compo
 import { RoutineComponent } from './views/HumanResource/Routine/Routine.component';
 import { ProductionPlanCreateComponent } from './views/Manufacturing/ProductionPlanCreate/ProductionPlanCreate.component';
 import { ProductionPlanListComponent } from './views/Manufacturing/ProductionPlanList/ProductionPlanList.component';
-import { NgWizardConfig, NgWizardModule, THEME } from 'ng-wizard';
 
 
 // token getter function to automatically intercept http requests
@@ -111,6 +112,7 @@ const ngWizardConfig: NgWizardConfig = {
     TabsModule.forRoot(),
     Ng2SearchPipeModule,
     NgWizardModule.forRoot(ngWizardConfig),
+    JwPaginationModule,
     ChartsModule,
     HttpClientModule,
     JwtModule.forRoot({

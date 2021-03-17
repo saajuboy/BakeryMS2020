@@ -32,11 +32,11 @@
           <th><i (click)="sort(2)" class="icon-chart"></i> Code</th>
           <th><i (click)="sort(3)" class="icon-chart"></i> Description</th>
           <th><i (click)="sort(4)" class="icon-chart"></i> Item Type</th>
-          <th style="width: 15%;">Actions</th>
+          <th style="width: 15%">Actions</th>
         </tr>
       </thead>
       <tbody>
-        <tr *ngFor="let item of items | filter: search">
+        <tr *ngFor="let item of pageOfItems | filter: search ">
           <td>{{ item.name }}</td>
           <td>{{ item.code }}</td>
           <td>{{ item.description }}</td>
@@ -78,6 +78,13 @@
         </tr>
       </tbody>
     </table>
+    <div class="card-footer pt-3">
+      <jw-pagination
+        [items]="items"
+        (changePage)="onChangePage($event)"
+        [pageSize]="8"
+      ></jw-pagination>
+    </div>
     <!-- <ul class="pagination">
             <li class="page-item"><a class="page-link" href="#">Prev</a></li>
             <li class="page-item active">

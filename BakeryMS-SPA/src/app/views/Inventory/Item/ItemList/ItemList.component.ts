@@ -18,6 +18,7 @@ export class ItemListComponent implements OnInit {
   search: string = '';
   itemInfo: any = {};
   sortOrder = { one: false, two: false, three: false, four: false };
+  pageOfItems: Array<any>;
 
   constructor(private masterService: MasterService, private alertify: AlertifyService, private router: Router) { }
 
@@ -25,6 +26,7 @@ export class ItemListComponent implements OnInit {
 
     this.masterService.getItems(false).subscribe(result => {
       this.items = result;
+      this.items.sort((a, b) => b.id - a.id);
     }, error => {
       this.alertify.error(error);
     });
@@ -84,6 +86,10 @@ export class ItemListComponent implements OnInit {
         this.sortOrder.one = !this.sortOrder.one;
         break;
     }
+  }
+  onChangePage(pageOfItems: Array<any>) {
+    // update current page of items
+    this.pageOfItems = pageOfItems;
   }
 
 }
