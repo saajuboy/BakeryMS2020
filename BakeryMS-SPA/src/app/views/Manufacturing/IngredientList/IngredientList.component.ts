@@ -29,6 +29,8 @@ export class IngredientListComponent implements OnInit {
 
     this.manufacturingService.getIngredients().subscribe(result => {
       this.ingredients = result;
+      this.ingredients.sort((a, b) => b.id - a.id);
+
       // console.log(result);
       console.log(this.ingredients);
 

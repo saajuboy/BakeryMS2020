@@ -30,6 +30,7 @@ export class PurchaseOrderListComponent implements OnInit {
 
     this.inventoryService.getPurchaseOrders().subscribe(result => {
       this.purchaseOrders = result;
+      this.purchaseOrders.sort((a, b) => b.id - a.id);
       // console.log(result);
       console.log(this.purchaseOrders);
 

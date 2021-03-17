@@ -35,6 +35,8 @@ export class UnitComponent implements OnInit {
   getUnitList() {
     this.masterService.getUnits().subscribe(result => {
       this.units = result;
+      this.units.sort((a, b) => b.id - a.id);
+
     }, error => {
       this.alertify.error(error);
     });

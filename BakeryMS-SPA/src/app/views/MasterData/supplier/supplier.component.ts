@@ -36,6 +36,8 @@ export class SupplierComponent implements OnInit {
   getSupplierList() {
     this.masterService.getSuppliers(false).subscribe(result => {
       this.suppliers = result;
+      this.suppliers.sort((a, b) => b.id - a.id);
+
     }, error => {
       this.alertify.error(error);
     });

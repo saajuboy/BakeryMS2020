@@ -41,6 +41,7 @@ export class EmployeeComponent implements OnInit {
   getList() {
     this.humanresourceService.getEmployees().subscribe(result => {
       this.employees = result;
+      this.employees.sort((a, b) => b.id - a.id);
     }, error => {
       this.alertify.error(error);
     });

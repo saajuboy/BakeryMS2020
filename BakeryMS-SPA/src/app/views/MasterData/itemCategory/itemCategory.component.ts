@@ -36,6 +36,8 @@ export class ItemCategoryComponent implements OnInit {
   getItemCategoryList() {
     this.masterService.getItemCategories().subscribe(result => {
       this.itemCategories = result;
+      this.itemCategories.sort((a, b) => b.id - a.id);
+
     }, error => {
       this.alertify.error(error);
     });

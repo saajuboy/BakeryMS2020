@@ -29,6 +29,8 @@ export class ProductionOrderListComponent implements OnInit {
 
     this.manufacturingService.getProductionOrders().subscribe(result => {
       this.productionOrders = result;
+      this.productionOrders.sort((a, b) => b.id - a.id);
+
       // console.log(result);
       console.log(this.productionOrders);
 
