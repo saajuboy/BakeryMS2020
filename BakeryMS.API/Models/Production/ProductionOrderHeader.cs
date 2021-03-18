@@ -19,6 +19,7 @@ namespace BakeryMS.API.Models.Production
         public bool IsDeleted { get; set; }
         public IList<ProductionOrderDetail> ProductionOrderDetails { get; set; }
         public int? PlanId { get; set; }
+        public int? isProcessed { get; set; }//0-reviewd,1-processed,2-completed
 
     }
 }
