@@ -15,7 +15,9 @@
           <div class="row">
             <div class="input-group col-md-6 mb-3">
               <div class="input-group-prepend">
-                <span class="input-group-text"><i class="icon-eye">&nbsp; Name</i></span>
+                <span class="input-group-text"
+                  ><i class="icon-eye">&nbsp; Name</i></span
+                >
               </div>
               <input
                 type="text"
@@ -45,7 +47,9 @@
             </div>
             <div class="input-group col-md-6 mb-3">
               <div class="input-group-prepend">
-                <span class="input-group-text"><i class="icon-badge">&nbsp; Type</i></span>
+                <span class="input-group-text"
+                  ><i class="icon-badge">&nbsp; Type</i></span
+                >
               </div>
               <select
                 class="form-control"
@@ -58,6 +62,7 @@
                     !r.get('type').errors &&
                     (r.get('type').touched || r.get('name').value !== '')
                 }"
+                (change)="typeChanged(r.get('type'))"
               >
                 <option value="0">Production</option>
                 <option value="1">Company</option>
@@ -92,8 +97,7 @@
                     (r.get('itemCategory').touched ||
                       r.get('itemCategory').value !== '')
                 }"
-
-                (change)="setCode( r.get('itemCategory').value)"
+                (change)="setCode(r.get('itemCategory').value)"
               >
                 <option
                   *ngFor="let category of itemCategories"
@@ -103,7 +107,9 @@
                 </option>
               </select>
               <span class="input-group-append">
-                <button class="btn btn-primary" type="button"><i class="icon-plus "></i></button>
+                <button class="btn btn-primary" type="button">
+                  <i class="icon-plus"></i>
+                </button>
               </span>
               <div
                 *ngIf="r.get('itemCategory').hasError('required')"
@@ -114,7 +120,9 @@
             </div>
             <div class="input-group col-md-6 mb-3">
               <div class="input-group-prepend">
-                <span class="input-group-text"> <i class="icon-puzzle"></i> &nbsp; Code </span>
+                <span class="input-group-text">
+                  <i class="icon-puzzle"></i> &nbsp; Code
+                </span>
               </div>
               <input
                 type="text"
@@ -140,7 +148,9 @@
           <div class="row">
             <div class="input-group col-md-12 mb-3">
               <div class="input-group-prepend">
-                <span class="input-group-text"> <i class="icon-pencil"></i>&nbsp; Description </span>
+                <span class="input-group-text">
+                  <i class="icon-pencil"></i>&nbsp; Description
+                </span>
               </div>
               <input
                 type="text"
@@ -164,9 +174,11 @@
             </div>
           </div>
           <div class="row">
-            <div class="input-group col-md-6 mb-3">
+            <div class="input-group col-md-4 mb-3">
               <div class="input-group-prepend">
-                <span class="input-group-text"><i class="fa fa-balance-scale">&nbsp; Unit</i></span>
+                <span class="input-group-text"
+                  ><i class="fa fa-balance-scale">&nbsp; Unit</i></span
+                >
               </div>
               <select
                 class="form-control"
@@ -185,13 +197,80 @@
                 </option>
               </select>
               <span class="input-group-append">
-                <button class="btn btn-primary" type="button"><i class="icon-plus"></i></button>
+                <button class="btn btn-primary" type="button">
+                  <i class="icon-plus"></i>
+                </button>
               </span>
               <div
                 *ngIf="r.get('unit').hasError('required')"
                 class="invalid-feedback"
               >
-                It is better to have a description for an item !
+                unit Required
+              </div>
+            </div>
+            <div
+              *ngIf="r.get('type').value === '0' || isProductionType"
+              class="input-group col-md-4 mb-3"
+            >
+              <div class="input-group-prepend">
+                <span class="input-group-text"
+                  ><i class="fa fa-balance-scale">&nbsp; Selling Price</i></span
+                >
+              </div>
+              <input
+                [ngClass]="{
+                  'is-invalid':
+                    (r.get('sellingPrice').errors &&
+                      r.get('sellingPrice').touched) ||
+                    r.hasError('priceRequired'),
+                  'is-valid':
+                    !r.get('sellingPrice').errors &&
+                    r.get('sellingPrice').touched
+                }"
+                type="number"
+                class="form-control"
+                formControlName="sellingPrice"
+              />
+              <div
+                *ngIf="r.get('sellingPrice').hasError('pattern')"
+                class="invalid-feedback"
+              >
+                Selling Price should be numeric
+              </div>
+              <div *ngIf="r.hasError('priceRequired')" class="invalid-feedback">
+                Selling Price is required
+              </div>
+            </div>
+            <div
+              *ngIf="r.get('type').value === '0' || isProductionType "
+              class="input-group col-md-4 mb-3"
+            >
+              <div class="input-group-prepend">
+                <span class="input-group-text"
+                  ><i class="fa fa-balance-scale">&nbsp;Expiry Days</i></span
+                >
+              </div>
+              <input
+                [ngClass]="{
+                  'is-invalid':
+                    (r.get('expireDays').errors &&
+                      r.get('expireDays').touched) ||
+                    r.hasError('daysRequired'),
+                  'is-valid':
+                    !r.get('expireDays').errors && r.get('expireDays').touched
+                }"
+                type="number"
+                class="form-control"
+                formControlName="expireDays"
+              />
+              <div
+                *ngIf="r.get('expireDays').hasError('pattern')"
+                class="invalid-feedback"
+              >
+                Expiry days should be numeric
+              </div>
+              <div *ngIf="r.hasError('daysRequired')" class="invalid-feedback">
+                Expiry days is required
               </div>
             </div>
           </div>
@@ -221,6 +300,4 @@
     </div>
   </div>
 </div>
-
-<!-- <p>create form value : {{ createForm.getRawValue() | json }}</p>
-<p>create form status : {{ createForm.status | json }}</p> -->
+<!-- <p>create form value : {{ createForm.getRawValue() | json }}</p><p>create form status : {{ createForm.status | json }}</p> -->

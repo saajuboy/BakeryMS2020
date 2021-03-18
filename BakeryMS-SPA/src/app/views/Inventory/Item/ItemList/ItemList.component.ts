@@ -1,7 +1,7 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { Router } from '@angular/router';
 import { ModalDirective } from 'ngx-bootstrap/modal';
-import { Item } from '../../../../_models/item';
+import { Item, ItemCategory, Unit } from '../../../../_models/item';
 import { AlertifyService } from '../../../../_services/alertify.service';
 import { MasterService } from '../../../../_services/master.service';
 
@@ -16,7 +16,7 @@ export class ItemListComponent implements OnInit {
 
   items: Item[];
   search: string = '';
-  itemInfo: any = {};
+  itemInfo: Item = <Item>{ itemCategory: <ItemCategory>{}, unit: <Unit>{} };
   sortOrder = { one: false, two: false, three: false, four: false };
   pageOfItems: Array<any>;
 
@@ -56,8 +56,12 @@ export class ItemListComponent implements OnInit {
     this.router.navigate(['inventory/item/edit', id]);
   }
   ShowItemInfo(id: number) {
-    this.itemInfo = this.items.find(a => a.id === id);
-    this.infoModal.show();
+    this.masterService.getItem(id).subscribe((result) => {
+      this.itemInfo = result;
+      this.infoModal.show();
+    }, () => {
+      this.alertify.error('some Error occured');
+    });
   }
 
   sort(propertyNumber: number) {

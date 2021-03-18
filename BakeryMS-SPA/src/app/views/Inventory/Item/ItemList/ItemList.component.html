@@ -36,7 +36,7 @@
         </tr>
       </thead>
       <tbody>
-        <tr *ngFor="let item of pageOfItems | filter: search ">
+        <tr *ngFor="let item of pageOfItems | filter: search">
           <td>{{ item.name }}</td>
           <td>{{ item.code }}</td>
           <td>{{ item.description }}</td>
@@ -139,27 +139,37 @@
         <div class="row mt-2">
           <div class="col-md-6 font-weight-bold">Item Category</div>
           <div class="col-md-1">-</div>
-          <div class="col-md-5">{{ itemInfo.itemCategory }}</div>
+          <div class="col-md-5">{{ itemInfo.itemCategory.description }}</div>
         </div>
         <div class="row mt-2">
           <div class="col-md-6 font-weight-bold">Unit</div>
           <div class="col-md-1">-</div>
-          <div class="col-md-5">{{ itemInfo.unit }}</div>
+          <div class="col-md-5">{{ itemInfo.unit.description }}</div>
         </div>
         <div class="row mt-2">
           <div class="col-md-6 font-weight-bold">Item Type</div>
           <div class="col-md-1">-</div>
           <div class="col-md-5">
             {{
-              itemInfo.status === 1
-                ? itemInfo.status === 2
-                  ? itemInfo.status === 3
+              itemInfo.type === 1
+                ? itemInfo.type === 2
+                  ? itemInfo.type === 3
                     ? "Miscalleneous"
                     : "Raw material"
                   : "Company"
                 : "Production"
             }}
           </div>
+        </div>
+        <div *ngIf="itemInfo.type === 0" class="row mt-2">
+          <div class="col-md-6 font-weight-bold">Selling Price</div>
+          <div class="col-md-1">-</div>
+          <div class="col-md-5">{{ itemInfo.sellingPrice }}</div>
+        </div>
+        <div *ngIf="itemInfo.type === 0" class="row mt-2">
+          <div class="col-md-6 font-weight-bold">Expiry Days</div>
+          <div class="col-md-1">-</div>
+          <div class="col-md-5">{{ itemInfo.expireDays }}</div>
         </div>
       </div>
       <div class="modal-footer">

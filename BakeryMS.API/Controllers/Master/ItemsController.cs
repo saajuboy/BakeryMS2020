@@ -90,6 +90,14 @@ namespace BakeryMS.API.Controllers.Master
             itemFromRepository.Unit = unitFromRepo;
             itemFromRepository.Type = itemForDetailDto.Type;
 
+            if (itemForDetailDto.Type == 0)
+            {
+                if (itemForDetailDto.SellingPrice > 0)
+                    itemFromRepository.SellingPrice = itemForDetailDto.SellingPrice;
+
+                if (itemForDetailDto.ExpireDays > 0)
+                    itemFromRepository.ExpireDays = itemForDetailDto.ExpireDays;
+            }
 
             if (await _invRepo.SaveAll())
                 return NoContent();

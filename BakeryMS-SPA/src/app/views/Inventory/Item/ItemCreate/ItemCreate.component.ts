@@ -22,6 +22,8 @@ export class ItemCreateComponent implements OnInit {
   itemCategories: ItemCategory[];
   units: Unit[];
   itemCodeForEdit = { itemCategoryId: 0, code: '' };
+
+  isProductionType: boolean = false;
   get r() { return this.createForm; }
 
   constructor(private authService: AuthService,
@@ -66,8 +68,26 @@ export class ItemCreateComponent implements OnInit {
       description: [''],
       itemCategory: ['', Validators.required],
       unit: ['', Validators.required],
-      type: ['', Validators.required]
-    });
+      type: ['', Validators.required],
+      sellingPrice: ['', Validators.pattern('^[0-9.]+')],
+      expireDays: ['', Validators.pattern('^[0-9]+')]
+    }, { validators: this.priceAndDateValidator });
+  }
+
+  priceAndDateValidator(g: FormGroup) {
+    if (+g.get('type').value === 0) {
+
+      const sellPrice: string = g.get('sellingPrice').value;
+      const expDays: string = g.get('expireDays').value;
+
+      if (+sellPrice === 0) {
+        return { priceRequired: true };
+      }
+      if (+expDays === 0) {
+        return { daysRequired: true };
+      }
+    }
+    return null;
   }
 
   createItem() {
@@ -125,11 +145,15 @@ export class ItemCreateComponent implements OnInit {
       description: item.description,
       type: item.type,
       itemCategory: item.itemCategory.id,
-      unit: item.unit.id
+      unit: item.unit.id,
+      sellingPrice: item.sellingPrice,
+      expireDays: item.expireDays
     });
 
     this.itemCodeForEdit.itemCategoryId = item.itemCategory.id;
     this.itemCodeForEdit.code = item.code;
+
+    this.isProductionType = item.type === 0 ? true : false;
 
   }
 
@@ -152,5 +176,14 @@ export class ItemCreateComponent implements OnInit {
         const Code = result;
         this.r.patchValue({ code: Code.code });
       }, (error) => { console.log(error); });
+  }
+
+
+  typeChanged(type: any) {
+    if (+type === 0) {
+      this.isProductionType = true;
+    } else {
+      this.isProductionType = false;
+    }
   }
 }
