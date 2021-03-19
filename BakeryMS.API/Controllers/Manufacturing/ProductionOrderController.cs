@@ -237,7 +237,7 @@ namespace BakeryMS.API.Controllers.Manufacturing
 
         [Route("[action]")]
         [HttpGet]
-        public async Task<IActionResult> GetFilteredProductionOrders(int sessionId, int placeId, string requiredDate, bool isReviewed)//place and plan are optional
+        public async Task<IActionResult> GetFilteredProductionOrders(int sessionId, int placeId, string requiredDate, bool isReviewed, int planId)//place and plan are optional
         {
             DateTime reqDate;
             DateTime.TryParse(requiredDate, out reqDate);
@@ -277,15 +277,124 @@ namespace BakeryMS.API.Controllers.Manufacturing
             {
                 ProdOrdsQuery = ProdOrdsQuery.Where(a => a.IsNotEditable == false);
             }
-            // else
-            // {
-            // }
+            else
+            {
+                ProdOrdsQuery = ProdOrdsQuery.Where(a => a.IsNotEditable == true);
+                if (planId > 0)
+                {
+                    ProdOrdsQuery = ProdOrdsQuery.Where(a => a.PlanId == planId);
+                }
+            }
 
             var prodOrds = await ProdOrdsQuery.ToListAsync();
 
             var ordersToReturn = _mapper.Map<IEnumerable<ProdOrderHeaderForDetailDto>>(prodOrds); ;
 
             return Ok(ordersToReturn);
+        }
+        [Route("[action]")]
+        [HttpGet]
+        public async Task<IActionResult> GetPlanProductionOrders(int planId)
+        {
+            var ProdOrdsQuery = _context.ProductionOrderHeaders
+            .Include(a => a.BusinessPlace)
+            .Include(a => a.ProductionOrderDetails).ThenInclude(a => a.Item)
+            .AsQueryable();
+
+            if (planId > 0)
+            {
+                ProdOrdsQuery = ProdOrdsQuery.Where(a => a.PlanId == planId && a.IsNotEditable == true && (a.isProcessed == null || a.isProcessed == 0));
+            }
+
+            var prodOrds = await ProdOrdsQuery.ToListAsync();
+            var ordersToReturn = _mapper.Map<IEnumerable<ProdOrderHeaderForDetailDto>>(prodOrds); ;
+
+            return Ok(ordersToReturn);
+        }
+
+        [Route("[action]")]
+        [HttpPost]
+        public async Task<IActionResult> AcceptItems([FromQuery] int planId, [FromBody] ProdOrderHeaderForDetailDto prodOrderHeaderForDetailDto)
+        {
+            if (prodOrderHeaderForDetailDto == null)
+                return BadRequest(new ErrorModel(1, 400, "Empty Body"));
+
+            if (planId == 0)
+                return BadRequest(new ErrorModel(2, 400, "Invalid Plan"));
+            var plan = await _repository.GetProductionPlan(planId);
+            if (plan == null)
+                return BadRequest(new ErrorModel(2, 400, "Invalid Plan"));
+
+            if (prodOrderHeaderForDetailDto.Id == 0)
+                return BadRequest(new ErrorModel(3, 400, "Valid Prod order Id required"));
+            var prodOrder = await _repository.GetProductionOrder(prodOrderHeaderForDetailDto.Id);
+            if (prodOrder == null)
+                return BadRequest(new ErrorModel(3, 400, "Valid Prod order Id required"));
+
+            if (prodOrderHeaderForDetailDto.ProductionOrderDetails == null)
+                return BadRequest(new ErrorModel(4, 400, "Items required"));
+
+
+            var prodItems = await _context.ProductionItems
+            .Where(a => a.CurrentPlace == prodOrder.BusinessPlace && a.BatchNo == planId).ToListAsync();
+
+            foreach (var item in prodOrderHeaderForDetailDto.ProductionOrderDetails)
+            {
+                var itemFromPITEMSList = prodItems.FirstOrDefault(a => a.ItemId == item.ItemId);
+
+                if (itemFromPITEMSList == null)
+                {
+                    ProductionItem pItem = new ProductionItem();
+                    pItem.Id = 0;
+                    pItem.Item = null;
+                    pItem.ItemId = item.ItemId;
+                    pItem.BatchNo = planId;
+                    pItem.StockedQuantity = item.Quantity;
+                    pItem.AvailableQuantity = item.Quantity;
+                    pItem.UsedQuantity = 0;
+                    pItem.CostPrice = CalculateCostOfItemInPlan(plan, item.ItemId);
+                    pItem.CurrentPlace = prodOrder.BusinessPlace;
+                    pItem.ManufacturedDate = DateTime.Now;
+
+                    var expiryDays = prodOrder.ProductionOrderDetails.FirstOrDefault(a => a.ItemId == item.ItemId).Item.ExpireDays;
+                    expiryDays = expiryDays == null ? 0 : expiryDays;
+                    pItem.ExpireDate = DateTime.Now.AddDays(expiryDays.Value);
+
+                    prodItems.Add(pItem);
+                }
+                else
+                {
+                    var existingQty = itemFromPITEMSList.StockedQuantity;
+
+                    prodItems.FirstOrDefault(a => a.ItemId == item.ItemId).StockedQuantity = existingQty + item.Quantity;
+                    prodItems.FirstOrDefault(a => a.ItemId == item.ItemId).AvailableQuantity += item.Quantity;
+                }
+            }
+
+            _context.UpdateRange(prodItems);
+
+            prodOrder.isProcessed = 1;
+            _context.Update(prodOrder);
+
+            if (await _context.SaveChangesAsync() > 0)
+            {
+                var prods = await _context.ProductionOrderHeaders.Where(a => a.PlanId == planId && (a.isProcessed == 0 || a.isProcessed == null)).ToListAsync();
+                if (prods == null || prods.Count == 0)
+                {
+                    var planToUpdate = await _context.ProductionPlanHeaders.FirstOrDefaultAsync(a => a.Id == planId);
+                    planToUpdate.IsNotEditable = true;
+                    await _context.SaveChangesAsync();
+                }
+                return Ok();
+            }
+
+            return BadRequest(new ErrorModel(5, 400, "Couldn't Accept, Some error occured"));
+
+        }
+
+        private decimal CalculateCostOfItemInPlan(ProductionPlanHeader plan, int itemId)
+        {
+            return 40;
         }
     }
 

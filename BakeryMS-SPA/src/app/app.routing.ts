@@ -29,6 +29,7 @@ import { EmployeeComponent } from './views/HumanResource/Employee/Employee.compo
 import { RoutineComponent } from './views/HumanResource/Routine/Routine.component';
 import { ProductionPlanListComponent } from './views/Manufacturing/ProductionPlanList/ProductionPlanList.component';
 import { ProductionPlanCreateComponent } from './views/Manufacturing/ProductionPlanCreate/ProductionPlanCreate.component';
+import { ItemAcceptanceComponent } from './views/Inventory/ItemAcceptance/ItemAcceptance.component';
 
 
 export const routes: Routes = [
@@ -113,6 +114,16 @@ export const routes: Routes = [
         data: {
           title: 'Edit Pur.Order',
           allowedRoles: ['Admin', 'OutletManager', 'BakeryManager']
+        }
+      },
+      {
+        path: 'inventory/itemAcceptance',
+        runGuardsAndResolvers: 'always',
+        canActivate: [RoleGuard],
+        component: ItemAcceptanceComponent,
+        data: {
+          title: 'Prod Item acceptance',
+          allowedRoles: ['Admin', 'BakeryManager']
         }
       },
       {

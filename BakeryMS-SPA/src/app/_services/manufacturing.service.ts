@@ -39,7 +39,7 @@ export class ManufacturingService {
     params = params.append('requiredDate', requiredDate.toString());
     return this.http.get<ProductionOrderHeader>(this.baseUrl + 'productionOrder/GetAutoProductionOrder', { params });
   }
-  getFilteredProductionOrders(sessionId, requiredDate, isReviewed?: boolean, placeId?): Observable<ProductionOrderHeader[]> {
+  getFilteredProductionOrders(sessionId, requiredDate, isReviewed?: boolean, placeId?, planId?): Observable<ProductionOrderHeader[]> {
     let params = new HttpParams();
     params = params.append('sessionId', sessionId.toString());
     params = params.append('requiredDate', requiredDate.toString());
@@ -49,7 +49,17 @@ export class ManufacturingService {
     if (+placeId > 0) {
       params = params.append('placeId', placeId.toString());
     }
+    if (+planId > 0) {
+      params = params.append('planId', planId.toString());
+    }
     return this.http.get<ProductionOrderHeader[]>(this.baseUrl + 'productionOrder/GetFilteredProductionOrders', { params });
+  }
+  getProductionOrdersForSelectedPlan(planId): Observable<ProductionOrderHeader[]> {
+    let params = new HttpParams();
+    if (+planId > 0) {
+      params = params.append('planId', planId.toString());
+    }
+    return this.http.get<ProductionOrderHeader[]>(this.baseUrl + 'productionOrder/GetPlanProductionOrders', { params });
   }
   createProductionOrder(productionOrder: ProductionOrderHeader) {
     return this.http.post(this.baseUrl + 'productionOrder', productionOrder);
@@ -128,4 +138,12 @@ export class ManufacturingService {
     return this.http.delete(this.baseUrl + 'productionPlans/' + id);
   }
 
+  getRecentProductionPlans(): Observable<ProductionPlanHeader[]> {
+    return this.http.get<ProductionPlanHeader[]>(this.baseUrl + 'productionPlans/GetRecentProductionPlans');
+  }
+  acceptItems(planId: number, productionOrder: ProductionOrderHeader) {
+    let params = new HttpParams();
+    params = params.append('planId', planId.toString());
+    return this.http.post(this.baseUrl + 'productionOrder/AcceptItems', productionOrder, { params });
+  }
 }

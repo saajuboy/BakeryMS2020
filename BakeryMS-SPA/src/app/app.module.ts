@@ -82,6 +82,7 @@ import { EmployeeComponent } from './views/HumanResource/Employee/Employee.compo
 import { RoutineComponent } from './views/HumanResource/Routine/Routine.component';
 import { ProductionPlanCreateComponent } from './views/Manufacturing/ProductionPlanCreate/ProductionPlanCreate.component';
 import { ProductionPlanListComponent } from './views/Manufacturing/ProductionPlanList/ProductionPlanList.component';
+import { ItemAcceptanceComponent } from './views/Inventory/ItemAcceptance/ItemAcceptance.component';
 
 
 // token getter function to automatically intercept http requests
@@ -146,7 +147,8 @@ const ngWizardConfig: NgWizardConfig = {
     EmployeeComponent,
     RoutineComponent,
     ProductionPlanCreateComponent,
-    ProductionPlanListComponent
+    ProductionPlanListComponent,
+    ItemAcceptanceComponent
   ],
   providers: [{
     provide: LocationStrategy,

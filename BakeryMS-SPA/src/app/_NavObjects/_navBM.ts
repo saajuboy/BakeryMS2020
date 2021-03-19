@@ -61,6 +61,11 @@ export const navItems: INavData[] = [
                 name: 'Create Pur.Order',
                 url: '/inventory/purchaseOrder/create',
                 icon: 'icon-note'
+            },
+            {
+                name: 'Accept Prod Items',
+                url: '/inventory/itemAcceptance',
+                icon: 'icon-check'
             }
         ]
     },

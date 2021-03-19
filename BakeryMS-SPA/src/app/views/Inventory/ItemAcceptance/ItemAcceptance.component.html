@@ -1,0 +1,163 @@
+<div class="row">
+  <div class="col-md-12 mx-auto">
+    <div class="card mx-4">
+      <div class="card-body p-4">
+        <h1>Item Acceptance</h1>
+        <p class="text-muted">
+          Accept produced items according to production order
+        </p>
+
+        <div class="row">
+          <div class="input-group col-md-7 mb-3">
+            <div class="input-group-prepend">
+              <span class="input-group-text"
+                ><i class="icon-notebook">&nbsp; Prod.Plans</i></span
+              >
+            </div>
+            <select
+              class="form-control"
+              id="plans"
+              [(ngModel)]="selectedPlanId"
+              [ngClass]="{
+                'is-invalid': selectedPlanId === 0,
+                'is-valid': selectedPlanId > 0
+              }"
+              (change)="planChange(selectedPlanId)"
+            >
+              <!-- <option value="0" selected="true">Please Select</option> -->
+              <option *ngFor="let plan of planList" [value]="plan.id">
+                <!-- {{ plan.sessionName + ":" + plan.businessPlaceName + " - " + plan.description }} -->
+                {{ plan.description }}
+              </option>
+            </select>
+
+            <div class="invalid-feedback">Please select a plan</div>
+          </div>
+          <div class="input-group col-md-5 mb-3">
+            <div class="input-group-prepend">
+              <span class="input-group-text"
+                ><i class="icon-briefcase">&nbsp; Prod.Orders</i></span
+              >
+            </div>
+            <select
+              class="form-control"
+              id="plans"
+              [(ngModel)]="selectedProdOrdrId"
+              [ngClass]="{
+                'is-invalid': selectedProdOrdrId === 0,
+                'is-valid': selectedProdOrdrId > 0
+              }"
+              (change)="prodOrderChange(selectedProdOrdrId)"
+            >
+              <option *ngFor="let pO of ProdOrderList" [value]="pO.id">
+                <!-- {{ plan.sessionName + ":" + plan.businessPlaceName + " - " + plan.description }} -->
+                {{
+                  "PO Number " +
+                    pO.productionOrderNo +
+                    ": For " +
+                    pO.businessPlace
+                }}
+              </option>
+            </select>
+
+            <div *ngIf="ProdOrderList.length === 0" class="invalid-feedback">
+              Please select a plan to get Orders
+            </div>
+            <div *ngIf="ProdOrderList.length > 0" class="invalid-feedback">
+              Please select an Order
+            </div>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-md-10"></div>
+          <div class="col-md-2">
+            <button
+              type="button"
+              [disabled]="acceptanceForm.invalid"
+              class="btn btn-block btn-success"
+              (click)="acceptItems(true)"
+            >
+              Accept
+            </button>
+          </div>
+        </div>
+        <form [formGroup]="acceptanceForm">
+          <div class="row m-2">
+            <table class="table table-bordered">
+              <thead>
+                <tr>
+                  <th>Item</th>
+                  <th style="width: 20%">Requested Quantity</th>
+                  <th style="width: 20%">Accepted Quantity</th>
+                </tr>
+              </thead>
+              <tbody *ngIf="gettableRowArray.length > 0">
+                <ng-container
+                  formArrayName="items"
+                  *ngFor="
+                    let pod of gettableRowArray.controls;
+                    let $index = index
+                  "
+                >
+                  <tr [formGroupName]="$index">
+                    <td>
+                      <label>{{ pod.get("item").value }}</label>
+                    </td>
+                    <td>
+                      <label>{{ pod.get("requestedQuantity").value }}</label>
+                    </td>
+                    <td>
+                      <input
+                        [ngClass]="{
+                          'is-invalid':
+                            pod.get('quantity').errors &&
+                            pod.get('quantity').touched,
+                          'is-valid':
+                            !pod.get('quantity').errors &&
+                            pod.get('quantity').touched
+                        }"
+                        type="text"
+                        class="form-control"
+                        placeholder="0.00"
+                        formControlName="quantity"
+                      />
+                      <div
+                        *ngIf="pod.get('quantity').hasError('required')"
+                        class="invalid-feedback"
+                      >
+                        Quantity required
+                      </div>
+                      <div
+                        *ngIf="pod.get('quantity').hasError('pattern')"
+                        class="invalid-feedback"
+                      >
+                        Enter a valid quantity eg - 1.24
+                      </div>
+                    </td>
+                  </tr>
+                </ng-container>
+              </tbody>
+            </table>
+          </div>
+          <h4 *ngIf="gettableRowArray.length === 0" class="text-center">
+            No data found, select Plan and Prod.Order
+          </h4>
+        </form>
+
+        <div class="row">
+          <div class="col-md-10"></div>
+          <div class="col-md-2">
+            <button
+              type="button"
+              [disabled]="acceptanceForm.invalid"
+              class="btn btn-block btn-success"
+              (click)="acceptItems(true)"
+            >
+              Accept
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

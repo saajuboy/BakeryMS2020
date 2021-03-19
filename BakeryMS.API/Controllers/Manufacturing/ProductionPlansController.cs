@@ -1,3 +1,6 @@
+using System.ComponentModel;
+using System.Runtime.CompilerServices;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -89,6 +92,7 @@ namespace BakeryMS.API.Controllers.Manufacturing
                     var prodOrder = await _repository.GetProductionOrder(prodOrderId);
                     prodOrder.IsNotEditable = true;
                     prodOrder.PlanId = planHeaderToCreate.Id;
+                    prodOrder.isProcessed = 0;
                 }
 
                 if (await _repository.SaveAll())
@@ -199,6 +203,7 @@ namespace BakeryMS.API.Controllers.Manufacturing
                 {
                     prod.IsNotEditable = false;
                     prod.PlanId = null;
+                    prod.isProcessed = null;
                 }
                 await _context.SaveChangesAsync();
 
@@ -207,6 +212,7 @@ namespace BakeryMS.API.Controllers.Manufacturing
                     var prodOrder = await _context.ProductionOrderHeaders.FirstOrDefaultAsync(a => a.Id == prodOrderId);
                     prodOrder.IsNotEditable = true;
                     prodOrder.PlanId = planHeaderToUpdate.Id;
+                    prodOrder.isProcessed = 0;
                 }
 
                 if (await _context.SaveChangesAsync() > 0)
@@ -238,6 +244,7 @@ namespace BakeryMS.API.Controllers.Manufacturing
                 {
                     prod.IsNotEditable = false;
                     prod.PlanId = null;
+                    prod.isProcessed = null;
                 }
                 if (await _context.SaveChangesAsync() > 0)
                 {
@@ -246,6 +253,34 @@ namespace BakeryMS.API.Controllers.Manufacturing
                 return BadRequest(new ErrorModel(6, 400, "Deleted production plan, but some error occured"));
             }
             throw new System.Exception($"Failed to delete Production order {id}");
+        }
+
+        [Route("[action]")]
+        [HttpGet]
+        public async Task<IActionResult> GetRecentProductionPlans()
+        {
+            var currentDate = DateTime.Today;
+
+            var prodPlans = await _context.ProductionPlanHeaders
+           .Where(a => a.IsDeleted == false && a.Date >= currentDate.AddDays(-4) && a.Date <= currentDate.AddDays(1) && a.IsNotEditable == false)
+           .Include(a => a.ProductionSession)
+           .Include(a => a.BusinessPlace).ToListAsync();
+
+            IList<ProdPlanHeaderForDetailDto> plansToReturn = new List<ProdPlanHeaderForDetailDto>();
+
+            foreach (var plan in prodPlans)
+            {
+                plansToReturn.Add(new ProdPlanHeaderForDetailDto
+                {
+                    Date = plan.Date.DashedDate(),
+                    Description = plan.Description,
+                    ProductionSessionId = plan.ProductionSessionId,
+                    Id = plan.Id,
+                    BusinessPlaceId = plan.BusinessPlaceId,
+                    UserId = plan.UserId
+                });
+            }
+            return Ok(plansToReturn);
         }
     }
 }
