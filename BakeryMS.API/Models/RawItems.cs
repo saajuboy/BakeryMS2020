@@ -1,9 +1,9 @@
-﻿using System;
+using System;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace BakeryMS.API.Models
 {
-    public class CompanyItem
+    public class RawItems
     {
         public int Id { get; set; }
         public int ItemId { get; set; }
@@ -22,6 +22,5 @@ namespace BakeryMS.API.Models
         [Column(TypeName = "decimal(18,2)")]
         public decimal SellingPrice { get; set; }
         public BusinessPlace CurrentPlace { get; set; }
-
     }
 }
