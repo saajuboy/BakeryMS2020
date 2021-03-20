@@ -91,7 +91,7 @@ namespace BakeryMS.API.Controllers.Inventory
                 pOHToCreate.isFromOutlet = User.FindAll(ClaimTypes.Role).Any(a => a.Value == "OutletManager") ? true : false;
             }
 
-            pOHToCreate.Status = false;
+            pOHToCreate.Status = 0;
             // pOHToCreate.Supplier = await _repository.GetSupplier(pOHForDetailDto.SupplierId);
 
             await _repository.CreatePurchaseOrder(pOHToCreate);
@@ -111,17 +111,17 @@ namespace BakeryMS.API.Controllers.Inventory
                     if (await SendMail("hyeah227@gmail.com", "saajidhumar@gmail.com", "Purchase Order From Upland Bake house",
                                     htmlBody, "hyeah227@gmail.com", "hell123boy"))
                     {
-                        pOHFromRepository.Status = true;
+                        pOHFromRepository.Status = 1;
                     }
                     else
                     {
-                        pOHFromRepository.Status = false;
+                        pOHFromRepository.Status = 0;
                     }
 
 
                 }
 
-                if (isForSending == true && pOHFromRepository.Status == false)
+                if (isForSending == true && pOHFromRepository.Status == 0)
                 {
                     return Ok(new { error = "Failed to send" });
                 }
@@ -167,7 +167,7 @@ namespace BakeryMS.API.Controllers.Inventory
             pOHFromRepository.DeliveryDate = DateTime.Parse(pOHForDetailDto.DeliveryDate);
             pOHFromRepository.OrderDate = DateTime.Parse(pOHForDetailDto.OrderDate);
             pOHFromRepository.ModifiedDate = pOHForDetailDto.ModifiedDate;
-            pOHFromRepository.Status = false;
+            pOHFromRepository.Status = 0;
 
             foreach (var pod in pOHFromRepository.PurchaseOrderDetail)
             {
@@ -199,21 +199,21 @@ namespace BakeryMS.API.Controllers.Inventory
                 if (await SendMail("hyeah227@gmail.com", "saajidhumar@gmail.com", "Purchase Order From Upland Bake house",
                                 htmlBody, "hyeah227@gmail.com", "hell123boy"))
                 {
-                    pOHFromRepository.Status = true;
+                    pOHFromRepository.Status = 1;
                 }
                 else
                 {
-                    pOHFromRepository.Status = false;
+                    pOHFromRepository.Status = 0;
                 }
             }
             else
             {
-                pOHFromRepository.Status = false;
+                pOHFromRepository.Status = 0;
             }
 
             if (await _repository.SaveAll())
             {
-                if (isForSending == true && pOHFromRepository.Status == false)
+                if (isForSending == true && pOHFromRepository.Status == 0)
                 {
                     return Ok(new { error = "Failed to send" });
                 }

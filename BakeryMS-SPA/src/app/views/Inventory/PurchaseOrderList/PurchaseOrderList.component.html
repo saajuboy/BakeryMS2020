@@ -43,11 +43,12 @@
           <td>{{ pO.poNumber }}</td>
           <td>{{ pO.supplierName }}</td>
           <td>
-            <span *ngIf="pO.status == false" class="badge badge-secondary"
+            <span *ngIf="pO.status == 0" class="badge badge-secondary"
               >Not Sent</span
             >
-            <span *ngIf="pO.status == true" class="badge badge-success"
-              >Sent</span
+            <span *ngIf="pO.status == 1" class="badge badge-success">Sent</span>
+            <span *ngIf="pO.status == 2" class="badge badge-success"
+              >Received</span
             >
 
             {{ pO.isFromOutlet === true ? "From Oulet" : "From Bakery" }}
@@ -63,7 +64,7 @@
               class="btn btn-ghost-secondary"
               (click)="edit(pO.id)"
               type="button"
-              [disabled]="pO.status === true"
+              [disabled]="pO.status > 0"
             >
               <i class="icon-pencil"></i>
             </button>
@@ -78,6 +79,7 @@
               (click)="delete(pO.id)"
               class="btn btn-ghost-danger"
               type="button"
+              [disabled]="pO.status > 0"
             >
               <i class="icon-close"></i>
             </button>
@@ -144,7 +146,13 @@
           <div class="col-md-6 font-weight-bold">Status</div>
           <div class="col-md-1">-</div>
           <div class="col-md-5">
-            {{ purchaseOrderInfo.status === false ? "Not Sent" : "Sent" }}
+            {{
+              purchaseOrderInfo.status === 0
+                ? "Not Sent"
+                : purchaseOrderInfo.status === 1
+                ? "Sent"
+                : "Received"
+            }}
           </div>
         </div>
         <div class="row mt-2">

@@ -17,7 +17,7 @@ export class InventoryService {
     return this.http.get<PurchaseOrderHeader[]>(this.baseUrl + 'purchaseOrder').pipe(
       map(response => {
         if (isFromOutlet != null) {
-          return response.filter(a => a.status === isFromOutlet);
+          return response.filter(a => a.isFromOutlet === isFromOutlet);
         }
         return response;
       }));

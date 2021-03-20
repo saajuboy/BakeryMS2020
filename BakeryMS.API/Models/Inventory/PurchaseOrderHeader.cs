@@ -14,7 +14,7 @@ namespace BakeryMS.API.Models.Inventory
         public DateTime DeliveryDate { get; set; }
         public DateTime OrderDate { get; set; }
         public DateTime? ModifiedDate { get; set; }
-        public bool Status { get; set; }
+        public int Status { get; set; } // null||0 - not sent,1-sent,2-received
         public bool isFromOutlet { get; set; }
         public bool IsDeleted { get; set; }
 

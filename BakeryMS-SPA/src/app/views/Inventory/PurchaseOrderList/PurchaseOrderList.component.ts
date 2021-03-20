@@ -88,7 +88,7 @@ export class PurchaseOrderListComponent implements OnInit {
         break;
       case 3:
         this.purchaseOrders.sort((a, b) => this.sortOrder.three === false ?
-          +a.status - +b.status : +b.status - +a.status);
+          a.status - b.status : b.status - a.status);
         this.sortOrder.three = !this.sortOrder.three;
         break;
       case 4:

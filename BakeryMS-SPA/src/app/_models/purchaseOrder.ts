@@ -5,7 +5,7 @@ export interface PurchaseOrderHeader {
     poNumber: number;
     userId: number;
     supplierId: number;
-    status: boolean;
+    status: number;
     deliveryMethod: string;
     orderDate: Date;
     deliveryDate: Date;
