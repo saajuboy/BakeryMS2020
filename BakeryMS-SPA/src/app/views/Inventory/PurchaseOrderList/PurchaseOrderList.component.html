@@ -30,9 +30,10 @@
     <table class="table table-bordered">
       <thead>
         <tr>
-          <th><i (click)="sort(1)" class="icon-chart"></i> PO Number</th>
+          <th style="width: 10%;"><i (click)="sort(1)" class="icon-chart"></i> PO Number</th>
           <th><i (click)="sort(2)" class="icon-chart"></i> Supplier</th>
           <th><i (click)="sort(3)" class="icon-chart"></i> Status</th>
+          <th><i (click)="sort(6)" class="icon-chart"></i> Business Place</th>
           <th><i (click)="sort(4)" class="icon-chart"></i> Order Date</th>
           <th><i (click)="sort(5)" class="icon-chart"></i> Delivery Date</th>
           <th style="width: 15%">Actions</th>
@@ -52,11 +53,8 @@
             >
 
             {{ pO.isFromOutlet === true ? "From Oulet" : "From Bakery" }}
-            <!-- <span *ngIf="item.type == 2" class="badge badge-danger">Raw</span>
-            <span *ngIf="item.type == 3" class="badge badge-secondary"
-              >Misc</span
-            > -->
           </td>
+          <td>{{ pO.businessPlaceName }}</td>
           <td>{{ pO.orderDate }}</td>
           <td>{{ pO.deliveryDate }}</td>
           <td>
@@ -153,6 +151,13 @@
                 ? "Sent"
                 : "Received"
             }}
+          </div>
+        </div>
+        <div class="row mt-2">
+          <div class="col-md-6 font-weight-bold">Business place</div>
+          <div class="col-md-1">-</div>
+          <div class="col-md-5">
+            {{ purchaseOrderInfo.businessPlaceName | titlecase }}
           </div>
         </div>
         <div class="row mt-2">

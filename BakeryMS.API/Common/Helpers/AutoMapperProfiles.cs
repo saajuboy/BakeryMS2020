@@ -22,6 +22,7 @@ namespace BakeryMS.API.Common.Helpers
 
             CreateMap<PurchaseOrderHeader, POForListDto>()
             .ForMember(dest => dest.SupplierName, opt => opt.MapFrom(src => src.Supplier.Name))
+            .ForMember(dest => dest.BusinessPlaceName, opt => opt.MapFrom(src => src.BusinessPlace.Name))
             .ForMember(dest => dest.OrderDate, opt => opt.MapFrom(src => src.OrderDate.ToShortDateString()))
             .ForMember(dest => dest.DeliveryDate, opt => opt.MapFrom(src => src.DeliveryDate.ToShortDateString()));
 

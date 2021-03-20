@@ -15,6 +15,7 @@ namespace BakeryMS.API.Common.DTOs.Inventory
         [Required]
         [Range(1,int.MaxValue,ErrorMessage="Supplier Required")]
         public int SupplierId { get; set; }
+        public int BusinessPlaceId { get; set; }
         public int Status { get; set; }
         public string DeliveryMethod { get; set; }
         [Required]

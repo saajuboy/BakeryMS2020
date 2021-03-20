@@ -9,6 +9,7 @@ namespace BakeryMS.API.Common.DTOs.Inventory
         public string Type { get; set; }
         public string DeliveryMethod { get; set; }
         public string SupplierName { get; set; }
+        public string BusinessPlaceName { get; set; }
         public string UserName { get; set; }
         public string OrderDate { get; set; }
         public string DeliveryDate { get; set; }

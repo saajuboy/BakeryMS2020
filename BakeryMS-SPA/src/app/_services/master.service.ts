@@ -52,7 +52,7 @@ export class MasterService {
           if (type != null) {
             return response.filter(a => a.type === type);
           }
-          return response;
+          return response.filter(a => a.type === 1 || a.type === 2);
         })
       );
     } else {

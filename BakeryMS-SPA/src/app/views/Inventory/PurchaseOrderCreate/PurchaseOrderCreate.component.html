@@ -63,6 +63,33 @@
               />
               <div class="invalid-feedback">Please choose a username</div>
             </div>
+            <div class="input-group col-md-4 mb-3">
+              <div class="input-group-prepend">
+                <span class="input-group-text"
+                  ><i class="icon-people">&nbsp; BusinessPlace</i></span
+                >
+              </div>
+              <select
+                class="form-control"
+                id="suppliers"
+                formControlName="businessPlaceId"
+                [ngClass]="{
+                  'is-invalid':
+                    pOCreateForm.get('businessPlaceId').errors &&
+                    pOCreateForm.get('businessPlaceId').touched,
+                  'is-valid':
+                    !pOCreateForm.get('businessPlaceId').errors &&
+                    pOCreateForm.get('businessPlaceId').touched
+                }"
+              >
+                <!-- <option value="0" selected="true">Please Select</option> -->
+                <option *ngFor="let bp of businessPlaces" [value]="bp.id">
+                  {{ bp.name }}
+                </option>
+              </select>
+
+              <div class="invalid-feedback">Please select a Business Place</div>
+            </div>
           </div>
           <div class="row">
             <div class="input-group col-md-4 mb-3">

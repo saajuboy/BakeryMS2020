@@ -150,6 +150,7 @@ namespace BakeryMS.API.Controllers.Inventory
                 return BadRequest("Purchase Order not available");
 
             var supFromRepo = await _repository.Get<Supplier>(pOHForDetailDto.SupplierId);
+            var bPFromRepo = await _repository.Get<BusinessPlace>(pOHForDetailDto.BusinessPlaceId);
 
 
             if (User.FindAll(ClaimTypes.Role).Any(a => a.Value == "Admin"))
@@ -163,6 +164,7 @@ namespace BakeryMS.API.Controllers.Inventory
 
             pOHFromRepository.UserId = pOHForDetailDto.UserId;
             pOHFromRepository.Supplier = supFromRepo;
+            pOHFromRepository.BusinessPlace = bPFromRepo;
             pOHFromRepository.DeliveryMethod = pOHForDetailDto.DeliveryMethod;
             pOHFromRepository.DeliveryDate = DateTime.Parse(pOHForDetailDto.DeliveryDate);
             pOHFromRepository.OrderDate = DateTime.Parse(pOHForDetailDto.OrderDate);

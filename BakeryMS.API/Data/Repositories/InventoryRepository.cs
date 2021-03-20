@@ -77,6 +77,7 @@ namespace BakeryMS.API.Data.Repositories
             var purchaseOrder = await purchaseOrders
             .Where(a => a.IsDeleted == false)
             .Include(a => a.Supplier)
+            .Include(a => a.BusinessPlace)
             .Include(p => p.PurchaseOrderDetail).ThenInclude(pd => pd.Item)
             .FirstOrDefaultAsync(a => a.Id == id);
 
@@ -105,7 +106,7 @@ namespace BakeryMS.API.Data.Repositories
             //     purchaseOrders = purchaseOrders.Where(a => a.Status == true);
             // }
 
-            return await purchaseOrders.Where(a => a.IsDeleted == false).Include(a => a.Supplier).ToListAsync();
+            return await purchaseOrders.Where(a => a.IsDeleted == false).Include(a => a.Supplier).Include(a => a.BusinessPlace).ToListAsync();
         }
 
         public async Task CreatePurchaseOrder(PurchaseOrderHeader purchaseOrderHeader)

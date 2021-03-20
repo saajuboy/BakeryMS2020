@@ -19,7 +19,7 @@ export class PurchaseOrderListComponent implements OnInit {
   purchaseOrders: PurchaseOrderHeader[];
   search: string = '';
   purchaseOrderInfo: PurchaseOrderHeader = <PurchaseOrderHeader>{};
-  sortOrder = { one: false, two: false, three: false, four: false, five: false };
+  sortOrder = { one: false, two: false, three: false, four: false, five: false, six: false };
 
   constructor(private masterService: MasterService,
     private alertify: AlertifyService,
@@ -106,6 +106,12 @@ export class PurchaseOrderListComponent implements OnInit {
             <any>new Date(a.orderDate) - <any>new Date(b.orderDate);
         });
         this.sortOrder.five = !this.sortOrder.five;
+        break;
+      case 6:
+        this.purchaseOrders.sort((a, b) => this.sortOrder.six === false ?
+          a.businessPlaceName.localeCompare(b.businessPlaceName) :
+          b.businessPlaceName.localeCompare(a.businessPlaceName));
+        this.sortOrder.six = !this.sortOrder.six;
         break;
       default:
         this.purchaseOrders.sort((a, b) => this.sortOrder.one === false ? a.poNumber - b.poNumber : b.poNumber - a.poNumber);

@@ -1,6 +1,7 @@
 import { Component, OnInit, ɵConsole } from '@angular/core';
 import { FormArray, FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
+import { BusinessPlace } from '../../../_models/businessPlace';
 import { ItemForDropdown } from '../../../_models/item';
 import { PurchaseOrderDetail, PurchaseOrderHeader } from '../../../_models/purchaseOrder';
 import { SupplierForDropdown } from '../../../_models/supplier';
@@ -22,6 +23,7 @@ export class PurchaseOrderCreateComponent implements OnInit {
   pOCreateForm: FormGroup;
   suppliers: SupplierForDropdown[] = [];
   items: ItemForDropdown[] = [];
+  businessPlaces: BusinessPlace[] = [];
   columns: string[];
   deliveryMethods: string[];
   totalValue = 0;
@@ -74,6 +76,21 @@ export class PurchaseOrderCreateComponent implements OnInit {
       this.alertify.error(error);
     });
 
+    this.masterService.getBusinessPlaces().subscribe(result => {
+      this.businessPlaces = result.filter((x) => {
+        if (this.type == null || this.type === 0) {
+          return x;
+        } else if (this.type === 1) {
+          return x.name.includes('Outlet');
+        } else if (this.type === 2) {
+          return x.name.includes('Bakery');
+        }
+      });
+
+    }, error => {
+      this.alertify.error(error);
+    });
+
     this.createPurchaseOrderForm();
 
     this.setInitialValues(this.pOCreateForm);
@@ -95,6 +112,7 @@ export class PurchaseOrderCreateComponent implements OnInit {
     this.pOCreateForm = this.fb.group({
       // suppArray: [],
       supplierId: ['', Validators.required],
+      businessPlaceId: ['', Validators.required],
       userId: ['', Validators.required],
       deliveryMethod: ['', Validators.required],
       orderDate: ['', Validators.required],
@@ -141,11 +159,11 @@ export class PurchaseOrderCreateComponent implements OnInit {
     this.inventoryService.getPurchaseOrder(id).subscribe(
       (purchaseOrder: PurchaseOrderHeader) => {
         this.createEditPOForm(purchaseOrder);
-        console.log(purchaseOrder);
+        // console.log(purchaseOrder);
 
       },
       (error: any) => {
-        console.log(error);
+        // console.log(error);
         this.alertify.error('some error occured');
         this.router.navigate(['/inventory/purchaseOrder']);
       }
@@ -154,6 +172,7 @@ export class PurchaseOrderCreateComponent implements OnInit {
   createEditPOForm(purchaseOrder: PurchaseOrderHeader) {
     this.pOCreateForm.patchValue({
       supplierId: purchaseOrder.supplierId,
+      businessPlaceId: purchaseOrder.businessPlaceId,
       userId: this.authService.decodedToken.nameid,
       deliveryMethod: purchaseOrder.deliveryMethod,
       orderDate: purchaseOrder.orderDate,
@@ -187,7 +206,7 @@ export class PurchaseOrderCreateComponent implements OnInit {
           this.purchaseOrder.isForOutlet = true;
         }
 
-        console.log(this.purchaseOrder);
+        // console.log(this.purchaseOrder);
 
         if (this.isEditForm === false) {
           if (isForSending === false) {
@@ -338,12 +357,12 @@ export class PurchaseOrderCreateComponent implements OnInit {
 
   supplierChange(supId: number, sups: any) {
 
-    for (let i = 0; i < sups.length; i++) {
-      if (sups[i].id === supId) {
-        console.log(sups[i]);
+    // for (let i = 0; i < sups.length; i++) {
+    //   if (sups[i].id === supId) {
+    //     console.log(sups[i]);
 
-      }
-    }
+    //   }
+    // }
   }
 
   backToList() {
