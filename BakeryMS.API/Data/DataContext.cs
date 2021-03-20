@@ -27,9 +27,11 @@ namespace BakeryMS.API.Data
         public DbSet<Roles> Roles { get; set; }
         public DbSet<UserRolesMapping> UserRolesMappings { get; set; }
 
-        //PurchaseOrder Header and detail
+        //PurchaseOrder Header and detail,GRN header and Detail
         public DbSet<PurchaseOrderHeader> PurchaseOrderHeaders { get; set; }
         public DbSet<PurchaseOrderDetail> PurchaseOrderDetails { get; set; }
+        public DbSet<GRNHeader> GRNHeaders { get; set; }
+        public DbSet<GRNDetail> GRNDetails { get; set; }
 
         //Production Order Header,detail, Session and Ingredients
         public DbSet<ProductionOrderHeader> ProductionOrderHeaders { get; set; }
