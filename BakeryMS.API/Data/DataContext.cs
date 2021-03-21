@@ -21,6 +21,8 @@ namespace BakeryMS.API.Data
         public DbSet<BusinessPlace> BusinessPlaces { get; set; }
         public DbSet<Machinery> Machineries { get; set; }
         public DbSet<ProductionItem> ProductionItems { get; set; }
+        public DbSet<CompanyItem> CompanyItems { get; set; }
+        public DbSet<RawItems> RawItems { get; set; }
 
         //User,Roles and User Roles Mapping
         public DbSet<User> Users { get; set; }
