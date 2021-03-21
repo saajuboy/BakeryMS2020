@@ -14,7 +14,7 @@ namespace BakeryMS.API.Models.Inventory
         public decimal TotalAmount { get; set; }
         [Column(TypeName = "decimal(18,2)")]
         public decimal PaidAmount { get; set; }
-        public int PaymentMode { get; set; }
+        public int PaymentMode { get; set; } // 0-cash,1-credit
         public IList<GRNDetail> GRNDetails { get; set; }
     }
 }

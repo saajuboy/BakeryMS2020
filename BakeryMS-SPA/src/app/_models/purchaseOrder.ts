@@ -34,14 +34,28 @@ export interface PurchaseOrderDetail {
     dueDate: Date;
 }
 
-export interface PODRow {
+export interface GRNHeader {
+    id: number;
+    purchaseOrderHeaderId: number;
+    receivedDate: Date;
 
-    itemCode: string;
+    totalAmount: number;
+    paidAmount: number;
+    paymentMode: number;
+
+    GRNDetails?: GRNDetail[];
+}
+export interface GRNDetail {
+    id: number;
+    itemId: number;
     itemName: string;
-    items: any;
-    dueDate: string;
+    itemCode: string;
     quantity: number;
     unitPrice: number;
     lineTotal: number;
+    sellingPrice: number;
+
+    manufacturedDate?: Date;
+    expiredDate?: Date;
 }
 

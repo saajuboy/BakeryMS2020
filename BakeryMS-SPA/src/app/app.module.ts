@@ -83,6 +83,7 @@ import { RoutineComponent } from './views/HumanResource/Routine/Routine.componen
 import { ProductionPlanCreateComponent } from './views/Manufacturing/ProductionPlanCreate/ProductionPlanCreate.component';
 import { ProductionPlanListComponent } from './views/Manufacturing/ProductionPlanList/ProductionPlanList.component';
 import { ItemAcceptanceComponent } from './views/Inventory/ItemAcceptance/ItemAcceptance.component';
+import { GRNComponent } from './views/Inventory/GRN/GRN.component';
 
 
 // token getter function to automatically intercept http requests
@@ -148,7 +149,8 @@ const ngWizardConfig: NgWizardConfig = {
     RoutineComponent,
     ProductionPlanCreateComponent,
     ProductionPlanListComponent,
-    ItemAcceptanceComponent
+    ItemAcceptanceComponent,
+    GRNComponent
   ],
   providers: [{
     provide: LocationStrategy,

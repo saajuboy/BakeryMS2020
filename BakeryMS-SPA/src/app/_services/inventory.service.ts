@@ -3,7 +3,7 @@ import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { environment } from '../../environments/environment';
-import { PurchaseOrderDetail, PurchaseOrderHeader } from '../_models/purchaseOrder';
+import { GRNHeader, PurchaseOrderDetail, PurchaseOrderHeader } from '../_models/purchaseOrder';
 
 @Injectable({
   providedIn: 'root'
@@ -13,13 +13,17 @@ export class InventoryService {
 
   constructor(private http: HttpClient) { }
 
-  getPurchaseOrders(isFromOutlet?: boolean): Observable<PurchaseOrderHeader[]> {
+  getPurchaseOrders(isFromOutlet?: boolean, status?: number): Observable<PurchaseOrderHeader[]> {
     return this.http.get<PurchaseOrderHeader[]>(this.baseUrl + 'purchaseOrder').pipe(
       map(response => {
+        let responseToReturn = response;
         if (isFromOutlet != null) {
-          return response.filter(a => a.isFromOutlet === isFromOutlet);
+          responseToReturn = responseToReturn.filter(a => a.isFromOutlet === isFromOutlet);
         }
-        return response;
+        if (status != null) {
+          responseToReturn = responseToReturn.filter(a => a.status === status);
+        }
+        return responseToReturn;
       }));
 
   }
@@ -57,6 +61,11 @@ export class InventoryService {
   // }
   deletePurchaseOrder(id: number) {
     return this.http.delete(this.baseUrl + 'purchaseOrder/' + id);
+  }
+
+
+  createGRN(grn: GRNHeader) {
+    return this.http.post(this.baseUrl + 'GRN', grn);
   }
 
 }

@@ -36,6 +36,11 @@ export const navItems: INavData[] = [
                 name: 'Create Pur.Order',
                 url: '/inventory/purchaseOrder/create',
                 icon: 'icon-note'
+            },
+            {
+                name: 'Goods Rec.Note',
+                url: '/inventory/grn',
+                icon: 'icon-check'
             }
         ]
     },
@@ -80,13 +85,13 @@ export const navItems: INavData[] = [
         url: '/hr',
         icon: 'icon-refresh ',
         children: [
-          {
-            name: 'Schedule Routines',
-            url: '/hr/routines',
-            icon: 'icon-fire '
-          }
+            {
+                name: 'Schedule Routines',
+                url: '/hr/routines',
+                icon: 'icon-fire '
+            }
         ]
-      },
+    },
     {
         name: 'Quality Control',
         url: '/inventory',

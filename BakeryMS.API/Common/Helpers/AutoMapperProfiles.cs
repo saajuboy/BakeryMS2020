@@ -45,6 +45,20 @@ namespace BakeryMS.API.Common.Helpers
             .ForPath(dest => dest.Item.Id, opt => opt.MapFrom(src => src.ItemId))
             .ForMember(dest => dest.DueDate, opt => opt.MapFrom(src => DateTime.Parse(src.DueDate)));
 
+            CreateMap<GRNHeader, GRNHeaderForDetailDto>()
+            .ForMember(dest => dest.ReceivedDate, opt => opt.MapFrom(src => src.ReceivedDate.DashedDate()))
+            .ForMember(dest => dest.GRNDetails, opt => opt.MapFrom(src => src.GRNDetails));
+
+            CreateMap<GRNHeaderForDetailDto, GRNHeader>()
+            .ForMember(dest => dest.ReceivedDate, opt => opt.MapFrom(src => DateTime.Parse(src.ReceivedDate)))
+            .ForMember(dest => dest.GRNDetails, opt => opt.MapFrom(src => src.GRNDetails));
+
+            CreateMap<GRNDetailForDetailDto, GRNDetail>();
+
+            CreateMap<GRNDetail, GRNDetailForDetailDto>()
+            .ForMember(dest => dest.ItemName, opt => opt.MapFrom(src => src.Item.Name))
+            .ForMember(dest => dest.ItemCode, opt => opt.MapFrom(src => src.Item.Code));
+
             CreateMap<Supplier, SupplierDto>();
 
             CreateMap<SupplierDto, Supplier>();

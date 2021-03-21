@@ -1,0 +1,375 @@
+<!-- <div class="container"> -->
+<div class="row">
+  <div class="col-md-12 mx-auto">
+    <div class="card mx-4">
+      <form [formGroup]="grnForm">
+        <div class="card-body p-4">
+          <h1>GRN</h1>
+          <p class="text-muted">
+            Goods Receive Note - accept items received from purchase order
+          </p>
+
+          <ng-wizard [config]="config" (stepChanged)="stepChanged($event)">
+            <ng-wizard-step
+              [title]="'Main Info'"
+              [description]="
+                'Select Purchase order and Received Date, then verify received items'
+              "
+              [canEnter]="isValidTypeBoolean"
+              [canExit]="
+                grnForm.get('purchaseOrderHeaderId').valid &&
+                grnForm.get('receivedDate').valid &&
+                getDetailArray.length > 0 &&
+                !grnForm.hasError('lessThanToday')
+              "
+              [state]="checkStepState(1)"
+            >
+              <div class="row mt-3">
+                <div class="input-group col-md-8 mb-3">
+                  <div class="input-group-prepend">
+                    <span class="input-group-text"
+                      ><i class="icon-home"> &nbsp; Purchase Orders</i></span
+                    >
+                  </div>
+                  <select
+                    class="form-control"
+                    formControlName="purchaseOrderHeaderId"
+                    [ngClass]="{
+                      'is-invalid':
+                        grnForm.get('purchaseOrderHeaderId').errors &&
+                        grnForm.get('purchaseOrderHeaderId').touched,
+                      'is-valid': !grnForm.get('purchaseOrderHeaderId').errors
+                    }"
+                    (change)="
+                      purchaseOrderChanged(
+                        grnForm.get('purchaseOrderHeaderId').value
+                      )
+                    "
+                  >
+                    <option
+                      *ngFor="let place of purchaseOrderList"
+                      [value]="place.id"
+                    >
+                      {{
+                        "PO no. " +
+                          place.poNumber +
+                          " From " +
+                          place.supplierName +
+                          (place.businessPlaceName == "" ||
+                          place.businessPlaceName == null
+                            ? " "
+                            : " to " + place.businessPlaceName)
+                      }}
+                    </option>
+                  </select>
+                  <div class="invalid-feedback">
+                    Please choose a valid Purchase Order
+                  </div>
+                </div>
+
+                <div class="input-group col-md-4 mb-3">
+                  <div class="input-group-prepend">
+                    <span class="input-group-text"
+                      ><i class="icon-calendar"> &nbsp; Received Date</i></span
+                    >
+                  </div>
+                  <input
+                    [ngClass]="{
+                      'is-invalid':
+                        (grnForm.get('receivedDate').errors ||
+                          grnForm.hasError('lessThanToday')) &&
+                        grnForm.get('receivedDate').touched,
+                      'is-valid': !grnForm.get('receivedDate').errors
+                    }"
+                    class="form-control"
+                    formControlName="receivedDate"
+                    type="date"
+                  />
+                  <div
+                    *ngIf="grnForm.get('receivedDate').hasError('required')"
+                    class="invalid-feedback"
+                  >
+                    Please choose a valid for date
+                  </div>
+                  <div
+                    *ngIf="grnForm.hasError('lessThanToday')"
+                    class="invalid-feedback"
+                  >
+                    Received date cannot be lesser than today
+                  </div>
+                </div>
+              </div>
+              <br />
+
+              <h4>Received Items</h4>
+              <div class="row m-1">
+                <table class="table table-bordered">
+                  <thead>
+                    <tr>
+                      <th style="width: 20%">Item</th>
+                      <th>Man Date</th>
+                      <th>Exp Date</th>
+                      <th>Rec.Qty</th>
+                      <th>Unt.Price</th>
+                      <th *ngIf="type == true || type == null">Sell.Price</th>
+                      <th style="width: 10%">line Total</th>
+                    </tr>
+                  </thead>
+                  <tbody *ngIf="getDetailArray.length > 0">
+                    <ng-container
+                      formArrayName="GRNDetails"
+                      *ngFor="
+                        let detail of getDetailArray.controls;
+                        let $index = index
+                      "
+                    >
+                      <tr [formGroupName]="$index">
+                        <td class="p-1">
+                          <label>{{ detail.get("itemName").value }}</label>
+                        </td>
+                        <td class="p-1">
+                          <input
+                            [ngClass]="{
+                              'is-invalid':
+                                detail.get('manufacturedDate').errors &&
+                                detail.get('manufacturedDate').touched,
+                              'is-valid': !detail.get('manufacturedDate').errors
+                            }"
+                            class="form-control"
+                            formControlName="manufacturedDate"
+                            type="date"
+                          />
+                          <div class="invalid-feedback">
+                            Please choose a valid manufactured date
+                          </div>
+                        </td>
+                        <td class="p-1">
+                          <input
+                            [ngClass]="{
+                              'is-invalid':
+                                detail.get('expiredDate').errors &&
+                                detail.get('expiredDate').touched,
+                              'is-valid': !detail.get('expiredDate').errors
+                            }"
+                            class="form-control"
+                            formControlName="expiredDate"
+                            type="date"
+                          />
+                          <div class="invalid-feedback">
+                            Please choose a valid Expiry date
+                          </div>
+                        </td>
+                        <td class="p-1">
+                          <input
+                            [ngClass]="{
+                              'is-invalid':
+                                detail.get('quantity').errors &&
+                                detail.get('quantity').touched,
+                              'is-valid': !detail.get('quantity').errors
+                            }"
+                            class="form-control"
+                            formControlName="quantity"
+                            type="number"
+                            (change)="qtyAndPriceChange()"
+                          />
+                          <div
+                            *ngIf="detail.get('quantity').hasError('required')"
+                            class="invalid-feedback"
+                          >
+                            quantity required
+                          </div>
+                          <div
+                            *ngIf="detail.get('quantity').hasError('pattern')"
+                            class="invalid-feedback"
+                          >
+                            Please enter a valid quantity
+                          </div>
+                        </td>
+                        <td class="p-1">
+                          <input
+                            [ngClass]="{
+                              'is-invalid':
+                                detail.get('unitPrice').errors &&
+                                detail.get('unitPrice').touched,
+                              'is-valid': !detail.get('unitPrice').errors
+                            }"
+                            class="form-control"
+                            formControlName="unitPrice"
+                            type="number"
+                            (change)="qtyAndPriceChange()"
+                          />
+                          <div
+                            *ngIf="detail.get('unitPrice').hasError('required')"
+                            class="invalid-feedback"
+                          >
+                            unit price required
+                          </div>
+                          <div
+                            *ngIf="detail.get('unitPrice').hasError('pattern')"
+                            class="invalid-feedback"
+                          >
+                            Please enter a valid unit price
+                          </div>
+                        </td>
+                        <td *ngIf="type == true || type == null" class="p-1">
+                          <input
+                            class="form-control"
+                            formControlName="sellingPrice"
+                            type="number"
+                          />
+                        </td>
+                        <td class="p-1">
+                          <label>{{ detail.get("lineTotal").value }}</label>
+                        </td>
+                      </tr>
+                    </ng-container>
+                  </tbody>
+                </table>
+              </div>
+              <h4 *ngIf="getDetailArray.length === 0" class="text-center">
+                No data Found, Select production orders to get items and
+                quantity
+              </h4>
+              <div class="row m-2">
+                <div class="col-md-9"></div>
+                <h4>
+                  Total Amount -
+                  {{
+                    +grnForm.get("totalAmount").value > 0
+                      ? grnForm.get("totalAmount").value
+                      : "0.00"
+                  }}
+                  LKR
+                </h4>
+              </div>
+            </ng-wizard-step>
+
+            <ng-wizard-step
+              [title]="'Sub Info'"
+              [description]="
+                'Enter payment Info such as amount, mode of payment'
+              "
+              [canEnter]="
+                grnForm.get('purchaseOrderHeaderId').valid &&
+                grnForm.get('receivedDate').valid &&
+                !grnForm.hasError('lessThanToday') &&
+                getDetailArray.length > 0
+              "
+              [canExit]=""
+              [state]="checkStepState(2)"
+            >
+              <div class="row m-2">
+                <h3>
+                  Total Amount -
+                  {{
+                    +grnForm.get("totalAmount").value > 0
+                      ? grnForm.get("totalAmount").value
+                      : "0.00"
+                  }}
+                  LKR
+                </h3>
+              </div>
+              <div class="row mt-4 m-2">
+                <div class="input-group col-md-4 mb-3">
+                  <div class="input-group-prepend">
+                    <span class="input-group-text"
+                      ><i class="icon-home"> &nbsp; Payment Mode</i></span
+                    >
+                  </div>
+                  <select
+                    class="form-control"
+                    formControlName="paymentMode"
+                    [ngClass]="{
+                      'is-invalid':
+                        grnForm.get('paymentMode').errors &&
+                        grnForm.get('paymentMode').touched,
+                      'is-valid': !grnForm.get('paymentMode').errors
+                    }"
+                  >
+                    <option selected [value]="0">Full Payment</option>
+                    <option [value]="1">Credit/Part Payment</option>
+                  </select>
+                  <div class="invalid-feedback">Please choose a valid mode</div>
+                </div>
+                <div class="input-group col-md-4 mb-3">
+                  <div class="input-group-prepend">
+                    <span class="input-group-text"
+                      ><i class="icon-home"> &nbsp; Pay Amount</i></span
+                    >
+                  </div>
+                  <input
+                    class="form-control"
+                    formControlName="paidAmount"
+                    [ngClass]="{
+                      'is-invalid':
+                        grnForm.get('paidAmount').errors &&
+                        grnForm.get('paidAmount').touched,
+                      'is-valid': !grnForm.get('paidAmount').errors
+                    }"
+                    type="number"
+                  />
+                  <div class="invalid-feedback">
+                    Please enter a valid Amount
+                  </div>
+                </div>
+                <div class="input-group col-md-4 mb-3">
+                  <div class="input-group-prepend">
+                    <span class="input-group-text"
+                      ><i class="icon-home"> &nbsp; Due Amount</i></span
+                    >
+                  </div>
+                  <input
+                    class="form-control"
+                    type="text"
+                    [value]="
+                      (
+                        +grnForm.get('totalAmount').value -
+                        +grnForm.get('paidAmount').value
+                      ).toFixed(2)
+                    "
+                    [disabled]="true"
+                  />
+                </div>
+              </div>
+            </ng-wizard-step>
+          </ng-wizard>
+        </div>
+        <div class="row mr-3 ml-3 mb-3">
+          <div class="col-md-2">
+            <button
+              type="button"
+              class="btn btn-block btn-light"
+              (click)="backToList()"
+            >
+              Back to list
+            </button>
+          </div>
+          <div class="col-md-6"></div>
+          <div class="col-md-2">
+            <button
+              type="button"
+              (click)="resetWizard()"
+              class="btn btn-block btn-warning"
+            >
+              Reset
+            </button>
+          </div>
+          <div class="col-md-2">
+            <button
+              [disabled]="!grnForm.valid"
+              type="button"
+              class="btn btn-block btn-success"
+              (click)="createGRN()"
+            >
+              Finish
+            </button>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+<!-- <div class="output">
+  <p>Form Data: {{ grnForm.getRawValue() | json }}</p>
+  <p>Is Valid: {{ grnForm.valid }}</p>
+</div> -->

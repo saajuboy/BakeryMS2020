@@ -156,6 +156,27 @@ namespace BakeryMS.API.Data.Repositories
             return items;
         }
 
+        public async Task<GRNHeader> GetGRN(int purchaseOrderId)
+        {
+            var grn = await _context.GRNHeaders
+           .Include(a => a.PurchaseOrderHeader)
+           .Include(p => p.GRNDetails).ThenInclude(pd => pd.Item)
+           .FirstOrDefaultAsync(a => a.PurchaseOrderHeaderId == purchaseOrderId);
 
+            return grn;
+        }
+
+        public async Task<IEnumerable<GRNHeader>> GetGRNs()
+        {
+            var grns = await _context.GRNHeaders
+           .Include(a => a.PurchaseOrderHeader).ToListAsync();
+
+            return grns;
+        }
+
+        public async Task CreateGRN(GRNHeader gRNHeader)
+        {
+            await _context.AddRangeAsync(gRNHeader);
+        }
     }
 }

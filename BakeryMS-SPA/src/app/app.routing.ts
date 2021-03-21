@@ -30,6 +30,7 @@ import { RoutineComponent } from './views/HumanResource/Routine/Routine.componen
 import { ProductionPlanListComponent } from './views/Manufacturing/ProductionPlanList/ProductionPlanList.component';
 import { ProductionPlanCreateComponent } from './views/Manufacturing/ProductionPlanCreate/ProductionPlanCreate.component';
 import { ItemAcceptanceComponent } from './views/Inventory/ItemAcceptance/ItemAcceptance.component';
+import { GRNComponent } from './views/Inventory/GRN/GRN.component';
 
 
 export const routes: Routes = [
@@ -124,6 +125,16 @@ export const routes: Routes = [
         data: {
           title: 'Prod Item acceptance',
           allowedRoles: ['Admin', 'BakeryManager']
+        }
+      },
+      {
+        path: 'inventory/grn',
+        runGuardsAndResolvers: 'always',
+        canActivate: [RoleGuard],
+        component: GRNComponent,
+        data: {
+          title: 'Goods Rec.Note (GRN)',
+          allowedRoles: ['Admin', 'OutletManager', 'BakeryManager']
         }
       },
       {

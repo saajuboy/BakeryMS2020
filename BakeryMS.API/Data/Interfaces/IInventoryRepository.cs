@@ -21,6 +21,9 @@ namespace BakeryMS.API.Data.Interfaces
         Task CreatePurchaseOrder(PurchaseOrderHeader purchaseOrderHeader);
         Task<IEnumerable<Item>> GetItems();
         Task<Item> GetItem(int id);
+        Task<GRNHeader> GetGRN(int id);
+        Task<IEnumerable<GRNHeader>> GetGRNs();
+        Task CreateGRN(GRNHeader gRNHeader);
 
     }
 }
