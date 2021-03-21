@@ -2,7 +2,7 @@ import { Component, OnInit, ViewChild } from '@angular/core';
 import { Router } from '@angular/router';
 import { ModalDirective } from 'ngx-bootstrap/modal';
 import { subscribeOn } from 'rxjs/operators';
-import { PurchaseOrderHeader } from '../../../_models/purchaseOrder';
+import { GRNHeader, PurchaseOrderHeader } from '../../../_models/purchaseOrder';
 import { AlertifyService } from '../../../_services/alertify.service';
 import { InventoryService } from '../../../_services/inventory.service';
 import { MasterService } from '../../../_services/master.service';
@@ -15,10 +15,13 @@ import { MasterService } from '../../../_services/master.service';
 })
 export class PurchaseOrderListComponent implements OnInit {
   @ViewChild('infoModal') public infoModal: ModalDirective;
+  @ViewChild('primaryModal') public grnModal: ModalDirective;
+
 
   purchaseOrders: PurchaseOrderHeader[];
   search: string = '';
   purchaseOrderInfo: PurchaseOrderHeader = <PurchaseOrderHeader>{};
+  grnInfo: GRNHeader = <GRNHeader>{};
   sortOrder = { one: false, two: false, three: false, four: false, five: false, six: false };
 
   constructor(private masterService: MasterService,
@@ -71,6 +74,14 @@ export class PurchaseOrderListComponent implements OnInit {
       this.infoModal.show();
     });
 
+  }
+  ShowGRNInfo(id: number) {
+    this.inventoryService.getGRN(id).subscribe(result => {
+      this.grnInfo = result;
+      console.log(this.grnInfo);
+      
+      this.grnModal.show();
+    });
   }
 
   sort(propertyNumber: number) {

@@ -22,7 +22,7 @@ export class GRNComponent implements OnInit {
   grnForm: FormGroup;
   purchaseOrderList: PurchaseOrderHeader[] = [];
   purchaseOrder: PurchaseOrderHeader = <PurchaseOrderHeader>{ poDetail: [] };
-  grn: GRNHeader = <GRNHeader>{ GRNDetails: [] };
+  grn: GRNHeader = <GRNHeader>{ grnDetails: [] };
   type: boolean = false;
 
   get getDetailArray(): FormArray {

@@ -43,7 +43,7 @@ export interface GRNHeader {
     paidAmount: number;
     paymentMode: number;
 
-    GRNDetails?: GRNDetail[];
+    grnDetails?: GRNDetail[];
 }
 export interface GRNDetail {
     id: number;

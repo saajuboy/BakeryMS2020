@@ -63,7 +63,9 @@ export class InventoryService {
     return this.http.delete(this.baseUrl + 'purchaseOrder/' + id);
   }
 
-
+  getGRN(id): Observable<GRNHeader> {
+    return this.http.get<GRNHeader>(this.baseUrl + 'GRN/' + id);
+  }
   createGRN(grn: GRNHeader) {
     return this.http.post(this.baseUrl + 'GRN', grn);
   }

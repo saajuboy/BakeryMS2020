@@ -30,13 +30,15 @@
     <table class="table table-bordered">
       <thead>
         <tr>
-          <th style="width: 10%;"><i (click)="sort(1)" class="icon-chart"></i> PO Number</th>
+          <th style="width: 10%">
+            <i (click)="sort(1)" class="icon-chart"></i> PO Number
+          </th>
           <th><i (click)="sort(2)" class="icon-chart"></i> Supplier</th>
           <th><i (click)="sort(3)" class="icon-chart"></i> Status</th>
           <th><i (click)="sort(6)" class="icon-chart"></i> Business Place</th>
           <th><i (click)="sort(4)" class="icon-chart"></i> Order Date</th>
           <th><i (click)="sort(5)" class="icon-chart"></i> Delivery Date</th>
-          <th style="width: 15%">Actions</th>
+          <th style="width: 20%">Actions</th>
         </tr>
       </thead>
       <tbody>
@@ -70,6 +72,14 @@
               (click)="ShowInfo(pO.id)"
               class="btn btn-ghost-info"
               type="button"
+            >
+              <i class="icon-info"></i>
+            </button>
+            <button
+              (click)="ShowGRNInfo(pO.id)"
+              class="btn btn-ghost-success"
+              type="button"
+              [disabled]="pO.status != 2"
             >
               <i class="icon-info"></i>
             </button>
@@ -205,6 +215,98 @@
           type="button"
           class="btn btn-secondary"
           (click)="infoModal.hide()"
+        >
+          Close
+        </button>
+      </div>
+    </div>
+    <!-- /.modal-content -->
+  </div>
+  <!-- /.modal-dialog -->
+</div>
+
+<div
+  bsModal
+  #primaryModal="bs-modal"
+  class="modal fade"
+  tabindex="-1"
+  role="dialog"
+  aria-labelledby="myModalLabel"
+  aria-hidden="true"
+>
+  <div class="modal-dialog modal-info" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h4 class="modal-title">Goods received note Info</h4>
+        <button
+          type="button"
+          class="close"
+          (click)="grnModal.hide()"
+          aria-label="Close"
+        >
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <div class="row mt-2">
+          <div class="col-md-6 font-weight-bold">Received date</div>
+          <div class="col-md-1">-</div>
+          <div class="col-md-5">
+            {{ grnInfo.receivedDate }}
+          </div>
+        </div>
+        <div class="row mt-2">
+          <div class="col-md-6 font-weight-bold">Payment Type</div>
+          <div class="col-md-1">-</div>
+          <div class="col-md-5">
+            {{
+              grnInfo.paymentMode == 0 ? "Full Payment" : "Credit/Part Payment"
+            }}
+          </div>
+        </div>
+        <div class="row mt-2">
+          <div class="col-md-6 font-weight-bold">Total amount</div>
+          <div class="col-md-1">-</div>
+          <div class="col-md-5">Rs {{ grnInfo.totalAmount }}</div>
+        </div>
+        <div class="row mt-2">
+          <div class="col-md-6 font-weight-bold">Paid amount</div>
+          <div class="col-md-1">-</div>
+          <div class="col-md-5">Rs {{ grnInfo.paidAmount }}</div>
+        </div>
+        <div class="row mt-2">
+          <div class="col-md-6 font-weight-bold">Due amount</div>
+          <div class="col-md-1">-</div>
+          <div class="col-md-5">
+            Rs {{ grnInfo.totalAmount - grnInfo.paidAmount }}
+          </div>
+        </div>
+        <div class="row mt-2 ml-3 mr-3">
+          <table class="table">
+            <thead>
+              <th>Item</th>
+              <th>Received Qty</th>
+              <th>Unit Price</th>
+              <th>Selling Price</th>
+              <th>line Total</th>
+            </thead>
+            <tbody>
+              <tr *ngFor="let row of grnInfo.grnDetails">
+                <td>{{ row.itemName }}</td>
+                <td>{{ row.quantity }}</td>
+                <td>{{ row.unitPrice }}</td>
+                <td>{{ row.sellingPrice }}</td>
+                <td>{{ row.lineTotal }}</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button
+          type="button"
+          class="btn btn-secondary"
+          (click)="grnModal.hide()"
         >
           Close
         </button>

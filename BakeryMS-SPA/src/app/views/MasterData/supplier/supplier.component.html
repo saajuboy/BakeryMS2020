@@ -122,9 +122,9 @@
           <div class="col-md-6 font-weight-bold">Type</div>
           <div class="col-md-1">-</div>
           <div class="col-md-5">{{
-            supplierInfo.status === 1
-              ? supplierInfo.status === 2
-                ? supplierInfo.status === 3
+            supplierInfo.type === 1
+              ? supplierInfo.type === 2
+                ? supplierInfo.type === 3
                   ? "Miscalleneous"
                   : "Raw material"
                 : "Company"
@@ -306,10 +306,10 @@
                       r.get('type').value !== '')
                 }"
               >
-                <option [value]="0">Production</option>
+                <!-- <option [value]="0">Production</option> -->
                 <option [value]="1">Company</option>
                 <option [value]="2">Raw Material</option>
-                <option [value]="2">Miscalleaneous</option>
+                <option [value]="3">Miscalleaneous</option>
               </select>
               <div
                 *ngIf="r.get('type').hasError('required')"
