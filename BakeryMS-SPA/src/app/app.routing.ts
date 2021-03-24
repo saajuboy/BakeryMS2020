@@ -58,36 +58,6 @@ export const routes: Routes = [
       { path: 'widgets', loadChildren: () => import('./views/widgets/widgets.module').then(m => m.WidgetsModule) },
 
       {
-        path: 'inventory/item',
-        runGuardsAndResolvers: 'always',
-        canActivate: [RoleGuard],
-        component: ItemListComponent,
-        data: {
-          title: 'Item List',
-          allowedRoles: ['Admin', 'OutletManager', 'BakeryManager', 'Cashier']
-        }
-      },
-      {
-        path: 'inventory/item/create',
-        runGuardsAndResolvers: 'always',
-        canActivate: [RoleGuard],
-        component: ItemCreateComponent,
-        data: {
-          title: 'Item Create',
-          allowedRoles: ['Admin', 'OutletManager', 'BakeryManager', 'Cashier']
-        }
-      },
-      {
-        path: 'inventory/item/edit/:id',
-        runGuardsAndResolvers: 'always',
-        canActivate: [RoleGuard],
-        component: ItemCreateComponent,
-        data: {
-          title: 'Item Edit',
-          allowedRoles: ['Admin', 'OutletManager', 'BakeryManager', 'Cashier']
-        }
-      },
-      {
         path: 'inventory/purchaseOrder',
         runGuardsAndResolvers: 'always',
         canActivate: [RoleGuard],
@@ -272,6 +242,36 @@ export const routes: Routes = [
         component: UserListComponent,
         data: {
           title: 'List'
+        }
+      },
+      {
+        path: 'master/item',
+        runGuardsAndResolvers: 'always',
+        canActivate: [RoleGuard],
+        component: ItemListComponent,
+        data: {
+          title: 'Item List',
+          allowedRoles: ['Admin', 'OutletManager', 'BakeryManager', 'Cashier']
+        }
+      },
+      {
+        path: 'master/item/create',
+        runGuardsAndResolvers: 'always',
+        canActivate: [RoleGuard],
+        component: ItemCreateComponent,
+        data: {
+          title: 'Item Create',
+          allowedRoles: ['Admin', 'OutletManager', 'BakeryManager', 'Cashier']
+        }
+      },
+      {
+        path: 'master/item/edit/:id',
+        runGuardsAndResolvers: 'always',
+        canActivate: [RoleGuard],
+        component: ItemCreateComponent,
+        data: {
+          title: 'Item Edit',
+          allowedRoles: ['Admin', 'OutletManager', 'BakeryManager', 'Cashier']
         }
       },
       {

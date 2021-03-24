@@ -33,7 +33,7 @@ export class ItemListComponent implements OnInit {
   }
 
   addItem() {
-    this.router.navigateByUrl('/inventory/item/create');
+    this.router.navigateByUrl('/master/item/create');
   }
 
   delete(id: number) {
@@ -53,7 +53,7 @@ export class ItemListComponent implements OnInit {
 
   }
   editItem(id: number) {
-    this.router.navigate(['inventory/item/edit', id]);
+    this.router.navigate(['master/item/edit', id]);
   }
   ShowItemInfo(id: number) {
     this.masterService.getItem(id).subscribe((result) => {

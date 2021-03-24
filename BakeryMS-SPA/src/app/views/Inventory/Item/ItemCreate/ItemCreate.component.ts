@@ -110,7 +110,7 @@ export class ItemCreateComponent implements OnInit {
         }, error => {
           this.alertify.error(error.error);
         }, () => {
-          this.router.navigate(['/inventory/item']);
+          this.router.navigate(['/master/item']);
         });
       } else {
         this.item.id = this.itemID;
@@ -120,7 +120,7 @@ export class ItemCreateComponent implements OnInit {
           this.alertify.error(error.error);
         },
           () => {
-            this.router.navigate(['/inventory/item']);
+            this.router.navigate(['/master/item']);
           });
         // this.alertify.success('updated Succes');
       }
@@ -137,7 +137,7 @@ export class ItemCreateComponent implements OnInit {
       (error: any) => {
         console.log(error);
         this.alertify.error('some error occured');
-        this.router.navigate(['/inventory/item']);
+        this.router.navigate(['/master/item']);
       }
     );
   }
@@ -162,7 +162,7 @@ export class ItemCreateComponent implements OnInit {
   }
 
   backToList() {
-    this.router.navigate(['/inventory/item']);
+    this.router.navigate(['/master/item']);
   }
 
   setCode(id) {

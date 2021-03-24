@@ -189,6 +189,16 @@ export const navItems: INavData[] = [
     icon: 'icon-globe ',
     children: [
       {
+        name: 'Item List',
+        url: '/master/item',
+        icon: 'icon-list'
+      },
+      {
+        name: 'Create Item',
+        url: '/master/item/create',
+        icon: 'icon-note'
+      },
+      {
         name: 'Item Category',
         url: '/master/itemCategory',
         icon: 'icon-fire '
