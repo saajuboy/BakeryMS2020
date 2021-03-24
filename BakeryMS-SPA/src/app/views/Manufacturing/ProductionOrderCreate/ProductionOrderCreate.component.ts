@@ -265,7 +265,7 @@ export class ProductionOrderCreateComponent implements OnInit {
 
   getPreviousProdOrders() {
     this.manufacturingService.getProductionOrders().subscribe((result) => {
-      this.productionOrderList = result;
+      this.productionOrderList = result.sort((a, b) => b.productionOrderNo - a.productionOrderNo);
     }, () => {
       this.alertify.error('failed To Process');
     }, () => {

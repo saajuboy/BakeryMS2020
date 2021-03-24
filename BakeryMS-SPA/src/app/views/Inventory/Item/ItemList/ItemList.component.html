@@ -37,10 +37,10 @@
       </thead>
       <tbody>
         <tr *ngFor="let item of pageOfItems | filter: search">
-          <td>{{ item.name }}</td>
-          <td>{{ item.code }}</td>
-          <td>{{ item.description }}</td>
-          <td>
+          <td class="p-1">{{ item.name }}</td>
+          <td class="p-1">{{ item.code }}</td>
+          <td class="p-1">{{ item.description }}</td>
+          <td class="p-1">
             <span *ngIf="item.type == 0" class="badge badge-success"
               >Production</span
             >
@@ -52,7 +52,7 @@
               >Misc</span
             >
           </td>
-          <td>
+          <td class="p-1">
             <button
               class="btn btn-ghost-secondary"
               (click)="editItem(item.id)"
@@ -82,7 +82,7 @@
       <jw-pagination
         [items]="items"
         (changePage)="onChangePage($event)"
-        [pageSize]="8"
+        [pageSize]="15"
       ></jw-pagination>
     </div>
     <!-- <ul class="pagination">

@@ -63,7 +63,7 @@ export class ItemCreateComponent implements OnInit {
 
   InitiateForm() {
     this.createForm = this.fb.group({
-      name: ['', [Validators.required, Validators.pattern('^[a-zA-Z0-9 ]+')]],
+      name: ['', [Validators.required, Validators.pattern('^[a-zA-Z0-9 -]+')]],
       code: [{ value: '', disabled: true }, Validators.required],
       description: [''],
       itemCategory: ['', Validators.required],
@@ -99,6 +99,10 @@ export class ItemCreateComponent implements OnInit {
       this.item.itemCategory.id = this.createForm.controls['itemCategory'].value;
       this.item.unit.id = this.createForm.controls['unit'].value;
 
+      if (this.item.type !== 0) {
+        this.item.sellingPrice = 0;
+        this.item.expireDays = 0;
+      }
 
       if (this.isEditForm === false) {
         this.masterService.CreateItem(this.item).subscribe(() => {

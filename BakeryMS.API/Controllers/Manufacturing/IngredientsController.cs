@@ -54,6 +54,10 @@ namespace BakeryMS.API.Controllers.Manufacturing
             if (IngredientHeaderForDetailDto == null)
                 return BadRequest(new ErrorModel(1, 400, "Empty Body"));
 
+            var item = await _context.IngredientHeaders.FirstOrDefaultAsync(a => a.ItemId == IngredientHeaderForDetailDto.ItemId);
+            if (item != null)
+                return BadRequest(new ErrorModel(4, 400, "Recipe For Item Already exist"));
+
             var IngredientHeaderToCreate = _mapper.Map<IngredientHeader>(IngredientHeaderForDetailDto);
 
             await _repository.CreateIngredient(IngredientHeaderToCreate);

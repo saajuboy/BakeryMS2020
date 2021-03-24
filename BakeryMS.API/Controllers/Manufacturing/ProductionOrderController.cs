@@ -338,6 +338,8 @@ namespace BakeryMS.API.Controllers.Manufacturing
             var prodItems = await _context.ProductionItems
             .Where(a => a.CurrentPlace == prodOrder.BusinessPlace && a.BatchNo == planId).ToListAsync();
 
+            var itemCost = await GetCostOfPlan(plan, 10);//changes
+
             foreach (var item in prodOrderHeaderForDetailDto.ProductionOrderDetails)
             {
                 var itemFromPITEMSList = prodItems.FirstOrDefault(a => a.ItemId == item.ItemId);
@@ -352,7 +354,7 @@ namespace BakeryMS.API.Controllers.Manufacturing
                     pItem.StockedQuantity = item.Quantity;
                     pItem.AvailableQuantity = item.Quantity;
                     pItem.UsedQuantity = 0;
-                    pItem.CostPrice = CalculateCostOfItemInPlan(plan, item.ItemId);
+                    pItem.CostPrice = itemCost.FirstOrDefault(a => a.ItemID == item.ItemId).CostPerUnit;//changes
                     pItem.CurrentPlace = prodOrder.BusinessPlace;
                     pItem.ManufacturedDate = DateTime.Now;
 
@@ -381,6 +383,35 @@ namespace BakeryMS.API.Controllers.Manufacturing
                 var prods = await _context.ProductionOrderHeaders.Where(a => a.PlanId == planId && (a.isProcessed == 0 || a.isProcessed == null)).ToListAsync();
                 if (prods == null || prods.Count == 0)
                 {
+                    //changes
+                    var availableRawMaterials = await _context.RawItems.Where(a => a.CurrentPlace == plan.BusinessPlace && a.AvailableQuantity > 0).ToListAsync();
+                    //need more
+                    foreach (var recipeitem in plan.ProductionPlanRecipes)
+                    {
+                        var quantityToUpdate = recipeitem.Quantity;
+                        foreach (var item in availableRawMaterials.Where(a => a.ItemId == recipeitem.ItemId))
+                        {
+                            if (quantityToUpdate == 0)
+                            {
+                                break;
+                            }
+
+                            if (item.AvailableQuantity > quantityToUpdate)
+                            {
+                                item.UsedQuantity = item.UsedQuantity + quantityToUpdate;
+                                item.AvailableQuantity = item.AvailableQuantity - quantityToUpdate;
+                                quantityToUpdate = 0;
+                            }
+                            else
+                            {
+                                item.UsedQuantity = item.UsedQuantity + item.AvailableQuantity;
+                                item.AvailableQuantity = item.AvailableQuantity - item.AvailableQuantity;
+                                quantityToUpdate = quantityToUpdate - item.AvailableQuantity;
+
+                            }
+                        }
+                    }
+
                     var planToUpdate = await _context.ProductionPlanHeaders.FirstOrDefaultAsync(a => a.Id == planId);
                     planToUpdate.IsNotEditable = true;
                     await _context.SaveChangesAsync();
@@ -391,10 +422,48 @@ namespace BakeryMS.API.Controllers.Manufacturing
             return BadRequest(new ErrorModel(5, 400, "Couldn't Accept, Some error occured"));
 
         }
-
-        private decimal CalculateCostOfItemInPlan(ProductionPlanHeader plan, int itemId)
+        //changes
+        private async Task<IList<ItemCost>> GetCostOfPlan(ProductionPlanHeader plan, int itemId)
         {
-            return 40;
+            var availableRawMaterials = await _context.RawItems.Where(a => a.CurrentPlace == plan.BusinessPlace && a.AvailableQuantity > 0).ToListAsync();
+            // calculate Total cost of eacch raw item used
+            IList<ItemCost> rawItemCostList = new List<ItemCost>();
+            IList<ItemCost> prodItemCostList = new List<ItemCost>();
+            foreach (var recipeitem in plan.ProductionPlanRecipes)
+            {
+                var currentItemList = availableRawMaterials.Where(a => a.ItemId == recipeitem.ItemId);
+                decimal accumulatedCost = 0;
+                decimal accumulatedQty = 0;
+
+                foreach (var rawItem in currentItemList)
+                {
+                    accumulatedCost = accumulatedCost + (rawItem.AvailableQuantity * rawItem.CostPrice);
+                    accumulatedQty = accumulatedQty + rawItem.AvailableQuantity;
+                }
+
+                var costPerUnit = accumulatedCost / accumulatedQty;
+
+                rawItemCostList.Add(new ItemCost { ItemID = recipeitem.ItemId, CostPerUnit = costPerUnit });
+            }
+
+            foreach (var item in plan.ProductionPlanDetails)
+            {
+                var planQuantity = item.Quantity;
+                var recipe = await _context.IngredientHeaders.Include(a => a.IngredientsDetail).FirstOrDefaultAsync(a => a.ItemId == item.ItemId);
+                decimal accumulatedCost = 0;
+                foreach (var rawItem in recipe.IngredientsDetail)
+                {
+                    var costPerUnitItem = rawItemCostList.FirstOrDefault(a => a.ItemID == rawItem.ItemId).CostPerUnit;
+
+                    accumulatedCost = accumulatedCost + (costPerUnitItem * rawItem.Quantity);
+                }
+                var costForOne = accumulatedCost / recipe.ServingSize;
+
+                prodItemCostList.Add(new ItemCost { ItemID = item.ItemId, CostPerUnit = costForOne });
+
+            }
+            //cost of labour and other misc
+            return prodItemCostList;
         }
     }
 
