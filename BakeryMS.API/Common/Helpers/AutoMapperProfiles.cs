@@ -192,6 +192,31 @@ namespace BakeryMS.API.Common.Helpers
             CreateMap<MachineryDto, Machinery>()
             .ForMember(dest => dest.PurchaseDate, opt => opt.MapFrom(src => DateTime.Parse(src.PurchaseDate)));
 
+            CreateMap<ProductionItem, AvailableItemsDtoForList>()
+            .ForMember(dest => dest.BusinessPlaceName, opt => opt.MapFrom(src => src.CurrentPlace.Name))
+            .ForMember(dest => dest.ManufacturedDate, opt => opt.MapFrom(src => src.ManufacturedDate.Value.DashedDate()))
+            .ForMember(dest => dest.ExpireDate, opt => opt.MapFrom(src => src.ExpireDate.Value.DashedDate()))
+            .ForMember(dest => dest.Name, opt => opt.MapFrom(src => src.Item.Name))
+            .ForMember(dest => dest.Code, opt => opt.MapFrom(src => src.Item.Code))
+            .ForMember(dest => dest.Unit, opt => opt.MapFrom(src => src.Item.Unit.Description))
+            .ForMember(dest => dest.Type, opt => opt.MapFrom(src => src.Item.Type));
+            CreateMap<CompanyItem, AvailableItemsDtoForList>()
+            .ForMember(dest => dest.BusinessPlaceName, opt => opt.MapFrom(src => src.CurrentPlace.Name))
+            .ForMember(dest => dest.ManufacturedDate, opt => opt.MapFrom(src => src.ManufacturedDate.Value.DashedDate()))
+            .ForMember(dest => dest.ExpireDate, opt => opt.MapFrom(src => src.ExpireDate.Value.DashedDate()))
+            .ForMember(dest => dest.Name, opt => opt.MapFrom(src => src.Item.Name))
+            .ForMember(dest => dest.Code, opt => opt.MapFrom(src => src.Item.Code))
+            .ForMember(dest => dest.Unit, opt => opt.MapFrom(src => src.Item.Unit.Description))
+            .ForMember(dest => dest.Type, opt => opt.MapFrom(src => src.Item.Type));
+            CreateMap<RawItems, AvailableItemsDtoForList>()
+            .ForMember(dest => dest.BusinessPlaceName, opt => opt.MapFrom(src => src.CurrentPlace.Name))
+            .ForMember(dest => dest.ManufacturedDate, opt => opt.MapFrom(src => src.ManufacturedDate.Value.DashedDate()))
+            .ForMember(dest => dest.ExpireDate, opt => opt.MapFrom(src => src.ExpireDate.Value.DashedDate()))
+            .ForMember(dest => dest.Name, opt => opt.MapFrom(src => src.Item.Name))
+            .ForMember(dest => dest.Code, opt => opt.MapFrom(src => src.Item.Code))
+            .ForMember(dest => dest.Unit, opt => opt.MapFrom(src => src.Item.Unit.Description))
+            .ForMember(dest => dest.Type, opt => opt.MapFrom(src => src.Item.Type));
+
         }
     }
 }

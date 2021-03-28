@@ -32,21 +32,9 @@ export const navItems: INavData[] = [
     icon: 'icon-basket-loaded',
     children: [
       {
-        name: 'Item',
+        name: 'Available Items',
         url: '/inventory/item',
         icon: 'icon-social-dropbox ',
-        children: [
-          {
-            name: 'Item List',
-            url: '/inventory/item',
-            icon: 'icon-list'
-          },
-          {
-            name: 'Create Item',
-            url: '/inventory/item/create',
-            icon: 'icon-note'
-          }
-        ]
       },
       {
         name: 'Purchase Order',

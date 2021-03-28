@@ -3,6 +3,7 @@ import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { environment } from '../../environments/environment';
+import { AvailableItemForList } from '../_models/availableItems';
 import { GRNHeader, PurchaseOrderDetail, PurchaseOrderHeader } from '../_models/purchaseOrder';
 
 @Injectable({
@@ -68,6 +69,19 @@ export class InventoryService {
   }
   createGRN(grn: GRNHeader) {
     return this.http.post(this.baseUrl + 'GRN', grn);
+  }
+
+
+  getAvailableItem(id: number, itemType: number): Observable<AvailableItemForList> {
+    let params = new HttpParams();
+    params = params.append('itemType', itemType.toString());
+    return this.http.get<AvailableItemForList>(this.baseUrl + 'availableItems/' + id, { params });
+  }
+  getAvailableItems(placeId: number, itemType: number): Observable<AvailableItemForList[]> {
+    let params = new HttpParams();
+    params = params.append('placeId', placeId.toString());
+    params = params.append('itemType', itemType.toString());
+    return this.http.get<AvailableItemForList[]>(this.baseUrl + 'availableItems', { params });
   }
 
 }

@@ -84,6 +84,7 @@ import { ProductionPlanCreateComponent } from './views/Manufacturing/ProductionP
 import { ProductionPlanListComponent } from './views/Manufacturing/ProductionPlanList/ProductionPlanList.component';
 import { ItemAcceptanceComponent } from './views/Inventory/ItemAcceptance/ItemAcceptance.component';
 import { GRNComponent } from './views/Inventory/GRN/GRN.component';
+import { AvailableItemsComponent } from './views/Inventory/AvailableItems/AvailableItems.component';
 
 
 // token getter function to automatically intercept http requests
@@ -150,7 +151,8 @@ const ngWizardConfig: NgWizardConfig = {
     ProductionPlanCreateComponent,
     ProductionPlanListComponent,
     ItemAcceptanceComponent,
-    GRNComponent
+    GRNComponent,
+    AvailableItemsComponent
   ],
   providers: [{
     provide: LocationStrategy,
