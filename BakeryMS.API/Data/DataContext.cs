@@ -2,6 +2,7 @@ using System.Linq;
 using BakeryMS.API.Models;
 using BakeryMS.API.Models.HumanResource;
 using BakeryMS.API.Models.Inventory;
+using BakeryMS.API.Models.POS;
 using BakeryMS.API.Models.Production;
 using BakeryMS.API.Models.Profile;
 using Microsoft.EntityFrameworkCore;
@@ -52,6 +53,11 @@ namespace BakeryMS.API.Data
         //Employee and Routine
         public DbSet<Employee> Employees { get; set; }
         public DbSet<Routine> Routines { get; set; }
+
+        //POS and Transaction
+        public DbSet<SalesHeader> SalesHeaders { get; set; }
+        public DbSet<SalesDetail> SalesDetails { get; set; }
+        public DbSet<Transaction> Transactions { get; set; }
 
     }
 }
