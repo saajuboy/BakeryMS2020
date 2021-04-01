@@ -37,12 +37,17 @@ export const navItems: INavData[] = [
     // },
     {
         name: 'POS',
-        url: '/inventory',
+        url: '/pos',
         icon: 'icon-wallet',
         children: [
             {
-                name: 'Purchase Order',
-                url: '/inventory/purchaseOrder',
+                name: 'Sales',
+                url: '/pos/sales/create',
+                icon: 'icon-note'
+            },
+            {
+                name: 'Sales List',
+                url: '/pos/sales',
                 icon: 'icon-list'
             }
         ]

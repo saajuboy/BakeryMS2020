@@ -4,14 +4,16 @@ using BakeryMS.API.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace BakeryMS.API.Migrations
 {
     [DbContext(typeof(DataContext))]
-    partial class DataContextModelSnapshot : ModelSnapshot
+    [Migration("20210329154514_AddedTimeColumnToSalesHeader")]
+    partial class AddedTimeColumnToSalesHeader
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -524,14 +526,9 @@ namespace BakeryMS.API.Migrations
                     b.Property<decimal>("Total")
                         .HasColumnType("decimal(18,2)");
 
-                    b.Property<int>("UserId")
-                        .HasColumnType("int");
-
                     b.HasKey("Id");
 
                     b.HasIndex("BusinessPlaceId");
-
-                    b.HasIndex("UserId");
 
                     b.ToTable("SalesHeaders");
                 });
@@ -561,12 +558,7 @@ namespace BakeryMS.API.Migrations
                     b.Property<TimeSpan?>("Time")
                         .HasColumnType("time");
 
-                    b.Property<int>("UserId")
-                        .HasColumnType("int");
-
                     b.HasKey("Id");
-
-                    b.HasIndex("UserId");
 
                     b.ToTable("Transactions");
                 });
@@ -1174,21 +1166,6 @@ namespace BakeryMS.API.Migrations
                     b.HasOne("BakeryMS.API.Models.BusinessPlace", "BusinessPlace")
                         .WithMany()
                         .HasForeignKey("BusinessPlaceId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("BakeryMS.API.Models.Profile.User", "User")
-                        .WithMany()
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-                });
-
-            modelBuilder.Entity("BakeryMS.API.Models.POS.Transaction", b =>
-                {
-                    b.HasOne("BakeryMS.API.Models.Profile.User", "User")
-                        .WithMany()
-                        .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });

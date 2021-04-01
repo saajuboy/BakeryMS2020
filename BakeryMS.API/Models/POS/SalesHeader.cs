@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations.Schema;
+using BakeryMS.API.Models.Profile;
 
 namespace BakeryMS.API.Models.POS
 {
@@ -11,7 +12,10 @@ namespace BakeryMS.API.Models.POS
         public DateTime Date { get; set; }
         public int BusinessPlaceId { get; set; }
         public BusinessPlace BusinessPlace { get; set; }
+        public int UserId { get; set; }
+        public User User { get; set; }
         public string CustomerName { get; set; }
+        public TimeSpan? Time { get; set; }
         [Column(TypeName = "decimal(18,2)")]
         public decimal Total { get; set; }
         [Column(TypeName = "decimal(18,2)")]

@@ -83,5 +83,11 @@ export class InventoryService {
     params = params.append('itemType', itemType.toString());
     return this.http.get<AvailableItemForList[]>(this.baseUrl + 'availableItems', { params });
   }
+  getAvailableItemsForPOS(placeId: number, filter: number): Observable<AvailableItemForList[]> {
+    let params = new HttpParams();
+    params = params.append('placeId', placeId.toString());
+    params = params.append('filter', filter.toString());
+    return this.http.get<AvailableItemForList[]>(this.baseUrl + 'availableItems/GetAvailableItemsForPOS', { params });
+  }
 
 }

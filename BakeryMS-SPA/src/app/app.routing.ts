@@ -32,6 +32,8 @@ import { ProductionPlanCreateComponent } from './views/Manufacturing/ProductionP
 import { ItemAcceptanceComponent } from './views/Inventory/ItemAcceptance/ItemAcceptance.component';
 import { GRNComponent } from './views/Inventory/GRN/GRN.component';
 import { AvailableItemsComponent } from './views/Inventory/AvailableItems/AvailableItems.component';
+import { SalesCreateComponent } from './views/POS/SalesCreate/SalesCreate.component';
+import { SalesListComponent } from './views/POS/SalesList/SalesList.component';
 
 
 export const routes: Routes = [
@@ -57,6 +59,26 @@ export const routes: Routes = [
       { path: 'notifications', loadChildren: () => import('./views/notifications/notifications.module').then(m => m.NotificationsModule) },
       { path: 'theme', loadChildren: () => import('./views/theme/theme.module').then(m => m.ThemeModule) },
       { path: 'widgets', loadChildren: () => import('./views/widgets/widgets.module').then(m => m.WidgetsModule) },
+      {
+        path: 'pos/sales/create',
+        runGuardsAndResolvers: 'always',
+        canActivate: [RoleGuard],
+        component: SalesCreateComponent,
+        data: {
+          title: 'Point Of Sale',
+          allowedRoles: ['Admin', 'OutletManager', 'BakeryManager', 'Cashier']
+        }
+      },
+      {
+        path: 'pos/sales',
+        runGuardsAndResolvers: 'always',
+        canActivate: [RoleGuard],
+        component: SalesListComponent,
+        data: {
+          title: 'List Of Sales',
+          allowedRoles: ['Admin', 'OutletManager', 'BakeryManager', 'Cashier']
+        }
+      },
       {
         path: 'inventory/item',
         runGuardsAndResolvers: 'always',

@@ -5,9 +5,11 @@ using BakeryMS.API.Common.DTOs.HumanResource;
 using BakeryMS.API.Common.DTOs.Inventory;
 using BakeryMS.API.Common.DTOs.Manufacturing;
 using BakeryMS.API.Common.DTOs.Master;
+using BakeryMS.API.Common.DTOs.Sales;
 using BakeryMS.API.Models;
 using BakeryMS.API.Models.HumanResource;
 using BakeryMS.API.Models.Inventory;
+using BakeryMS.API.Models.POS;
 using BakeryMS.API.Models.Production;
 using BakeryMS.API.Models.Profile;
 
@@ -199,7 +201,8 @@ namespace BakeryMS.API.Common.Helpers
             .ForMember(dest => dest.Name, opt => opt.MapFrom(src => src.Item.Name))
             .ForMember(dest => dest.Code, opt => opt.MapFrom(src => src.Item.Code))
             .ForMember(dest => dest.Unit, opt => opt.MapFrom(src => src.Item.Unit.Description))
-            .ForMember(dest => dest.Type, opt => opt.MapFrom(src => src.Item.Type));
+            .ForMember(dest => dest.Type, opt => opt.MapFrom(src => src.Item.Type))
+            .ForMember(dest => dest.SellingPrice, opt => opt.MapFrom(src => src.Item.SellingPrice));
             CreateMap<CompanyItem, AvailableItemsDtoForList>()
             .ForMember(dest => dest.BusinessPlaceName, opt => opt.MapFrom(src => src.CurrentPlace.Name))
             .ForMember(dest => dest.ManufacturedDate, opt => opt.MapFrom(src => src.ManufacturedDate.Value.DashedDate()))
@@ -207,7 +210,8 @@ namespace BakeryMS.API.Common.Helpers
             .ForMember(dest => dest.Name, opt => opt.MapFrom(src => src.Item.Name))
             .ForMember(dest => dest.Code, opt => opt.MapFrom(src => src.Item.Code))
             .ForMember(dest => dest.Unit, opt => opt.MapFrom(src => src.Item.Unit.Description))
-            .ForMember(dest => dest.Type, opt => opt.MapFrom(src => src.Item.Type));
+            .ForMember(dest => dest.Type, opt => opt.MapFrom(src => src.Item.Type))
+            .ForMember(dest => dest.Type, opt => opt.MapFrom(src => src.SellingPrice));
             CreateMap<RawItems, AvailableItemsDtoForList>()
             .ForMember(dest => dest.BusinessPlaceName, opt => opt.MapFrom(src => src.CurrentPlace.Name))
             .ForMember(dest => dest.ManufacturedDate, opt => opt.MapFrom(src => src.ManufacturedDate.Value.DashedDate()))
@@ -216,6 +220,20 @@ namespace BakeryMS.API.Common.Helpers
             .ForMember(dest => dest.Code, opt => opt.MapFrom(src => src.Item.Code))
             .ForMember(dest => dest.Unit, opt => opt.MapFrom(src => src.Item.Unit.Description))
             .ForMember(dest => dest.Type, opt => opt.MapFrom(src => src.Item.Type));
+
+            //POS
+            CreateMap<SalesHeaderForPOSDto, SalesHeader>()
+            .ForMember(dest => dest.Date, opt => opt.MapFrom(src => DateTime.Parse(src.Date)))
+            .ForMember(dest => dest.Time, opt => opt.MapFrom(src => TimeSpan.Parse(src.Time)));
+
+            CreateMap<SalesHeader, SalesHeaderForPOSDto>()
+            .ForMember(dest => dest.Time, opt => opt.MapFrom(src => src.Time.Value.ToString()))
+            .ForMember(dest => dest.Date, opt => opt.MapFrom(src => src.Date.DashedDate()))
+            .ForMember(dest => dest.UserName, opt => opt.MapFrom(src => src.User.Username))
+            .ForMember(dest => dest.BusinessPlaceName, opt => opt.MapFrom(src => src.BusinessPlace.Name));
+
+            CreateMap<SalesDetailForPosDto, SalesDetail>();
+            CreateMap<SalesDetail, SalesDetailForPosDto>();
 
         }
     }

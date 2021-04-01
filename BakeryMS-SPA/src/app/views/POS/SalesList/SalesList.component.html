@@ -1,8 +1,8 @@
 <div class="card">
-  <div class="card-header"><i class="fa fa-align-justify"></i> Item List</div>
+  <div class="card-header"><i class="fa fa-align-justify"></i> Sales List</div>
   <div class="card-body">
     <div class="row">
-      <div class="input-group col-md-4 mb-3">
+      <div class="input-group col-md-3 mb-3">
         <div class="input-group-prepend">
           <span class="input-group-text"><i class="icon-magnifier"></i></span>
         </div>
@@ -23,16 +23,16 @@
           Add
         </button>
       </div>
-      <div class="input-group col-md-4 mb-3">
+      <div class="input-group col-md-3 mb-3">
         <div class="input-group-prepend">
           <span class="input-group-text"
-            ><i class="icon-people">&nbsp; BusinessPlace</i></span
+            ><i class="icon-people">&nbsp; Place</i></span
           >
         </div>
         <select
           class="form-control"
           [(ngModel)]="businessPlace"
-          (change)="bpOrTypeChange()"
+          (change)="bpOrdateChange()"
         >
           <!-- <option value="0" selected="true">Please Select</option> -->
           <option *ngFor="let bp of businessPlaces" [value]="bp.id">
@@ -43,42 +43,55 @@
       <div class="input-group col-md-3 mb-3">
         <div class="input-group-prepend">
           <span class="input-group-text"
-            ><i class="icon-people">&nbsp; Type</i></span
+            ><i class="icon-people">&nbsp; From</i></span
           >
         </div>
-        <select
+        <input
           class="form-control"
-          [(ngModel)]="type"
-          (change)="bpOrTypeChange()"
-        >
-          <!-- <option value="0" selected="true">Please Select</option> -->
-          <option [value]="0">Production</option>
-          <option [value]="1">Company</option>
-          <option [value]="2">Raw Materials</option>
-        </select>
+          [max]="toDate"
+          (change)="bpOrdateChange()"
+          [(ngModel)]="fromDate"
+          type="date"
+        />
+      </div>
+      <div class="input-group col-md-2 mb-3">
+        <div class="input-group-prepend">
+          <span class="input-group-text"
+            ><i class="icon-people">&nbsp; To</i></span
+          >
+        </div>
+        <input
+          class="form-control"
+          (change)="bpOrdateChange()"
+          [(ngModel)]="toDate"
+          [min]="fromDate"
+          type="date"
+        />
       </div>
     </div>
 
     <table class="table table-bordered">
       <thead>
         <tr>
-          <th><i (click)="sort(6)" class="icon-chart"></i> Batch No</th>
-          <th><i (click)="sort(1)" class="icon-chart"></i> Item Name</th>
-          <th><i (click)="sort(2)" class="icon-chart"></i> Code</th>
-          <th><i (click)="sort(3)" class="icon-chart"></i> Cost Price (Rs.)</th>
-          <th><i (click)="sort(4)" class="icon-chart"></i> Avail.Qty</th>
-          <th><i (click)="sort(5)" class="icon-chart"></i> Expire Date</th>
-          <th style="width: 15%">Actions</th>
+          <th><i (click)="sort(1)" class="icon-chart"></i> Sales No</th>
+          <th><i (click)="sort(2)" class="icon-chart"></i> Date</th>
+          <th><i (click)="sort(3)" class="icon-chart"></i> Customer</th>
+          <th><i (click)="sort(4)" class="icon-chart"></i> Discount(Rs.)</th>
+          <th>
+            <i (click)="sort(5)" class="icon-chart"></i> Total Amount(Rs.)
+          </th>
+          <th><i (click)="sort(6)" class="icon-chart"></i> Username</th>
+          <th style="width: 5%">Actions</th>
         </tr>
       </thead>
       <tbody>
-        <tr *ngFor="let item of items | filter: search">
-          <td class="p-1">{{ item.batchNo }}</td>
-          <td class="p-1">{{ item.name }}</td>
-          <td class="p-1">{{ item.code }}</td>
-          <td class="p-1">{{ item.costPrice }}</td>
-          <td class="p-1">{{ item.availableQuantity + " " + item.unit }}</td>
-          <td class="p-1">{{ item.expireDate }}</td>
+        <tr *ngFor="let item of sales | filter: search">
+          <td class="p-1 text-center">{{ item.salesNo }}</td>
+          <td class="p-1 text-center">{{ item.date }}</td>
+          <td class="p-1 text-center">{{ item.customerName }}</td>
+          <td class="p-1 text-center">{{ item.discount }}</td>
+          <td class="p-1 text-center">{{ item.total }}</td>
+          <td class="p-1 text-center">{{ item.userName }}</td>
           <!-- <td class="p-1">
             <span *ngIf="item.type == 0" class="badge badge-success"
               >Production</span
@@ -117,8 +130,8 @@
         </tr>
       </tbody>
     </table>
-    <h4 *ngIf="items.length == 0" class="text-center">
-      No Data Found, select valid business place and type
+    <h4 *ngIf="sales.length == 0" class="text-center">
+      No Data Found, select valid business place and Dates
     </h4>
     <!-- <div class="card-footer pt-3">
       <jw-pagination
@@ -152,7 +165,7 @@
   <div class="modal-dialog modal-info" role="document">
     <div class="modal-content">
       <div class="modal-header">
-        <h4 class="modal-title">Item Info</h4>
+        <h4 class="modal-title">Sales Info</h4>
         <button
           type="button"
           class="close"
@@ -164,79 +177,70 @@
       </div>
       <div class="modal-body">
         <div class="row mt-3">
-          <div class="col-md-6 font-weight-bold">Batch No</div>
+          <div class="col-md-6 font-weight-bold">Sales No</div>
           <div class="col-md-1">-</div>
-          <div class="col-md-5">{{ itemInfo.batchNo }}</div>
+          <div class="col-md-5">{{ salesInfo.salesNo }}</div>
         </div>
         <div class="row mt-3">
-          <div class="col-md-6 font-weight-bold">Item Name</div>
+          <div class="col-md-6 font-weight-bold">Customer Name</div>
           <div class="col-md-1">-</div>
-          <div class="col-md-5">{{ itemInfo.name }}</div>
+          <div class="col-md-5">{{ salesInfo.customerName }}</div>
         </div>
         <div class="row mt-2">
-          <div class="col-md-6 font-weight-bold">Item Code</div>
+          <div class="col-md-6 font-weight-bold">User</div>
           <div class="col-md-1">-</div>
-          <div class="col-md-5">{{ itemInfo.code }}</div>
+          <div class="col-md-5">{{ salesInfo.userName }}</div>
         </div>
         <div class="row mt-2">
           <div class="col-md-6 font-weight-bold">Business Place</div>
           <div class="col-md-1">-</div>
-          <div class="col-md-5">{{ itemInfo.businessPlaceName }}</div>
+          <div class="col-md-5">{{ salesInfo.businessPlaceName }}</div>
         </div>
         <div class="row mt-2">
-          <div class="col-md-6 font-weight-bold">Cost Price</div>
-          <div class="col-md-1">-</div>
-          <div class="col-md-5">Rs. {{ itemInfo.costPrice }}</div>
-        </div>
-        <div class="row mt-2">
-          <div class="col-md-6 font-weight-bold">Available Qty</div>
+          <div class="col-md-6 font-weight-bold">Date and Time</div>
           <div class="col-md-1">-</div>
           <div class="col-md-5">
-            {{ itemInfo.availableQuantity + " " + itemInfo.unit }}
+            {{ salesInfo.date ? salesInfo.date : "" + " " + salesInfo.time }}
           </div>
         </div>
         <div class="row mt-2">
-          <div class="col-md-6 font-weight-bold">Stocked Qty</div>
+          <div class="col-md-6 font-weight-bold">Discount given</div>
           <div class="col-md-1">-</div>
-          <div class="col-md-5">
-            {{ itemInfo.stockedQuantity + " " + itemInfo.unit }}
-          </div>
+          <div class="col-md-5">Rs. {{ salesInfo.discount }}</div>
         </div>
         <div class="row mt-2">
-          <div class="col-md-6 font-weight-bold">Used Qty</div>
+          <div class="col-md-6 font-weight-bold">Total after discount</div>
           <div class="col-md-1">-</div>
-          <div class="col-md-5">
-            {{ itemInfo.usedQuantity + " " + itemInfo.unit }}
-          </div>
+          <div class="col-md-5">RS. {{ salesInfo.total }}</div>
+        </div>
+
+        <div class="row mt-2">
+          <div class="col-md-6 font-weight-bold">Received Amount</div>
+          <div class="col-md-1">-</div>
+          <div class="col-md-5">RS. {{ salesInfo.receivedAmount }}</div>
         </div>
         <div class="row mt-2">
-          <div class="col-md-6 font-weight-bold">Item Type</div>
+          <div class="col-md-6 font-weight-bold">Change Amount</div>
           <div class="col-md-1">-</div>
-          <div class="col-md-5">
-            {{
-              itemInfo.type === 1
-                ? itemInfo.type === 2
-                  ? itemInfo.type === 3
-                    ? "Miscalleneous"
-                    : "Raw material"
-                  : "Company"
-                : "Production"
-            }}
-          </div>
+          <div class="col-md-5">RS. {{ salesInfo.changeAmount }}</div>
         </div>
-        <div class="row mt-2">
-          <div class="col-md-6 font-weight-bold">Manufactured Date</div>
-          <div class="col-md-1">-</div>
-          <div class="col-md-5">
-            {{ itemInfo.manufacturedDate }}
-          </div>
-        </div>
-        <div class="row mt-2">
-          <div class="col-md-6 font-weight-bold">Expire Date</div>
-          <div class="col-md-1">-</div>
-          <div class="col-md-5">
-            {{ itemInfo.expireDate }}
-          </div>
+        <div class="row mt-2 ml-3 mr-3">
+          <table class="table">
+            <thead>
+              <th>Item</th>
+              <th>Qty</th>
+              <th>price(Rs.)</th>
+              <th>line Total(Rs.)</th>
+            </thead>
+            <tbody>
+              <tr *ngFor="let row of salesInfo.salesDetails">
+                <td>{{ row.itemName }}</td>
+                <td>{{ row.quantity }}</td>
+                <td>{{ row.price }}</td>
+                <td>{{ row.lineTotal }}</td>
+              </tr>
+            </tbody>
+          </table>
         </div>
       </div>
       <div class="modal-footer">

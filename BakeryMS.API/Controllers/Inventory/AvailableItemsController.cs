@@ -125,7 +125,83 @@ namespace BakeryMS.API.Controllers.Inventory
 
             return Ok(itemListtoReturn);
         }
+        [Route("[action]")]
+        [HttpGet]
+        public async Task<IActionResult> GetAvailableItemsForPOS(int placeId, int filter)//Filter(0-all,1-top,2-bread,3-buns,4-Biscuits)
+        {
+            if (placeId == 0)
+                return BadRequest(new ErrorModel(1, 400, "Valid Business Place Required"));
+            var place = await _context.BusinessPlaces.FindAsync(placeId);
+            if (place == null)
+                return BadRequest(new ErrorModel(1, 400, "Valid Business Place Required"));
 
+            IEnumerable<AvailableItemsDtoForList> itemListtoReturn = new List<AvailableItemsDtoForList>();
+            IList<ProductionItem> prodItems = new List<ProductionItem>();
+            IList<CompanyItem> compItems = new List<CompanyItem>();
+
+            var prodItemsQuery = _context.ProductionItems.OrderBy(a => a.ExpireDate)
+            .Where(a => a.CurrentPlace == place && a.Item.IsDeleted == false && a.AvailableQuantity > 0)
+            .Include(a => a.CurrentPlace)
+            .Include(a => a.Item).ThenInclude(a => a.Unit).AsQueryable();
+
+            var compItemsQuery = _context.CompanyItems.OrderBy(a => a.ExpireDate)
+            .Where(a => a.CurrentPlace == place && a.Item.IsDeleted == false && a.AvailableQuantity > 0)
+            .Include(a => a.CurrentPlace)
+            .Include(a => a.Item).ThenInclude(a => a.Unit).AsQueryable();
+
+            switch (filter)
+            {
+                case 0:
+                    prodItems = await prodItemsQuery.ToListAsync();
+                    itemListtoReturn = itemListtoReturn.Concat(_mapper.Map<IList<AvailableItemsDtoForList>>(prodItems));
+
+                    compItems = await compItemsQuery.ToListAsync();
+                    itemListtoReturn = itemListtoReturn.Concat(_mapper.Map<IList<AvailableItemsDtoForList>>(compItems));
+
+                    break;
+                case 1:
+                    prodItems = await prodItemsQuery.ToListAsync();
+                    itemListtoReturn = itemListtoReturn.Concat(_mapper.Map<IList<AvailableItemsDtoForList>>(prodItems));
+
+                    compItems = await compItemsQuery.ToListAsync();
+                    itemListtoReturn = itemListtoReturn.Concat(_mapper.Map<IList<AvailableItemsDtoForList>>(compItems));
+                    // for now return all, later do this
+
+                    break;
+                case 2:
+                    prodItemsQuery = prodItemsQuery.Where(a => a.Item.Code.Contains("BRD"));
+                    prodItems = await prodItemsQuery.ToListAsync();
+                    itemListtoReturn = _mapper.Map<IList<AvailableItemsDtoForList>>(prodItems);
+
+                    break;
+                case 3:
+                    prodItemsQuery = prodItemsQuery.Where(a => a.Item.Code.Contains("BUN"));
+                    prodItems = await prodItemsQuery.ToListAsync();
+                    itemListtoReturn = _mapper.Map<IList<AvailableItemsDtoForList>>(prodItems);
+
+                    break;
+                case 4:
+                    prodItemsQuery = prodItemsQuery.Where(a => a.Item.Code.Contains("BIS"));
+                    prodItems = await prodItemsQuery.ToListAsync();
+                    itemListtoReturn = itemListtoReturn.Concat(_mapper.Map<IList<AvailableItemsDtoForList>>(prodItems));
+
+                    compItemsQuery = compItemsQuery.Where(a => a.Item.Code.Contains("BIS"));
+                    compItems = await compItemsQuery.ToListAsync();
+                    itemListtoReturn = itemListtoReturn.Concat(_mapper.Map<IList<AvailableItemsDtoForList>>(compItems));
+                    break;
+
+                default:
+                    prodItems = await prodItemsQuery.ToListAsync();
+                    itemListtoReturn = itemListtoReturn.Concat(_mapper.Map<IList<AvailableItemsDtoForList>>(prodItems));
+
+                    compItems = await compItemsQuery.ToListAsync();
+                    itemListtoReturn = itemListtoReturn.Concat(_mapper.Map<IList<AvailableItemsDtoForList>>(compItems));
+
+                    break;
+            }
+
+            return Ok(itemListtoReturn);
+        }
         // [HttpPost]
         // public async Task<IActionResult> CreateItem(ItemForDetailDto itemForDetailDto)
         // {

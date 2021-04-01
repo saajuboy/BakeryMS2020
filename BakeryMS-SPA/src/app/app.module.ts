@@ -60,6 +60,7 @@ import { MasterService } from './_services/master.service';
 import { InventoryService } from './_services/inventory.service';
 import { ManufacturingService } from './_services/manufacturing.service';
 import { HumanResourceService } from './_services/humanResource.service';
+import { PosService } from './_services/pos.service';
 
 
 // import Components
@@ -85,6 +86,8 @@ import { ProductionPlanListComponent } from './views/Manufacturing/ProductionPla
 import { ItemAcceptanceComponent } from './views/Inventory/ItemAcceptance/ItemAcceptance.component';
 import { GRNComponent } from './views/Inventory/GRN/GRN.component';
 import { AvailableItemsComponent } from './views/Inventory/AvailableItems/AvailableItems.component';
+import { SalesCreateComponent } from './views/POS/SalesCreate/SalesCreate.component';
+import { SalesListComponent } from './views/POS/SalesList/SalesList.component';
 
 
 // token getter function to automatically intercept http requests
@@ -152,7 +155,9 @@ const ngWizardConfig: NgWizardConfig = {
     ProductionPlanListComponent,
     ItemAcceptanceComponent,
     GRNComponent,
-    AvailableItemsComponent
+    AvailableItemsComponent,
+    SalesCreateComponent,
+    SalesListComponent
   ],
   providers: [{
     provide: LocationStrategy,
@@ -165,6 +170,7 @@ const ngWizardConfig: NgWizardConfig = {
     InventoryService,
     ManufacturingService,
     HumanResourceService,
+    PosService,
     AuthGuard,
     AdminGuard,
     RoleGuard

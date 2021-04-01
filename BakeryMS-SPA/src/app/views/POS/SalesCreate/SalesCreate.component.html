@@ -1,0 +1,288 @@
+<div class="animated fadeIn">
+  <div class="row">
+    <div class="col-md-12">
+      <div class="card card-accent-primary">
+        <div class="card-header h4">Point Of Sale</div>
+        <div class="card-body d-flex">
+          <div class="col-md-7">
+            <div class="row">
+              <div class="input-group col-md-8">
+                <div class="input-group-prepend">
+                  <span class="input-group-text"
+                    ><i class="icon-magnifier"></i
+                  ></span>
+                </div>
+                <input
+                  type="text"
+                  class="form-control"
+                  placeholder="Search"
+                  autocomplete="off"
+                  [(ngModel)]="search"
+                />
+              </div>
+              <div class="input-group col-md-4">
+                <div class="input-group-prepend">
+                  <span class="input-group-text"
+                    ><i class="icon-people">&nbsp; Filter</i></span
+                  >
+                </div>
+                <select
+                  class="form-control"
+                  (change)="filterChange()"
+                  [(ngModel)]="filter"
+                >
+                  <option [value]="0">All items</option>
+                  <option [value]="1">Top</option>
+                  <option [value]="2">Bread</option>
+                  <option [value]="3">Buns</option>
+                  <option [value]="4">Biscuits</option>
+                </select>
+              </div>
+            </div>
+            <div class="row mt-4">
+              <div
+                *ngFor="let item of availableItems | filter: search"
+                class="col-sm-3 col-md-3"
+                (click)="itemClick(item)"
+              >
+                <div class="card">
+                  <div class="card-body" style="cursor: pointer">
+                    <div class="h6 m-0">
+                      {{ item.name.substring(0, 14) }}
+                      <span *ngIf="item.name.length > 14">..</span>
+                    </div>
+                    <div>
+                      {{ item.availableQuantity }} - {{ item.unit
+                      }}<span *ngIf="item.availableQuantity > 1">s</span>
+                    </div>
+                    <div class="progress progress-xs my-3">
+                      <div
+                        class="progress-bar bg-success"
+                        role="progressbar"
+                        [style]="
+                          'width:' +
+                          (item.availableQuantity * 100) /
+                            item.stockedQuantity +
+                          '%'
+                        "
+                        aria-valuenow="25"
+                        aria-valuemin="0"
+                        aria-valuemax="100"
+                      ></div>
+                    </div>
+                    <small class="text-muted"
+                      >Rs. {{ item.sellingPrice }}</small
+                    >
+                  </div>
+                </div>
+              </div>
+              <!--/.col-->
+              <h4 *ngIf="availableItems.length === 0">No Items found</h4>
+            </div>
+          </div>
+          <div class="float-right col-md-5">
+            <div class="card">
+              <div class="card-header d-flex p-1">
+                <div class="col-md-10 m-2">
+                  <h5 class="">Current Sale</h5>
+                </div>
+                <div class="float-right col-md-2 mt-2">
+                  <button class="btn-sm btn-ghost-info" (click)="clearSale()">
+                    Clear
+                  </button>
+                  <!-- &nbsp;
+                  <button class="btn-sm btn-ghost-primary">Hold</button> -->
+                </div>
+              </div>
+              <div class="card-body">
+                <div class="row">
+                  <div class="input-group col">
+                    <input
+                      type="text"
+                      class="form-control"
+                      placeholder="Customer Name"
+                      autocomplete="off"
+                      [(ngModel)]="sales.customerName"
+                    />
+                  </div>
+                </div>
+                <div class="row mt-3 mb-2 mr-1 ml-1">
+                  <table class="table table-sm">
+                    <thead>
+                      <tr>
+                        <th style="width: 50%">Item</th>
+                        <th style="width: 20%">Quantity</th>
+                        <th style="width: 20%">Price</th>
+                        <th style="width: 10%">Actions</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr *ngFor="let item of sales.salesDetails">
+                        <td>
+                          <label class="h6">{{ item.itemName }}</label>
+                        </td>
+                        <td>
+                          <input
+                            type="number"
+                            [(ngModel)]="item.quantity"
+                            class="form-control"
+                            min="0"
+                            (change)="quantityChange(item)"
+                            [max]="getMaxQuantity(item)"
+                          />
+                        </td>
+                        <td>Rs. {{ item.lineTotal }}</td>
+                        <td>
+                          <button
+                            (click)="deleteRow(item)"
+                            class="btn btn-ghost-danger"
+                            type="button"
+                          >
+                            <i class="icon-close"></i>
+                          </button>
+                        </td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+                <div class="row">
+                  <div class="col-md-6 pr-0">
+                    <button
+                      [disabled]="sales.salesDetails.length === 0"
+                      class="btn btn-block btn-square btn-primary"
+                      (click)="smallModal.show()"
+                    >
+                      Discount Rs.
+                      {{ sales.discount ? sales.discount : 0 }}
+                    </button>
+                  </div>
+                  <div class="col-md-6 pl-0">
+                    <button
+                      [disabled]="sales.salesDetails.length === 0"
+                      class="btn btn-block btn-square btn-success"
+                      (click)="billingModal.show()"
+                    >
+                      Charge Rs.
+                      {{ sales.total ? sales.total : 0 }}
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!--/.row-->
+  <div
+    bsModal
+    #smallModal="bs-modal"
+    class="modal fade"
+    tabindex="-1"
+    role="dialog"
+    aria-labelledby="myModalLabel"
+    aria-hidden="true"
+  >
+    <div class="modal-dialog modal-sm" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h4 class="modal-title">Discount</h4>
+          <button
+            type="button"
+            class="close"
+            (click)="smallModal.hide()"
+            aria-label="Close"
+          >
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          <input
+            type="number"
+            [(ngModel)]="sales.discount"
+            class="form-control"
+            min="0"
+            (change)="calculatePriceAndTotal(sales)"
+          />
+        </div>
+        <div class="modal-footer">
+          <button
+            type="button"
+            class="btn btn-primary"
+            (click)="smallModal.hide()"
+          >
+            Use Discount
+          </button>
+        </div>
+      </div>
+      <!-- /.modal-content -->
+    </div>
+    <!-- /.modal-dialog -->
+  </div>
+  <!-- /.modal -->
+
+  <div
+    bsModal
+    #billingModal="bs-modal"
+    class="modal fade"
+    tabindex="-1"
+    role="dialog"
+    aria-labelledby="myModalLabel"
+    aria-hidden="true"
+  >
+    <div class="modal-dialog modal-sm" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h4 class="modal-title">Billing Info</h4>
+          <button
+            type="button"
+            class="close"
+            (click)="billingModal.hide()"
+            aria-label="Close"
+          >
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          <div class="row mt-3 ml-2 mr-2">
+            <div class="input-group">
+              <div class="input-group-prepend">
+                <span class="input-group-text"
+                  ><i class="icon-puzzle">&nbsp; Received Amt Rs.</i></span
+                >
+              </div>
+              <input
+                type="number"
+                [(ngModel)]="sales.receivedAmount"
+                class="form-control"
+                [min]="sales.total"
+                (change)="calculatePriceAndTotal(sales)"
+              />
+            </div>
+          </div>
+          <div class="row mt-3 ml-2 mr-2">
+            <div class="input-group">
+              <h3>
+                Change - Rs. {{ sales.changeAmount ? sales.changeAmount : 0 }}
+              </h3>
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button
+            [disabled]="sales.receivedAmount < sales.total"
+            type="button"
+            class="btn btn-primary"
+            (click)="createSale()"
+          >
+            Charge Rs.
+            {{ sales.total ? sales.total : 0 }}
+          </button>
+        </div>
+      </div>
+      <!-- /.modal-content -->
+    </div>
+    <!-- /.modal-dialog -->
+  </div>
+</div>

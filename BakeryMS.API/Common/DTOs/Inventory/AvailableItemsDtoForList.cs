@@ -16,5 +16,6 @@ namespace BakeryMS.API.Common.DTOs.Inventory
         public decimal AvailableQuantity { get; set; }
         public int BusinessPlaceId { get; set; }
         public string BusinessPlaceName { get; set; }
+        public decimal? SellingPrice { get; set; }
     }
 }
