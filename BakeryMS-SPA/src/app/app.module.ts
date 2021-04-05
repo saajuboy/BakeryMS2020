@@ -61,6 +61,7 @@ import { InventoryService } from './_services/inventory.service';
 import { ManufacturingService } from './_services/manufacturing.service';
 import { HumanResourceService } from './_services/humanResource.service';
 import { PosService } from './_services/pos.service';
+import { ConfigurationService } from './_services/configuration.service';
 
 
 // import Components
@@ -88,6 +89,8 @@ import { GRNComponent } from './views/Inventory/GRN/GRN.component';
 import { AvailableItemsComponent } from './views/Inventory/AvailableItems/AvailableItems.component';
 import { SalesCreateComponent } from './views/POS/SalesCreate/SalesCreate.component';
 import { SalesListComponent } from './views/POS/SalesList/SalesList.component';
+import { ConfigurationComponent } from './views/Configuration/Configuration.component';
+import { TransactionsComponent } from './views/POS/Transactions/Transactions.component';
 
 
 // token getter function to automatically intercept http requests
@@ -157,7 +160,9 @@ const ngWizardConfig: NgWizardConfig = {
     GRNComponent,
     AvailableItemsComponent,
     SalesCreateComponent,
-    SalesListComponent
+    SalesListComponent,
+    TransactionsComponent,
+    ConfigurationComponent
   ],
   providers: [{
     provide: LocationStrategy,
@@ -173,7 +178,8 @@ const ngWizardConfig: NgWizardConfig = {
     PosService,
     AuthGuard,
     AdminGuard,
-    RoleGuard
+    RoleGuard,
+    ConfigurationService
   ],
   bootstrap: [AppComponent]
 })

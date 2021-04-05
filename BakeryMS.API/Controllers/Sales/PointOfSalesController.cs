@@ -65,7 +65,7 @@ namespace BakeryMS.API.Controllers.Sales
             if (place == null)
                 return BadRequest(new ErrorModel(1, 400, "Valid business place required"));
 
-            var salesQuery = _context.SalesHeaders
+            var salesQuery = _context.SalesHeaders.Where(a => a.BusinessPlace == place)
             .Include(a => a.BusinessPlace)
             .Include(a => a.User)
             .OrderByDescending(a => a.Date).AsQueryable();
@@ -178,7 +178,8 @@ namespace BakeryMS.API.Controllers.Sales
                         Debit = saleToCreate.Total,
                         UserId = saleToCreate.UserId,
                         Credit = 0,
-                        Time = saleToCreate.Time
+                        Time = saleToCreate.Time,
+                        BusinessPlaceId = saleToCreate.BusinessPlaceId
                     });
                 }
 

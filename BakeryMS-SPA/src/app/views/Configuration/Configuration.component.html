@@ -1,0 +1,55 @@
+<!-- <div class="container"> -->
+<style>
+  .input-group-text {
+    display: table;
+  }
+</style>
+<div class="row">
+  <div class="col-md-12 mx-auto">
+    <div class="card mx-4">
+      <div class="card-body p-4">
+        <h1>Configurations</h1>
+        <p class="text-muted">
+          All configuration related to domain,lies here !
+        </p>
+        <div class="row">
+          <div class="input-group col-md-4 mb-3">
+            <div class="input-group-prepend">
+              <span class="input-group-text"
+                ><i class="icon-home"></i>&nbsp; Current Place</span
+              >
+            </div>
+            <select
+              [(ngModel)]="businessPlaceId"
+              class="form-control"
+              name="place"
+              id="gender"
+              (change)="businessPlaceChanged()"
+            >
+              <option *ngFor="let bp of businessPlaces" [value]="bp.id">
+                {{ bp.name }}
+              </option>
+            </select>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-md-9"></div>
+          <div class="col-md-3">
+            <button
+              type="button"
+              [disabled]="configToCreate.configurations.length === 0"
+              (click)="updateConfig()"
+              class="btn btn-block btn-success"
+            >
+              Update Config
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- <p>register form value : {{ registerForm.value | json }}</p>
+<p>register form status : {{ registerForm.status | json }}</p> -->
+<!-- </div> -->

@@ -235,6 +235,18 @@ namespace BakeryMS.API.Common.Helpers
             CreateMap<SalesDetailForPosDto, SalesDetail>();
             CreateMap<SalesDetail, SalesDetailForPosDto>();
 
+            CreateMap<ConfigDto, Configuration>();
+            CreateMap<Configuration, ConfigDto>();
+
+            CreateMap<TransactionDto, Transaction>()
+            .ForMember(dest => dest.Date, opt => opt.MapFrom(src => DateTime.Parse(src.Date)))
+            .ForMember(dest => dest.Time, opt => opt.MapFrom(src => TimeSpan.Parse(src.Time)));
+
+            CreateMap<Transaction, TransactionDto>()
+            .ForMember(dest => dest.Time, opt => opt.MapFrom(src => src.Time.Value.ToString()))
+            .ForMember(dest => dest.Date, opt => opt.MapFrom(src => src.Date.DashedDate()))
+            .ForMember(dest => dest.UserName, opt => opt.MapFrom(src => src.User.Username))
+            .ForMember(dest => dest.BusinessPlaceName, opt => opt.MapFrom(src => src.BusinessPlace.Name));
         }
     }
 }

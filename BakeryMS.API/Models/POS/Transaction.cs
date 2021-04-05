@@ -17,5 +17,7 @@ namespace BakeryMS.API.Models.POS
         public decimal Debit { get; set; }
         [Column(TypeName = "decimal(18,2)")]
         public decimal Credit { get; set; }
+        public int? BusinessPlaceId { get; set; }
+        public BusinessPlace BusinessPlace { get; set; }
     }
 }

@@ -59,5 +59,7 @@ namespace BakeryMS.API.Data
         public DbSet<SalesDetail> SalesDetails { get; set; }
         public DbSet<Transaction> Transactions { get; set; }
 
+        public DbSet<Configuration> Configurations { get; set; }
+
     }
 }

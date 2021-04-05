@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { AuthService } from '../../_services/auth.service';
 import { AlertifyService } from '../../_services/alertify.service';
 import { Router } from '@angular/router';
+import { ConfigurationService } from '../../_services/configuration.service';
 
 @Component({
   selector: 'app-dashboard',
@@ -11,7 +12,10 @@ export class LoginComponent implements OnInit {
 
   model = { username: '', password: '' };
 
-  constructor(public authService: AuthService, private alertify: AlertifyService, private router: Router) { }
+  constructor(public authService: AuthService,
+    private configService: ConfigurationService,
+    private alertify: AlertifyService,
+    private router: Router) { }
 
   ngOnInit() {
 
@@ -19,6 +23,11 @@ export class LoginComponent implements OnInit {
 
   login() {
     this.authService.login(this.model).subscribe(next => {
+
+      this.configService.getConfigurations().subscribe((res) => {
+        // this.alertify.success(localStorage.getItem('BusinessPlaceId'));
+        // console.log(res);
+      });
       this.alertify.success('logged in succesfully');
       this.alertify.message('Welcome ' + this.authService.decodedToken.unique_name + '!');
     }, error => {

@@ -38,6 +38,7 @@ export class DefaultLayoutComponent {
 
   logout() {
     localStorage.removeItem('token');
+    localStorage.removeItem('BusinessPlaceId');
     this.alertify.message('logged out');
     this.router.navigate(['/login']);
   }

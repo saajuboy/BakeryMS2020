@@ -28,6 +28,11 @@ export const navItems: INavData[] = [
         name: 'Sales List',
         url: '/pos/sales',
         icon: 'icon-list'
+      },
+      {
+        name: 'Transactions',
+        url: '/pos/transactions',
+        icon: 'icon-list'
       }
     ]
   },

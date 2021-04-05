@@ -1,0 +1,500 @@
+<div class="card">
+  <div class="card-header"><i class="fa fa-align-justify"></i> Transactions</div>
+  <div class="card-body">
+    <div class="row">
+      <div class="input-group col-md-3 mb-3">
+        <div class="input-group-prepend">
+          <span class="input-group-text"><i class="icon-magnifier"></i></span>
+        </div>
+        <input
+          type="text"
+          class="form-control"
+          placeholder="Search"
+          autocomplete="off"
+          [(ngModel)]="search"
+        />
+      </div>
+      <div class="col-md-1">
+        <button
+          class="btn btn-pill btn-block btn-primary"
+          (click)="addTransaction()"
+          type="button"
+        >
+          Add
+        </button>
+      </div>
+      <div class="input-group col-md-3 mb-3">
+        <div class="input-group-prepend">
+          <span class="input-group-text"
+            ><i class="icon-people">&nbsp; Place</i></span
+          >
+        </div>
+        <select
+          class="form-control"
+          [(ngModel)]="businessPlace"
+          (change)="bpOrdateChange()"
+        >
+          <!-- <option value="0" selected="true">Please Select</option> -->
+          <option *ngFor="let bp of businessPlaces" [value]="bp.id">
+            {{ bp.name }}
+          </option>
+        </select>
+      </div>
+      <div class="input-group col-md-3 mb-3">
+        <div class="input-group-prepend">
+          <span class="input-group-text"
+            ><i class="icon-people">&nbsp; From</i></span
+          >
+        </div>
+        <input
+          class="form-control"
+          [max]="toDate"
+          (change)="bpOrdateChange()"
+          [(ngModel)]="fromDate"
+          type="date"
+        />
+      </div>
+      <div class="input-group col-md-2 mb-3">
+        <div class="input-group-prepend">
+          <span class="input-group-text"
+            ><i class="icon-people">&nbsp; To</i></span
+          >
+        </div>
+        <input
+          class="form-control"
+          (change)="bpOrdateChange()"
+          [(ngModel)]="toDate"
+          [min]="fromDate"
+          type="date"
+        />
+      </div>
+    </div>
+
+    <table class="table table-bordered">
+      <thead>
+        <tr>
+          <!-- <th><i (click)="sort(1)" class="icon-chart"></i> Sales No</th> -->
+          <th><i (click)="sort(2)" class="icon-chart"></i> Date</th>
+          <th><i (click)="sort(3)" class="icon-chart"></i> Description</th>
+          <th><i (click)="sort(4)" class="icon-chart"></i> Debit(Rs.)</th>
+          <th>
+            <i (click)="sort(5)" class="icon-chart"></i> Credit(Rs.)
+          </th>
+          <th><i (click)="sort(6)" class="icon-chart"></i> Username</th>
+          <th style="width: 5%">Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let item of transactions | filter: search">
+          <!-- <td class="p-1 text-center">{{ item.salesNo }}</td> -->
+          <td class="p-1 text-center">{{ item.date }}</td>
+          <td class="p-1 text-center">{{ item.description }}</td>
+          <td class="p-1 text-center">{{ item.debit }}</td>
+          <td class="p-1 text-center">{{ item.credit }}</td>
+          <td class="p-1 text-center">{{ item.userName }}</td>
+          <!-- <td class="p-1">
+            <span *ngIf="item.type == 0" class="badge badge-success"
+              >Production</span
+            >
+            <span *ngIf="item.type == 1" class="badge badge-primary"
+              >Company</span
+            >
+            <span *ngIf="item.type == 2" class="badge badge-danger">Raw</span>
+            <span *ngIf="item.type == 3" class="badge badge-secondary"
+              >Misc</span
+            >
+          </td> -->
+          <td class="p-1">
+            <!-- <button
+              class="btn btn-ghost-secondary"
+              (click)="editItem(item.id)"
+              type="button"
+            >
+              <i class="icon-pencil"></i>
+            </button> -->
+            <button
+              (click)="ShowItemInfo(item.id)"
+              class="btn btn-ghost-info"
+              type="button"
+            >
+              <i class="icon-info"></i>
+            </button>
+            <!-- <button
+              (click)="delete(item.id)"
+              class="btn btn-ghost-danger"
+              type="button"
+            >
+              <i class="icon-close"></i>
+            </button> -->
+          </td>
+        </tr>
+      </tbody>
+    </table>
+    <h4 *ngIf="transactions.length == 0" class="text-center">
+      No Data Found, select valid business place and Dates
+    </h4>
+    <!-- <div class="card-footer pt-3">
+      <jw-pagination
+        [items]="items"
+        (changePage)="onChangePage($event)"
+        [pageSize]="15"
+      ></jw-pagination>
+    </div> -->
+    <!-- <ul class="pagination">
+            <li class="page-item"><a class="page-link" href="#">Prev</a></li>
+            <li class="page-item active">
+              <a class="page-link" href="#">1</a>
+            </li>
+            <li class="page-item"><a class="page-link" href="#">2</a></li>
+            <li class="page-item"><a class="page-link" href="#">3</a></li>
+            <li class="page-item"><a class="page-link" href="#">4</a></li>
+            <li class="page-item"><a class="page-link" href="#">Next</a></li>
+          </ul> -->
+  </div>
+</div>
+
+<div
+  bsModal
+  #infoModal="bs-modal"
+  class="modal fade"
+  tabindex="-1"
+  role="dialog"
+  aria-labelledby="myModalLabel"
+  aria-hidden="true"
+>
+  <div class="modal-dialog modal-info" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h4 class="modal-title">Sales Info</h4>
+        <button
+          type="button"
+          class="close"
+          (click)="infoModal.hide()"
+          aria-label="Close"
+        >
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <!-- <div class="row mt-3">
+          <div class="col-md-6 font-weight-bold">Sales No</div>
+          <div class="col-md-1">-</div>
+          <div class="col-md-5">{{ transactionInfo.salesNo }}</div>
+        </div> -->
+        <div class="row mt-3">
+          <div class="col-md-6 font-weight-bold">Description</div>
+          <div class="col-md-1">-</div>
+          <div class="col-md-5">{{ transactionInfo.description }}</div>
+        </div>
+        <div class="row mt-2">
+          <div class="col-md-6 font-weight-bold">User</div>
+          <div class="col-md-1">-</div>
+          <div class="col-md-5">{{ transactionInfo.userName }}</div>
+        </div>
+        <div class="row mt-2">
+          <div class="col-md-6 font-weight-bold">Business Place</div>
+          <div class="col-md-1">-</div>
+          <div class="col-md-5">{{ transactionInfo.businessPlaceName }}</div>
+        </div>
+        <div class="row mt-2">
+          <div class="col-md-6 font-weight-bold">Date and Time</div>
+          <div class="col-md-1">-</div>
+          <div class="col-md-5">
+            {{ transactionInfo.date ? transactionInfo.date : "" + " " + transactionInfo.time }}
+          </div>
+        </div>
+        <div class="row mt-2">
+          <div class="col-md-6 font-weight-bold">Debit</div>
+          <div class="col-md-1">-</div>
+          <div class="col-md-5">Rs. {{ transactionInfo.debit }}</div>
+        </div>
+        <div class="row mt-2">
+          <div class="col-md-6 font-weight-bold">Credit</div>
+          <div class="col-md-1">-</div>
+          <div class="col-md-5">RS. {{ transactionInfo.credit }}</div>
+        </div>
+
+        <div class="row mt-2">
+          <div class="col-md-6 font-weight-bold">Reference</div>
+          <div class="col-md-1">-</div>
+          <div class="col-md-5">{{ transactionInfo.reference }}</div>
+        </div>
+        <!-- <div class="row mt-2">
+          <div class="col-md-6 font-weight-bold">Change Amount</div>
+          <div class="col-md-1">-</div>
+          <div class="col-md-5">RS. {{ transactionInfo.changeAmount }}</div>
+        </div>
+        <div class="row mt-2 ml-3 mr-3">
+          <table class="table">
+            <thead>
+              <th>Item</th>
+              <th>Qty</th>
+              <th>price(Rs.)</th>
+              <th>line Total(Rs.)</th>
+            </thead>
+            <tbody>
+              <tr *ngFor="let row of transactionInfo.salesDetails">
+                <td>{{ row.itemName }}</td>
+                <td>{{ row.quantity }}</td>
+                <td>{{ row.price }}</td>
+                <td>{{ row.lineTotal }}</td>
+              </tr>
+            </tbody>
+          </table>
+        </div> -->
+      </div>
+      <div class="modal-footer">
+        <button
+          type="button"
+          class="btn btn-secondary"
+          (click)="infoModal.hide()"
+        >
+          Close
+        </button>
+      </div>
+    </div>
+    <!-- /.modal-content -->
+  </div>
+  <!-- /.modal-dialog -->
+</div>
+
+<!-- <div
+  bsModal
+  #primaryModal="bs-modal"
+  class="modal fade"
+  tabindex="-1"
+  role="dialog"
+  aria-labelledby="myModalLabel"
+  aria-hidden="true"
+>
+  <div class="modal-dialog modal-dialog-centered modal-primary" role="document">
+    <div class="modal-content">
+      <form [formGroup]="createForm" (ngSubmit)="createEmployee()">
+        <div class="modal-header">
+          <h4 class="modal-title">
+            {{ isEditForm === false ? "Add" : "Edit" }} Item Category
+          </h4>
+          <button
+            type="button"
+            class="close"
+            (click)="addModal.hide()"
+            aria-label="Close"
+          >
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          <div class="row mt-3 ml-2 mr-2">
+            <div class="input-group">
+              <div class="input-group-prepend">
+                <span class="input-group-text"
+                  ><i class="icon-puzzle">&nbsp; Employee no.</i></span
+                >
+              </div>
+              <input
+                type="text"
+                class="form-control"
+                formControlName="employeeNumber"
+              />
+            </div>
+          </div>
+           
+          <div class="row mt-3 ml-2 mr-2">
+            <div class="input-group">
+              <div class="input-group-prepend">
+                <span class="input-group-text">
+                  <i class="icon-pencil"></i> &nbsp; Name
+                </span>
+              </div>
+              <input
+                type="text"
+                [ngClass]="{
+                  'is-invalid': r.get('name').errors && r.get('name').touched,
+                  'is-valid':
+                    !r.get('name').errors &&
+                    (r.get('name').touched || r.get('name').value !== '')
+                }"
+                class="form-control"
+                placeholder="Name"
+                autocomplete="off"
+                formControlName="name"
+              />
+              <div class="invalid-feedback">name is required</div>
+            </div>
+          </div>
+          <div class="row mt-3 ml-2 mr-2">
+            <div class="input-group">
+              <div class="input-group-prepend">
+                <span class="input-group-text">
+                  <i class="icon-pencil"></i> &nbsp; Contact
+                </span>
+              </div>
+              <input
+                type="text"
+                class="form-control"
+                placeholder="Contact"
+                autocomplete="off"
+                formControlName="contactNumber"
+              />
+            </div>
+          </div>
+          <div class="row mt-3 ml-2 mr-2">
+            <div class="input-group">
+              <div class="input-group-prepend">
+                <span class="input-group-text">
+                  <i class="icon-pencil"></i> &nbsp; NIC
+                </span>
+              </div>
+              <input
+                type="text"
+                [ngClass]="{
+                  'is-invalid': r.get('nIC').errors && r.get('nIC').touched,
+                  'is-valid':
+                    !r.get('nIC').errors &&
+                    (r.get('nIC').touched || r.get('nIC').value !== '')
+                }"
+                class="form-control"
+                placeholder="National Identity card Number"
+                autocomplete="off"
+                formControlName="nIC"
+              />
+              <div
+                *ngIf="r.get('nIC').hasError('required')"
+                class="invalid-feedback"
+              >
+                NIC required
+              </div>
+              <div
+                *ngIf="r.get('nIC').hasError('pattern')"
+                class="invalid-feedback"
+              >
+                Valid NIC number required
+              </div>
+            </div>
+          </div>
+          <div class="row mt-3 ml-2 mr-2">
+            <div class="input-group">
+              <div class="input-group-prepend">
+                <span class="input-group-text">
+                  <i class="icon-pencil"></i> &nbsp; Address
+                </span>
+              </div>
+              <input
+                type="text"
+                class="form-control"
+                placeholder="Address"
+                autocomplete="off"
+                formControlName="address"
+              />
+            </div>
+          </div>
+          <div class="row mt-3 ml-2 mr-2">
+            <div class="input-group">
+              <div class="input-group-prepend">
+                <span class="input-group-text">
+                  <i class="icon-pencil"></i> &nbsp; Type
+                </span>
+              </div>
+              <select
+                class="form-control"
+                [ngClass]="{
+                  'is-invalid': r.get('type').errors && r.get('type').touched,
+                  'is-valid':
+                    !r.get('type').errors &&
+                    (r.get('type').touched || r.get('type').value !== '')
+                }"
+                formControlName="type"
+              >
+                <option value="0">Permanent</option>
+                <option value="1">Daily</option>
+                <option value="2">Contract</option>
+              </select>
+
+              <div class="invalid-feedback">employee type is required</div>
+            </div>
+          </div>
+          <div class="row mt-3 ml-2 mr-2">
+            <div class="input-group">
+              <div class="input-group-prepend">
+                <span class="input-group-text">
+                  <i class="icon-pencil"></i> &nbsp; Salary (Rs)
+                </span>
+              </div>
+              <input
+                type="number"
+                [ngClass]="{
+                  'is-invalid':
+                    r.get('salary').errors && r.get('salary').touched,
+                  'is-valid':
+                    !r.get('salary').errors &&
+                    (r.get('salary').touched || r.get('salary').value !== '')
+                }"
+                class="form-control"
+                placeholder=" Rs 80000 "
+                autocomplete="off"
+                formControlName="salary"
+              />
+              <div
+                *ngIf="r.get('salary').hasError('required')"
+                class="invalid-feedback"
+              >
+                salary is required
+              </div>
+              <div
+                *ngIf="r.get('salary').hasError('min')"
+                class="invalid-feedback"
+              >
+                salary should be greater than 0
+              </div>
+            </div>
+          </div>
+          <div class="row mt-3 ml-2 mr-2">
+            <div class="input-group">
+              <div class="input-group-prepend">
+                <span class="input-group-text">
+                  <i class="icon-pencil"></i> &nbsp; Role
+                </span>
+              </div>
+              <select
+                class="form-control"
+                [ngClass]="{
+                  'is-invalid': r.get('role').errors && r.get('role').touched,
+                  'is-valid':
+                    !r.get('role').errors &&
+                    (r.get('role').touched || r.get('role').value !== '')
+                }"
+                formControlName="role"
+              >
+                <option value="0">Manager</option>
+                <option value="1">Cashier</option>
+                <option value="2">Baker</option>
+                <option value="3">Counter</option>
+                <option value="4">Waiter</option>
+              </select>
+
+              <div class="invalid-feedback">employee type is required</div>
+            </div>
+          </div>
+
+          <p>create form value : {{ createForm.getRawValue() | json }}</p>
+          <p>create form status : {{ createForm.status | json }}</p>
+        </div>
+        <div class="modal-footer">
+          <button
+            type="button"
+            class="btn btn-secondary"
+            (click)="addModal.hide()"
+          >
+            Close
+          </button>
+          <button [disabled]="!r.valid" type="submit" class="btn btn-primary">
+            {{ isEditForm === false ? "Create" : "Update" }}
+          </button>
+        </div>
+      </form>
+    </div>
+     
+  </div>
+   
+</div> -->
+ 

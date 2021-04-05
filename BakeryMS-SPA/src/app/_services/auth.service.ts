@@ -83,5 +83,9 @@ export class AuthService {
     roles = decodeToken.role;
     return roles.includes('Baker');
   }
+  getuserId(): number {
+    const id = this.decodedToken.nameid;
+    return +id;
+  }
 
 }

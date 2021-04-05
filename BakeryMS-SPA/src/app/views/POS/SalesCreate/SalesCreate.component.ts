@@ -21,7 +21,7 @@ export class SalesCreateComponent implements OnInit {
   sales: SalesHeaderForPos = <SalesHeaderForPos>{ receivedAmount: 0, salesDetails: [] };
   saleToCreate: SalesHeader;
   filter: number = 0;
-  businessPlaceId = 2;
+  businessPlaceId = 0;
   constructor(private invService: InventoryService, private alertify: AlertifyService, private posService: PosService) { }
 
   ngOnInit() {
@@ -32,22 +32,29 @@ export class SalesCreateComponent implements OnInit {
 
   getAvailableItems(filter?: number) {
     // getBusinessPlaceFromConfig
-    this.invService.getAvailableItemsForPOS(this.businessPlaceId, filter == null
-      || filter === undefined ? 0 : filter).subscribe((result) => {
-        this.availableItems = result;
-        // console.log(this.availableItems);
-        this.sales.salesDetails.forEach(x => {
-          const curr = this.availableItems.find(y => y.id === x.itemId && y.type === x.type);
-          curr.availableQuantity -= x.quantity;
-          curr.usedQuantity += x.quantity;
+    const placeId = localStorage.getItem('BusinessPlaceId');
+    this.businessPlaceId = +placeId;
+    if (this.businessPlaceId > 0) {
+      this.invService.getAvailableItemsForPOS(this.businessPlaceId, filter == null
+        || filter === undefined ? 0 : filter).subscribe((result) => {
+          this.availableItems = result;
+          // console.log(this.availableItems);
+          this.sales.salesDetails.forEach(x => {
+            const curr = this.availableItems.find(y => y.id === x.itemId && y.type === x.type);
+            curr.availableQuantity -= x.quantity;
+            curr.usedQuantity += x.quantity;
+          });
+        }, (res) => {
+          if (res.error.status === 400 || res.error.status === '400') {
+            this.alertify.error(res.error.message + ' : ' + res.error.code);
+          } else {
+            this.alertify.error('some error occured, Try again');
+          }
         });
-      }, (res) => {
-        if (res.error.status === 400 || res.error.status === '400') {
-          this.alertify.error(res.error.message + ' : ' + res.error.code);
-        } else {
-          this.alertify.error('some error occured, Try again');
-        }
-      });
+    } else {
+      this.alertify.error('Set businessPlace in Config');
+    }
+
   }
 
   filterChange() {

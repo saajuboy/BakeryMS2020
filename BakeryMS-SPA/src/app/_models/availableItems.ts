@@ -63,19 +63,6 @@ export interface SalesHeaderForPos {
     isHolded?: boolean;
     isCharged?: boolean;
     salesDetails: SalesDetailForPos[];
-
-    // name: string;
-    // code: string;
-    // unit: string;
-    // type: number; // 0:production,1:Company,2:Raw,3:Misc
-    // manufacturedDate: Date;
-    // expireDate: Date;
-    // batchNo: number;
-    // costPrice: number;
-    // stockedQuantity: number;
-    // usedQuantity: number;
-    // availableQuantity: number;
-    // sellingPrice?: number;
 }
 export interface SalesDetailForPos {
     id: number;
@@ -86,4 +73,18 @@ export interface SalesDetailForPos {
     lineTotal: number;
     previousQuantity?: number;
     itemName?: string;
+}
+export interface Transaction {
+    id: number;
+    date: Date;
+    time?: TimeUnit;
+    description: string;
+    businessPlaceId: number;
+    businessPlaceName?: string;
+    userName?: string;
+    userId: number;
+    reference: string;
+    debit: number;
+    credit: number;
+
 }

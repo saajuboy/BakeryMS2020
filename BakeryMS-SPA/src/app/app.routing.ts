@@ -34,6 +34,8 @@ import { GRNComponent } from './views/Inventory/GRN/GRN.component';
 import { AvailableItemsComponent } from './views/Inventory/AvailableItems/AvailableItems.component';
 import { SalesCreateComponent } from './views/POS/SalesCreate/SalesCreate.component';
 import { SalesListComponent } from './views/POS/SalesList/SalesList.component';
+import { TransactionsComponent } from './views/POS/Transactions/Transactions.component';
+import { ConfigurationComponent } from './views/Configuration/Configuration.component';
 
 
 export const routes: Routes = [
@@ -76,6 +78,16 @@ export const routes: Routes = [
         component: SalesListComponent,
         data: {
           title: 'List Of Sales',
+          allowedRoles: ['Admin', 'OutletManager', 'BakeryManager', 'Cashier']
+        }
+      },
+      {
+        path: 'pos/transactions',
+        runGuardsAndResolvers: 'always',
+        canActivate: [RoleGuard],
+        component: TransactionsComponent,
+        data: {
+          title: 'Transactions',
           allowedRoles: ['Admin', 'OutletManager', 'BakeryManager', 'Cashier']
         }
       },
@@ -331,6 +343,16 @@ export const routes: Routes = [
         runGuardsAndResolvers: 'always',
         canActivate: [RoleGuard],
         component: UnitComponent,
+        data: {
+          title: 'Units',
+          allowedRoles: ['Admin', 'OutletManager', 'BakeryManager', 'Cashier']
+        }
+      },
+      {
+        path: 'configuration',
+        runGuardsAndResolvers: 'always',
+        canActivate: [RoleGuard],
+        component: ConfigurationComponent,
         data: {
           title: 'Units',
           allowedRoles: ['Admin', 'OutletManager', 'BakeryManager', 'Cashier']
