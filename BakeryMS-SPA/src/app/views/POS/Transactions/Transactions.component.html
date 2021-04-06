@@ -1,5 +1,7 @@
 <div class="card">
-  <div class="card-header"><i class="fa fa-align-justify"></i> Transactions</div>
+  <div class="card-header">
+    <i class="fa fa-align-justify"></i> Transactions
+  </div>
   <div class="card-body">
     <div class="row">
       <div class="input-group col-md-3 mb-3">
@@ -73,45 +75,22 @@
     <table class="table table-bordered">
       <thead>
         <tr>
-          <!-- <th><i (click)="sort(1)" class="icon-chart"></i> Sales No</th> -->
           <th><i (click)="sort(2)" class="icon-chart"></i> Date</th>
           <th><i (click)="sort(3)" class="icon-chart"></i> Description</th>
           <th><i (click)="sort(4)" class="icon-chart"></i> Debit(Rs.)</th>
-          <th>
-            <i (click)="sort(5)" class="icon-chart"></i> Credit(Rs.)
-          </th>
+          <th><i (click)="sort(5)" class="icon-chart"></i> Credit(Rs.)</th>
           <th><i (click)="sort(6)" class="icon-chart"></i> Username</th>
           <th style="width: 5%">Actions</th>
         </tr>
       </thead>
       <tbody>
         <tr *ngFor="let item of transactions | filter: search">
-          <!-- <td class="p-1 text-center">{{ item.salesNo }}</td> -->
           <td class="p-1 text-center">{{ item.date }}</td>
           <td class="p-1 text-center">{{ item.description }}</td>
           <td class="p-1 text-center">{{ item.debit }}</td>
           <td class="p-1 text-center">{{ item.credit }}</td>
           <td class="p-1 text-center">{{ item.userName }}</td>
-          <!-- <td class="p-1">
-            <span *ngIf="item.type == 0" class="badge badge-success"
-              >Production</span
-            >
-            <span *ngIf="item.type == 1" class="badge badge-primary"
-              >Company</span
-            >
-            <span *ngIf="item.type == 2" class="badge badge-danger">Raw</span>
-            <span *ngIf="item.type == 3" class="badge badge-secondary"
-              >Misc</span
-            >
-          </td> -->
           <td class="p-1">
-            <!-- <button
-              class="btn btn-ghost-secondary"
-              (click)="editItem(item.id)"
-              type="button"
-            >
-              <i class="icon-pencil"></i>
-            </button> -->
             <button
               (click)="ShowItemInfo(item.id)"
               class="btn btn-ghost-info"
@@ -119,13 +98,6 @@
             >
               <i class="icon-info"></i>
             </button>
-            <!-- <button
-              (click)="delete(item.id)"
-              class="btn btn-ghost-danger"
-              type="button"
-            >
-              <i class="icon-close"></i>
-            </button> -->
           </td>
         </tr>
       </tbody>
@@ -133,23 +105,6 @@
     <h4 *ngIf="transactions.length == 0" class="text-center">
       No Data Found, select valid business place and Dates
     </h4>
-    <!-- <div class="card-footer pt-3">
-      <jw-pagination
-        [items]="items"
-        (changePage)="onChangePage($event)"
-        [pageSize]="15"
-      ></jw-pagination>
-    </div> -->
-    <!-- <ul class="pagination">
-            <li class="page-item"><a class="page-link" href="#">Prev</a></li>
-            <li class="page-item active">
-              <a class="page-link" href="#">1</a>
-            </li>
-            <li class="page-item"><a class="page-link" href="#">2</a></li>
-            <li class="page-item"><a class="page-link" href="#">3</a></li>
-            <li class="page-item"><a class="page-link" href="#">4</a></li>
-            <li class="page-item"><a class="page-link" href="#">Next</a></li>
-          </ul> -->
   </div>
 </div>
 
@@ -176,11 +131,6 @@
         </button>
       </div>
       <div class="modal-body">
-        <!-- <div class="row mt-3">
-          <div class="col-md-6 font-weight-bold">Sales No</div>
-          <div class="col-md-1">-</div>
-          <div class="col-md-5">{{ transactionInfo.salesNo }}</div>
-        </div> -->
         <div class="row mt-3">
           <div class="col-md-6 font-weight-bold">Description</div>
           <div class="col-md-1">-</div>
@@ -200,7 +150,11 @@
           <div class="col-md-6 font-weight-bold">Date and Time</div>
           <div class="col-md-1">-</div>
           <div class="col-md-5">
-            {{ transactionInfo.date ? transactionInfo.date : "" + " " + transactionInfo.time }}
+            {{
+              transactionInfo.date
+                ? transactionInfo.date
+                : "" + " " + transactionInfo.time
+            }}
           </div>
         </div>
         <div class="row mt-2">
@@ -219,29 +173,6 @@
           <div class="col-md-1">-</div>
           <div class="col-md-5">{{ transactionInfo.reference }}</div>
         </div>
-        <!-- <div class="row mt-2">
-          <div class="col-md-6 font-weight-bold">Change Amount</div>
-          <div class="col-md-1">-</div>
-          <div class="col-md-5">RS. {{ transactionInfo.changeAmount }}</div>
-        </div>
-        <div class="row mt-2 ml-3 mr-3">
-          <table class="table">
-            <thead>
-              <th>Item</th>
-              <th>Qty</th>
-              <th>price(Rs.)</th>
-              <th>line Total(Rs.)</th>
-            </thead>
-            <tbody>
-              <tr *ngFor="let row of transactionInfo.salesDetails">
-                <td>{{ row.itemName }}</td>
-                <td>{{ row.quantity }}</td>
-                <td>{{ row.price }}</td>
-                <td>{{ row.lineTotal }}</td>
-              </tr>
-            </tbody>
-          </table>
-        </div> -->
       </div>
       <div class="modal-footer">
         <button
@@ -258,7 +189,7 @@
   <!-- /.modal-dialog -->
 </div>
 
-<!-- <div
+<div
   bsModal
   #primaryModal="bs-modal"
   class="modal fade"
@@ -269,11 +200,9 @@
 >
   <div class="modal-dialog modal-dialog-centered modal-primary" role="document">
     <div class="modal-content">
-      <form [formGroup]="createForm" (ngSubmit)="createEmployee()">
+      <form [formGroup]="createForm" (ngSubmit)="createTransaction()">
         <div class="modal-header">
-          <h4 class="modal-title">
-            {{ isEditForm === false ? "Add" : "Edit" }} Item Category
-          </h4>
+          <h4 class="modal-title">Add Transaction</h4>
           <button
             type="button"
             class="close"
@@ -287,54 +216,41 @@
           <div class="row mt-3 ml-2 mr-2">
             <div class="input-group">
               <div class="input-group-prepend">
-                <span class="input-group-text"
-                  ><i class="icon-puzzle">&nbsp; Employee no.</i></span
-                >
-              </div>
-              <input
-                type="text"
-                class="form-control"
-                formControlName="employeeNumber"
-              />
-            </div>
-          </div>
-           
-          <div class="row mt-3 ml-2 mr-2">
-            <div class="input-group">
-              <div class="input-group-prepend">
                 <span class="input-group-text">
-                  <i class="icon-pencil"></i> &nbsp; Name
+                  <i class="icon-pencil"></i> &nbsp; Description
                 </span>
               </div>
               <input
                 type="text"
                 [ngClass]="{
-                  'is-invalid': r.get('name').errors && r.get('name').touched,
+                  'is-invalid':
+                    r.get('description').errors && r.get('description').touched,
                   'is-valid':
-                    !r.get('name').errors &&
-                    (r.get('name').touched || r.get('name').value !== '')
+                    !r.get('description').errors &&
+                    (r.get('description').touched ||
+                      r.get('description').value !== '')
                 }"
                 class="form-control"
-                placeholder="Name"
+                placeholder="Description"
                 autocomplete="off"
-                formControlName="name"
+                formControlName="description"
               />
-              <div class="invalid-feedback">name is required</div>
+              <div class="invalid-feedback">description is required</div>
             </div>
           </div>
           <div class="row mt-3 ml-2 mr-2">
             <div class="input-group">
               <div class="input-group-prepend">
                 <span class="input-group-text">
-                  <i class="icon-pencil"></i> &nbsp; Contact
+                  <i class="icon-pencil"></i> &nbsp; Reference
                 </span>
               </div>
               <input
                 type="text"
                 class="form-control"
-                placeholder="Contact"
+                placeholder="Reference"
                 autocomplete="off"
-                formControlName="contactNumber"
+                formControlName="reference"
               />
             </div>
           </div>
@@ -342,109 +258,28 @@
             <div class="input-group">
               <div class="input-group-prepend">
                 <span class="input-group-text">
-                  <i class="icon-pencil"></i> &nbsp; NIC
-                </span>
-              </div>
-              <input
-                type="text"
-                [ngClass]="{
-                  'is-invalid': r.get('nIC').errors && r.get('nIC').touched,
-                  'is-valid':
-                    !r.get('nIC').errors &&
-                    (r.get('nIC').touched || r.get('nIC').value !== '')
-                }"
-                class="form-control"
-                placeholder="National Identity card Number"
-                autocomplete="off"
-                formControlName="nIC"
-              />
-              <div
-                *ngIf="r.get('nIC').hasError('required')"
-                class="invalid-feedback"
-              >
-                NIC required
-              </div>
-              <div
-                *ngIf="r.get('nIC').hasError('pattern')"
-                class="invalid-feedback"
-              >
-                Valid NIC number required
-              </div>
-            </div>
-          </div>
-          <div class="row mt-3 ml-2 mr-2">
-            <div class="input-group">
-              <div class="input-group-prepend">
-                <span class="input-group-text">
-                  <i class="icon-pencil"></i> &nbsp; Address
-                </span>
-              </div>
-              <input
-                type="text"
-                class="form-control"
-                placeholder="Address"
-                autocomplete="off"
-                formControlName="address"
-              />
-            </div>
-          </div>
-          <div class="row mt-3 ml-2 mr-2">
-            <div class="input-group">
-              <div class="input-group-prepend">
-                <span class="input-group-text">
-                  <i class="icon-pencil"></i> &nbsp; Type
-                </span>
-              </div>
-              <select
-                class="form-control"
-                [ngClass]="{
-                  'is-invalid': r.get('type').errors && r.get('type').touched,
-                  'is-valid':
-                    !r.get('type').errors &&
-                    (r.get('type').touched || r.get('type').value !== '')
-                }"
-                formControlName="type"
-              >
-                <option value="0">Permanent</option>
-                <option value="1">Daily</option>
-                <option value="2">Contract</option>
-              </select>
-
-              <div class="invalid-feedback">employee type is required</div>
-            </div>
-          </div>
-          <div class="row mt-3 ml-2 mr-2">
-            <div class="input-group">
-              <div class="input-group-prepend">
-                <span class="input-group-text">
-                  <i class="icon-pencil"></i> &nbsp; Salary (Rs)
+                  <i class="icon-pencil"></i> &nbsp; Debit Amount
                 </span>
               </div>
               <input
                 type="number"
                 [ngClass]="{
                   'is-invalid':
-                    r.get('salary').errors && r.get('salary').touched,
+                    r.hasError('debCredRequired') && r.get('debit').touched,
                   'is-valid':
-                    !r.get('salary').errors &&
-                    (r.get('salary').touched || r.get('salary').value !== '')
+                    !r.hasError('debCredRequired') &&
+                    (r.get('debit').touched || r.get('debit').value !== '')
                 }"
                 class="form-control"
-                placeholder=" Rs 80000 "
+                placeholder="0.00"
                 autocomplete="off"
-                formControlName="salary"
+                formControlName="debit"
               />
               <div
-                *ngIf="r.get('salary').hasError('required')"
+                *ngIf="r.hasError('debCredRequired')"
                 class="invalid-feedback"
               >
-                salary is required
-              </div>
-              <div
-                *ngIf="r.get('salary').hasError('min')"
-                class="invalid-feedback"
-              >
-                salary should be greater than 0
+                one of debit or credit is required
               </div>
             </div>
           </div>
@@ -452,32 +287,33 @@
             <div class="input-group">
               <div class="input-group-prepend">
                 <span class="input-group-text">
-                  <i class="icon-pencil"></i> &nbsp; Role
+                  <i class="icon-pencil"></i> &nbsp; Credit Amount
                 </span>
               </div>
-              <select
-                class="form-control"
+              <input
+                type="number"
                 [ngClass]="{
-                  'is-invalid': r.get('role').errors && r.get('role').touched,
+                  'is-invalid':
+                    r.hasError('debCredRequired') && r.get('credit').touched,
                   'is-valid':
-                    !r.get('role').errors &&
-                    (r.get('role').touched || r.get('role').value !== '')
+                    !r.hasError('debCredRequired') &&
+                    (r.get('credit').touched || r.get('credit').value !== '')
                 }"
-                formControlName="role"
+                class="form-control"
+                placeholder="0.00"
+                autocomplete="off"
+                formControlName="credit"
+              />
+              <div
+                *ngIf="r.hasError('debCredRequired')"
+                class="invalid-feedback"
               >
-                <option value="0">Manager</option>
-                <option value="1">Cashier</option>
-                <option value="2">Baker</option>
-                <option value="3">Counter</option>
-                <option value="4">Waiter</option>
-              </select>
-
-              <div class="invalid-feedback">employee type is required</div>
+                one of debit or credit is required
+              </div>
             </div>
           </div>
-
-          <p>create form value : {{ createForm.getRawValue() | json }}</p>
-          <p>create form status : {{ createForm.status | json }}</p>
+          <!-- <p>create form value : {{ createForm.getRawValue() | json }}</p>
+          <p>create form status : {{ createForm.status | json }}</p> -->
         </div>
         <div class="modal-footer">
           <button
@@ -488,13 +324,10 @@
             Close
           </button>
           <button [disabled]="!r.valid" type="submit" class="btn btn-primary">
-            {{ isEditForm === false ? "Create" : "Update" }}
+            Create
           </button>
         </div>
       </form>
     </div>
-     
   </div>
-   
-</div> -->
- 
+</div>

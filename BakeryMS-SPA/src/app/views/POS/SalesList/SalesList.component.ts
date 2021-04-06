@@ -1,13 +1,13 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { Router } from '@angular/router';
 import { ModalDirective } from 'ngx-bootstrap/modal';
-import { AvailableItemForList, SalesHeader } from '../../../_models/availableItems';
+import { SalesHeader } from '../../../_models/availableItems';
 import { BusinessPlace } from '../../../_models/businessPlace';
 import { AlertifyService } from '../../../_services/alertify.service';
-import { InventoryService } from '../../../_services/inventory.service';
 import { MasterService } from '../../../_services/master.service';
 import { PosService } from '../../../_services/pos.service';
 import { UtilityService } from '../../../_services/utility.service';
+import { jsPDF } from 'jspdf';
 
 @Component({
   selector: 'app-SalesList',
@@ -86,7 +86,9 @@ export class SalesListComponent implements OnInit {
       this.alertify.error('some Error occured');
     });
   }
-
+  printPdf() {
+    this.downloadPdf(this.salesInfo);
+  }
   sort(propertyNumber: number) {
 
     switch (propertyNumber) {
@@ -138,4 +140,144 @@ export class SalesListComponent implements OnInit {
   //   // update current page of items
   //   this.pageOfItems = pageOfItems;
   // }
+
+  downloadPdf(sales: SalesHeader) {
+    // const starry = [{ name: 'asdf1', qty: 10, prc: 20, ttl: 200 }
+    //   , { name: 'asdf2', qty: 10, prc: 20, ttl: 200 },
+    // { name: 'asdf3', qty: 10, prc: 20, ttl: 200 }]
+    const doc = new jsPDF('portrait', 'pt', 'a4', true);
+
+    let text = 'Upland Bake house';
+    let yPos = 40;
+    doc.setFontSize(12);
+    doc.text(text, this.ofsetCenter(text, doc), yPos, {}, 'center');
+
+    doc.setFontSize(10);
+    text = sales.businessPlaceName; // businessPlaceName
+    yPos += 15;
+    doc.text(text, this.ofsetCenter(text, doc), yPos, {}, {});
+
+    doc.setFontSize(8);
+    text = sales.businessPlace.address
+      .substring(0, 40); // businessPlaceName
+    yPos += 15;
+    doc.text(text, this.ofsetCenter(text, doc), yPos, {}, {});
+
+    text = sales.businessPlace.address;
+    if (text.length > 40) { // add adress here
+      text = text.substring(41, 81);
+      yPos += 10;
+      doc.text(text, this.ofsetCenter(text, doc), yPos, {}, {});
+    }
+
+    doc.setFontSize(10);
+    text = 'Tel - 052-2300034';
+    yPos += 15;
+    doc.text(text, this.ofsetCenter(text, doc), yPos, {}, {});
+
+    doc.setFontSize(8);
+    text = 'Invoice No - ' + sales.salesNo;
+    yPos += 15;
+    doc.text(text, 210, yPos, {}, {});
+
+    text = 'Customer  - ' + sales.customerName.substring(0, 32);
+    yPos += 15;
+    doc.text(text, 210, yPos, {}, {});
+
+    doc.setFontSize(10);
+    text = '------------------------------------------------------'; // 55 characters
+    yPos += 10;
+    doc.text(text, this.ofsetCenter(text, doc), yPos, {}, {});
+
+    text = 'Cashier     - ' + sales.userName;
+    yPos += 10;
+    doc.text(text, 210, yPos, {}, {});
+
+    text = 'Date          - ' + sales.date;
+    yPos += 15;
+    doc.text(text, 210, yPos, {}, {});
+
+    text = 'Time          - ' + sales.time;
+    yPos += 15;
+    doc.text(text, 210, yPos, {}, {});
+
+    text = '------------------------------------------------------'; // 55 characters
+    yPos += 10;
+    doc.text(text, this.ofsetCenter(text, doc), yPos, {}, {});
+
+    text = 'Item          Price        Qty           Amt';
+    yPos += 10;
+    doc.text(text, 210, yPos, {}, {});
+
+    text = '------------------------------------------------------'; // 55 characters
+    yPos += 10;
+    doc.text(text, this.ofsetCenter(text, doc), yPos, {}, {});
+
+    doc.setFontSize(8);
+    let count = 0;
+    sales.salesDetails.forEach(x => {
+      count += 1;
+      text = count + '. ' + x.itemName
+        .substring(0, 37);
+      yPos += 10;
+      doc.text(text, 210, yPos, {}, {});
+
+      yPos += 10;
+      text = x.price.toFixed(2);
+      doc.text(text, 260, yPos, {}, {});
+      text = x.quantity.toFixed(2);
+      doc.text(text, 300, yPos, {}, {});
+      text = x.lineTotal.toFixed(2);
+      doc.text(text, 340, yPos, {}, {});
+    });
+
+    doc.setFontSize(10);
+    text = '------------------------------------------------------'; // 55 characters
+    yPos += 10;
+    doc.text(text, this.ofsetCenter(text, doc), yPos, {}, {});
+
+    doc.setFontSize(7);
+    text = 'Total Items - ' + count; // 55 characters
+    yPos += 7;
+    doc.text(text, 210, yPos, {}, {});
+
+    doc.setFontSize(10);
+    text = '      Total                  - ' + (sales.total + sales.discount).toFixed(2); // 55 characters
+    yPos += 15;
+    doc.text(text, 210, yPos, {}, {});
+
+    text = '      Discount            - (' + (sales.discount).toFixed(2) + ')'; // 55 characters
+    yPos += 13;
+    doc.text(text, 210, yPos, {}, {});
+
+    text = '      Net Total           - ' + (sales.total).toFixed(2); // 55 characters
+    yPos += 13;
+    doc.text(text, 210, yPos, {}, {});
+
+    text = '      Received Cash - ' + (sales.receivedAmount).toFixed(2); // 55 characters
+    yPos += 13;
+    doc.text(text, 210, yPos, {}, {});
+
+    text = '      Change             - ' + (sales.changeAmount).toFixed(2); // 55 characters
+    yPos += 13;
+    doc.text(text, 210, yPos, {}, {});
+
+    doc.setFontSize(10);
+    text = '------------------------------------------------------'; // 55 characters
+    yPos += 10;
+    doc.text(text, this.ofsetCenter(text, doc), yPos, {}, {});
+
+    doc.setFontSize(8);
+    text = 'Thank you For Dealing with us !!!!'; // 55 characters
+    yPos += 10;
+    doc.text(text, this.ofsetCenter(text, doc), yPos, {}, {});
+
+    doc.save('receipt' + sales.salesNo + '.pdf');
+
+  }
+
+  ofsetCenter(text, doc) {
+    const xOffset = (doc.internal.pageSize.width / 2) - (doc.getStringUnitWidth(text) * doc.getFontSize() / 2);
+    return xOffset;
+  }
 }

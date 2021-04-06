@@ -124,7 +124,7 @@ export class SalesCreateComponent implements OnInit {
     });
 
     this.posService.createSales(this.saleToCreate).subscribe((res) => {
-      console.log(res);
+      // console.log(res);
       this.downloadPdf(res);
       this.billingModal.hide();
       this.clearSale();

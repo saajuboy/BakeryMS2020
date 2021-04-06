@@ -163,9 +163,14 @@ namespace BakeryMS.API.Controllers.Sales
             if (await _context.SaveChangesAsync() > 0)
             {
                 //update transaction
-                if (await _context.Transactions.AnyAsync(a => a.Reference.Contains("Sales") && a.Date == saleToCreate.Date))
+                if (await _context.Transactions.AnyAsync(a => a.Reference.Contains("Sales")
+                    && a.Date == saleToCreate.Date
+                    && a.BusinessPlaceId == saleToCreate.BusinessPlaceId))
                 {
-                    var transaction = await _context.Transactions.FirstOrDefaultAsync(a => a.Reference.Contains("Sales") && a.Date == saleToCreate.Date);
+                    var transaction = await _context.Transactions.FirstOrDefaultAsync(a => a.Reference.Contains("Sales")
+                    && a.Date == saleToCreate.Date
+                    && a.BusinessPlaceId == saleToCreate.BusinessPlaceId);
+                    
                     transaction.Debit += saleToCreate.Total;
                 }
                 else
