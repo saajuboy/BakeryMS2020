@@ -10,6 +10,7 @@ namespace BakeryMS.API.Common.DTOs.Master
         public UnitForDetailDto Unit { get; set; }
         public int Type { get; set; }
         public decimal SellingPrice { get; set; }
+        public decimal ReOrderLevel { get; set; }
         public int ExpireDays { get; set; }
     }
 }

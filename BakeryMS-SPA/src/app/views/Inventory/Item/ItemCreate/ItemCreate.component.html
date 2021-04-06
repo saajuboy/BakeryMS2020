@@ -1,4 +1,9 @@
 <!-- <div class="container"> -->
+<style>
+  .input-group-text {
+    display: table;
+  }
+</style>
 <div class="row">
   <div class="col-md-12 mx-auto">
     <div class="card mx-4">
@@ -107,7 +112,11 @@
                 </option>
               </select>
               <span class="input-group-append">
-                <button class="btn btn-primary" type="button">
+                <button
+                  class="btn btn-primary"
+                  (click)="addItemCategory()"
+                  type="button"
+                >
                   <i class="icon-plus"></i>
                 </button>
               </span>
@@ -174,7 +183,7 @@
             </div>
           </div>
           <div class="row">
-            <div class="input-group col-md-4 mb-3">
+            <div class="input-group col-md-3 mb-3">
               <div class="input-group-prepend">
                 <span class="input-group-text"
                   ><i class="fa fa-balance-scale">&nbsp; Unit</i></span
@@ -197,7 +206,11 @@
                 </option>
               </select>
               <span class="input-group-append">
-                <button class="btn btn-primary" type="button">
+                <button
+                  class="btn btn-primary"
+                  (click)="addUnit()"
+                  type="button"
+                >
                   <i class="icon-plus"></i>
                 </button>
               </span>
@@ -208,9 +221,38 @@
                 unit Required
               </div>
             </div>
+            <div class="input-group col-md-3 mb-3">
+              <div class="input-group-prepend">
+                <span class="input-group-text"
+                  ><i class="fa fa-balance-scale">&nbsp; Reorder level</i></span
+                >
+              </div>
+              <input
+                [ngClass]="{
+                  'is-invalid':
+                    (r.get('reOrderLevel').errors &&
+                      r.get('reOrderLevel').touched),
+                  'is-valid':
+                    !r.get('reOrderLevel').errors &&
+                    r.get('reOrderLevel').touched
+                }"
+                type="number"
+                class="form-control"
+                formControlName="reOrderLevel"
+              />
+              <div
+                *ngIf="r.get('reOrderLevel').hasError('pattern')"
+                class="invalid-feedback"
+              >
+                reorder level should be numeric
+              </div>
+              <div *ngIf="r.get('reOrderLevel').hasError('required')||r.get('reOrderLevel').hasError('min')" class="invalid-feedback">
+                reorder level is required
+              </div>
+            </div>
             <div
               *ngIf="r.get('type').value === '0' || isProductionType"
-              class="input-group col-md-4 mb-3"
+              class="input-group col-md-3 mb-3"
             >
               <div class="input-group-prepend">
                 <span class="input-group-text"
@@ -242,8 +284,8 @@
               </div>
             </div>
             <div
-              *ngIf="r.get('type').value === '0' || isProductionType "
-              class="input-group col-md-4 mb-3"
+              *ngIf="r.get('type').value === '0' || isProductionType"
+              class="input-group col-md-3 mb-3"
             >
               <div class="input-group-prepend">
                 <span class="input-group-text"

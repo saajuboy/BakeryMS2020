@@ -202,7 +202,10 @@ namespace BakeryMS.API.Common.Helpers
             .ForMember(dest => dest.Code, opt => opt.MapFrom(src => src.Item.Code))
             .ForMember(dest => dest.Unit, opt => opt.MapFrom(src => src.Item.Unit.Description))
             .ForMember(dest => dest.Type, opt => opt.MapFrom(src => src.Item.Type))
-            .ForMember(dest => dest.SellingPrice, opt => opt.MapFrom(src => src.Item.SellingPrice));
+            .ForMember(dest => dest.SellingPrice, opt => opt.MapFrom(src => src.Item.SellingPrice))
+            .ForMember(dest => dest.IsReorder, opt => opt.MapFrom(src => src.Item.ReOrderLevel > src.AvailableQuantity))
+            .ForMember(dest => dest.ReorderLevel, opt => opt.MapFrom(src => src.Item.ReOrderLevel));
+
             CreateMap<CompanyItem, AvailableItemsDtoForList>()
             .ForMember(dest => dest.BusinessPlaceName, opt => opt.MapFrom(src => src.CurrentPlace.Name))
             .ForMember(dest => dest.ManufacturedDate, opt => opt.MapFrom(src => src.ManufacturedDate.Value.DashedDate()))
@@ -211,7 +214,10 @@ namespace BakeryMS.API.Common.Helpers
             .ForMember(dest => dest.Code, opt => opt.MapFrom(src => src.Item.Code))
             .ForMember(dest => dest.Unit, opt => opt.MapFrom(src => src.Item.Unit.Description))
             .ForMember(dest => dest.Type, opt => opt.MapFrom(src => src.Item.Type))
-            .ForMember(dest => dest.Type, opt => opt.MapFrom(src => src.SellingPrice));
+            .ForMember(dest => dest.Type, opt => opt.MapFrom(src => src.SellingPrice))
+            .ForMember(dest => dest.IsReorder, opt => opt.MapFrom(src => src.Item.ReOrderLevel > src.AvailableQuantity))
+            .ForMember(dest => dest.ReorderLevel, opt => opt.MapFrom(src => src.Item.ReOrderLevel));
+
             CreateMap<RawItems, AvailableItemsDtoForList>()
             .ForMember(dest => dest.BusinessPlaceName, opt => opt.MapFrom(src => src.CurrentPlace.Name))
             .ForMember(dest => dest.ManufacturedDate, opt => opt.MapFrom(src => src.ManufacturedDate.Value.DashedDate()))
@@ -219,7 +225,10 @@ namespace BakeryMS.API.Common.Helpers
             .ForMember(dest => dest.Name, opt => opt.MapFrom(src => src.Item.Name))
             .ForMember(dest => dest.Code, opt => opt.MapFrom(src => src.Item.Code))
             .ForMember(dest => dest.Unit, opt => opt.MapFrom(src => src.Item.Unit.Description))
-            .ForMember(dest => dest.Type, opt => opt.MapFrom(src => src.Item.Type));
+            .ForMember(dest => dest.Type, opt => opt.MapFrom(src => src.Item.Type))
+            .ForMember(dest => dest.IsReorder, opt => opt.MapFrom(src => src.Item.ReOrderLevel > src.AvailableQuantity))
+            .ForMember(dest => dest.ReorderLevel, opt => opt.MapFrom(src => src.Item.ReOrderLevel));
+
 
             //POS
             CreateMap<SalesHeaderForPOSDto, SalesHeader>()

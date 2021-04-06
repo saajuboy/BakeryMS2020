@@ -17,6 +17,8 @@ export interface AvailableItemForList {
     businessPlaceId: number;
     businessPlaceName: string;
     sellingPrice?: number;
+    isReorder?: boolean;
+    reorderLevel?: number;
 }
 export interface SalesHeader {
     id: number;

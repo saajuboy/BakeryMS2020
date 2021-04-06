@@ -16,6 +16,7 @@ namespace BakeryMS.API.Models
         [Column(TypeName = "decimal(18,2)")]
         public decimal? SellingPrice { get; set; }
         public int? ExpireDays { get; set; }
-
+        [Column(TypeName = "decimal(18,2)")]
+        public decimal ReOrderLevel { get; set; }
     }
 }

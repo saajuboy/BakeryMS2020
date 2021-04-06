@@ -23,6 +23,7 @@ export class AvailableItemsComponent implements OnInit {
   search: string = '';
   itemInfo: AvailableItemForList = <AvailableItemForList>{};
   sortOrder = { one: false, two: false, three: false, four: false, five: false, six: false };
+  availORReorder: number = 0;
   // pageOfItems: Array<any>;
 
   constructor(private masterService: MasterService,
@@ -32,20 +33,34 @@ export class AvailableItemsComponent implements OnInit {
 
   ngOnInit() {
 
-
+    this.availORReorder = 0;
     this.masterService.getBusinessPlaces().subscribe(result => {
       this.businessPlaces = result;
       this.businessPlaces.sort((a, b) => b.id - a.id);
+      this.businessPlace = +localStorage.getItem('BusinessPlaceId');
+      this.bpOrTypeChange();
     }, error => {
       this.alertify.error(error);
     });
   }
   bpOrTypeChange() {
-    this.invService.getAvailableItems(this.businessPlace, this.type).subscribe((res) => {
-      this.items = res;
-    }, (result) => {
-      this.alertify.warning(result.error.message + ' : ' + result.error.code);
-    });
+    if (this.availORReorder == 0) {
+      this.invService.getAvailableItems(this.businessPlace, this.type).subscribe((res) => {
+        this.items = res;
+      }, (result) => {
+        this.alertify.warning(result.error.message + ' : ' + result.error.code);
+      });
+    }
+    if (this.availORReorder == 1) {
+      this.invService.getReorderItems(this.businessPlace, this.type).subscribe((res) => {
+        this.items = res;
+        console.log(this.items);
+
+      }, (result) => {
+        this.alertify.warning(result.error.message + ' : ' + result.error.code);
+      });
+    }
+
   }
   addItem() {
     this.router.navigateByUrl('/master/item/create');

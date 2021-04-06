@@ -2,7 +2,7 @@
   <div class="card-header"><i class="fa fa-align-justify"></i> Item List</div>
   <div class="card-body">
     <div class="row">
-      <div class="input-group col-md-4 mb-3">
+      <div class="input-group col-md-3 mb-3">
         <div class="input-group-prepend">
           <span class="input-group-text"><i class="icon-magnifier"></i></span>
         </div>
@@ -14,16 +14,30 @@
           [(ngModel)]="search"
         />
       </div>
-      <div class="col-md-1">
+      <div class="input-group col-md-2 mb-3">
+        <div class="input-group-prepend">
+          <span class="input-group-text"><i class="icon-people"></i></span>
+        </div>
+        <select
+          class="form-control"
+          [(ngModel)]="availORReorder"
+          (change)="bpOrTypeChange()"
+        >
+          <!-- <option value="0" selected="true">Please Select</option> -->
+          <option [value]="0">Available Items</option>
+          <option [value]="1">Re order items</option>
+        </select>
+      </div>
+      <div *ngIf="availORReorder == 1" class="col-md-2">
         <button
-          class="btn btn-pill btn-block btn-primary"
+          class="btn btn-block btn-primary"
           (click)="addItem()"
           type="button"
         >
-          Add
+          Re Order
         </button>
       </div>
-      <div class="input-group col-md-4 mb-3">
+      <div class="input-group col-md-3 mb-3">
         <div class="input-group-prepend">
           <span class="input-group-text"
             ><i class="icon-people">&nbsp; BusinessPlace</i></span
@@ -40,7 +54,7 @@
           </option>
         </select>
       </div>
-      <div class="input-group col-md-3 mb-3">
+      <div class="input-group col-md-2 mb-3">
         <div class="input-group-prepend">
           <span class="input-group-text"
             ><i class="icon-people">&nbsp; Type</i></span
@@ -62,43 +76,27 @@
     <table class="table table-bordered">
       <thead>
         <tr>
-          <th><i (click)="sort(6)" class="icon-chart"></i> Batch No</th>
+          <th *ngIf="availORReorder == 0" ><i (click)="sort(6)" class="icon-chart"></i> Batch No</th>
           <th><i (click)="sort(1)" class="icon-chart"></i> Item Name</th>
           <th><i (click)="sort(2)" class="icon-chart"></i> Code</th>
-          <th><i (click)="sort(3)" class="icon-chart"></i> Cost Price (Rs.)</th>
+          <th *ngIf="availORReorder == 1" > ReOrder Level</th>
+          <th *ngIf="availORReorder == 0" ><i (click)="sort(3)" class="icon-chart"></i> Cost Price (Rs.)</th>
           <th><i (click)="sort(4)" class="icon-chart"></i> Avail.Qty</th>
-          <th><i (click)="sort(5)" class="icon-chart"></i> Expire Date</th>
-          <th style="width: 15%">Actions</th>
+          <th *ngIf="availORReorder == 0" ><i (click)="sort(5)" class="icon-chart"></i> Expire Date</th>
+          <th *ngIf="availORReorder == 0" style="width: 15%">Actions</th>
+          <th *ngIf="availORReorder == 1" style="width: 15%">ReOrder</th>
         </tr>
       </thead>
       <tbody>
-        <tr *ngFor="let item of items | filter: search">
-          <td class="p-1">{{ item.batchNo }}</td>
+        <tr *ngFor="let item of items">
+          <td *ngIf="availORReorder == 0" class="p-1">{{ item.batchNo }}</td>
           <td class="p-1">{{ item.name }}</td>
           <td class="p-1">{{ item.code }}</td>
-          <td class="p-1">{{ item.costPrice }}</td>
+          <td *ngIf="availORReorder == 1" class="p-1">{{ item.reorderLevel + " " + item.unit }}</td>
+          <td *ngIf="availORReorder == 0" class="p-1">{{ item.costPrice }}</td>
           <td class="p-1">{{ item.availableQuantity + " " + item.unit }}</td>
-          <td class="p-1">{{ item.expireDate }}</td>
-          <!-- <td class="p-1">
-            <span *ngIf="item.type == 0" class="badge badge-success"
-              >Production</span
-            >
-            <span *ngIf="item.type == 1" class="badge badge-primary"
-              >Company</span
-            >
-            <span *ngIf="item.type == 2" class="badge badge-danger">Raw</span>
-            <span *ngIf="item.type == 3" class="badge badge-secondary"
-              >Misc</span
-            >
-          </td> -->
-          <td class="p-1">
-            <!-- <button
-              class="btn btn-ghost-secondary"
-              (click)="editItem(item.id)"
-              type="button"
-            >
-              <i class="icon-pencil"></i>
-            </button> -->
+          <td *ngIf="availORReorder == 0" class="p-1">{{ item.expireDate }}</td>
+          <td *ngIf="availORReorder == 0" class="p-1">
             <button
               (click)="ShowItemInfo(item.id)"
               class="btn btn-ghost-info"
@@ -106,13 +104,14 @@
             >
               <i class="icon-info"></i>
             </button>
-            <!-- <button
-              (click)="delete(item.id)"
-              class="btn btn-ghost-danger"
-              type="button"
+          </td>
+          <td *ngIf="availORReorder == 1" class="p-1">
+            <span *ngIf="item.isReorder == false" class="badge badge-success"
+              >Reorder not required</span
             >
-              <i class="icon-close"></i>
-            </button> -->
+            <span *ngIf="item.isReorder == true" class="badge badge-danger"
+              >Reorder Required</span
+            >
           </td>
         </tr>
       </tbody>

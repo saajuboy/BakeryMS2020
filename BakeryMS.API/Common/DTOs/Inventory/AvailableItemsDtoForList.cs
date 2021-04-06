@@ -17,5 +17,7 @@ namespace BakeryMS.API.Common.DTOs.Inventory
         public int BusinessPlaceId { get; set; }
         public string BusinessPlaceName { get; set; }
         public decimal? SellingPrice { get; set; }
+        public bool IsReorder { get; set; }
+        public decimal ReorderLevel { get; set; }
     }
 }

@@ -202,6 +202,155 @@ namespace BakeryMS.API.Controllers.Inventory
 
             return Ok(itemListtoReturn);
         }
+
+        [Route("[action]")]
+        [HttpGet]
+        public async Task<IActionResult> GetReorderItems(int placeId, int itemType)//Filter(0-all,1-top,2-bread,3-buns,4-Biscuits)
+        {
+            if (placeId == 0)
+                return BadRequest(new ErrorModel(1, 400, "Valid Business Place Required"));
+            var place = await _context.BusinessPlaces.FindAsync(placeId);
+            if (place == null)
+                return BadRequest(new ErrorModel(1, 400, "Valid Business Place Required"));
+            if (itemType != 0 && itemType != 1 && itemType != 2)
+                return BadRequest(new ErrorModel(2, 400, "Valid Item Type Required"));
+
+            IList<AvailableItemsDtoForList> itemListtoReturn = new List<AvailableItemsDtoForList>();
+            IList<ProductionItem> prodItems = new List<ProductionItem>();
+            IList<CompanyItem> compItems = new List<CompanyItem>();
+            IList<RawItems> rawItems = new List<RawItems>();
+            switch (itemType)
+            {
+                case 0:
+                    var prodItemsAll = await _context.ProductionItems.Distinct()
+                    .Where(a => a.CurrentPlace == place && a.Item.IsDeleted == false)
+                    .Include(a => a.CurrentPlace)
+                    .Include(a => a.Item).ThenInclude(a => a.Unit).ToListAsync();
+
+                    foreach (var item in prodItemsAll)
+                    {
+                        if (!prodItems.Any(a => a.ItemId == item.ItemId))
+                        {
+                            prodItems.Add(new ProductionItem
+                            {
+                                Id = item.Id,
+                                ItemId = item.ItemId,
+                                Item = item.Item,
+                                CostPrice = item.CostPrice,
+                                CurrentPlace = item.CurrentPlace,
+                                ExpireDate = item.ExpireDate,
+                                ManufacturedDate = item.ManufacturedDate,
+                                BatchNo = item.BatchNo,
+                                StockedQuantity = prodItemsAll.Where(a => a.ItemId == item.ItemId).Sum(a => a.StockedQuantity),
+                                UsedQuantity = prodItemsAll.Where(a => a.ItemId == item.ItemId).Sum(a => a.UsedQuantity),
+                                AvailableQuantity = prodItemsAll.Where(a => a.ItemId == item.ItemId).Sum(a => a.AvailableQuantity)
+                                // SellingPrice = item.SellingPrice
+                            });
+                        }
+                    }
+
+                    itemListtoReturn = _mapper.Map<IList<AvailableItemsDtoForList>>(prodItems);
+
+                    break;
+
+                case 1:
+                    var compItemsAll = await _context.CompanyItems
+                    .Where(a => a.CurrentPlace == place && a.Item.IsDeleted == false && a.AvailableQuantity > 0)
+                    .Include(a => a.CurrentPlace)
+                    .Include(a => a.Item).ThenInclude(a => a.Unit).ToListAsync();
+
+                    foreach (var item in compItemsAll)
+                    {
+                        if (!compItems.Any(a => a.ItemId == item.ItemId))
+                        {
+                            compItems.Add(new CompanyItem
+                            {
+                                Id = item.Id,
+                                ItemId = item.ItemId,
+                                Item = item.Item,
+                                CostPrice = item.CostPrice,
+                                CurrentPlace = item.CurrentPlace,
+                                ExpireDate = item.ExpireDate,
+                                ManufacturedDate = item.ManufacturedDate,
+                                BatchNo = item.BatchNo,
+                                StockedQuantity = compItemsAll.Where(a => a.ItemId == item.ItemId).Sum(a => a.StockedQuantity),
+                                UsedQuantity = compItemsAll.Where(a => a.ItemId == item.ItemId).Sum(a => a.UsedQuantity),
+                                AvailableQuantity = compItemsAll.Where(a => a.ItemId == item.ItemId).Sum(a => a.AvailableQuantity),
+                                SellingPrice = item.SellingPrice
+                            });
+                        }
+                    }
+
+                    itemListtoReturn = _mapper.Map<IList<AvailableItemsDtoForList>>(compItems);
+
+                    break;
+                case 2:
+                    var rawItemsAll = await _context.RawItems
+                    .Where(a => a.CurrentPlace == place && a.Item.IsDeleted == false && a.AvailableQuantity > 0)
+                    .Include(a => a.CurrentPlace)
+                    .Include(a => a.Item).ThenInclude(a => a.Unit).ToListAsync();
+
+                    foreach (var item in rawItemsAll)
+                    {
+                        if (!rawItems.Any(a => a.ItemId == item.ItemId))
+                        {
+                            rawItems.Add(new RawItems
+                            {
+                                Id = item.Id,
+                                ItemId = item.ItemId,
+                                Item = item.Item,
+                                CostPrice = item.CostPrice,
+                                CurrentPlace = item.CurrentPlace,
+                                ExpireDate = item.ExpireDate,
+                                ManufacturedDate = item.ManufacturedDate,
+                                BatchNo = item.BatchNo,
+                                StockedQuantity = rawItemsAll.Where(a => a.ItemId == item.ItemId).Sum(a => a.StockedQuantity),
+                                UsedQuantity = rawItemsAll.Where(a => a.ItemId == item.ItemId).Sum(a => a.UsedQuantity),
+                                AvailableQuantity = rawItemsAll.Where(a => a.ItemId == item.ItemId).Sum(a => a.AvailableQuantity),
+                                SellingPrice = item.SellingPrice
+                            });
+                        }
+                    }
+
+                    itemListtoReturn = _mapper.Map<IList<AvailableItemsDtoForList>>(rawItems);
+
+                    break;
+
+                default:
+                    prodItemsAll = await _context.ProductionItems.Distinct()
+                    .Where(a => a.CurrentPlace == place && a.Item.IsDeleted == false)
+                    .Include(a => a.CurrentPlace)
+                    .Include(a => a.Item).ThenInclude(a => a.Unit).ToListAsync();
+
+                    foreach (var item in prodItemsAll)
+                    {
+                        if (!prodItems.Any(a => a.ItemId == item.ItemId))
+                        {
+                            prodItems.Add(new ProductionItem
+                            {
+                                Id = item.Id,
+                                ItemId = item.ItemId,
+                                Item = item.Item,
+                                CostPrice = item.CostPrice,
+                                CurrentPlace = item.CurrentPlace,
+                                ExpireDate = item.ExpireDate,
+                                ManufacturedDate = item.ManufacturedDate,
+                                BatchNo = item.BatchNo,
+                                StockedQuantity = prodItemsAll.Where(a => a.ItemId == item.ItemId).Sum(a => a.StockedQuantity),
+                                UsedQuantity = prodItemsAll.Where(a => a.ItemId == item.ItemId).Sum(a => a.UsedQuantity),
+                                AvailableQuantity = prodItemsAll.Where(a => a.ItemId == item.ItemId).Sum(a => a.AvailableQuantity)
+                                // SellingPrice = item.SellingPrice
+                            });
+                        }
+                    }
+
+                    itemListtoReturn = _mapper.Map<IList<AvailableItemsDtoForList>>(prodItems);
+
+                    break;
+            }
+
+            return Ok(itemListtoReturn);
+        }
         // [HttpPost]
         // public async Task<IActionResult> CreateItem(ItemForDetailDto itemForDetailDto)
         // {

@@ -70,7 +70,8 @@ export class ItemCreateComponent implements OnInit {
       unit: ['', Validators.required],
       type: ['', Validators.required],
       sellingPrice: ['', Validators.pattern('^[0-9.]+')],
-      expireDays: ['', Validators.pattern('^[0-9]+')]
+      expireDays: ['', Validators.pattern('^[0-9]+')],
+      reOrderLevel: ['', [Validators.required, Validators.min(0.01), Validators.pattern('^[0-9.]+')]]
     }, { validators: this.priceAndDateValidator });
   }
 
@@ -151,7 +152,8 @@ export class ItemCreateComponent implements OnInit {
       itemCategory: item.itemCategory.id,
       unit: item.unit.id,
       sellingPrice: item.sellingPrice,
-      expireDays: item.expireDays
+      expireDays: item.expireDays,
+      reOrderLevel: item.reOrderLevel
     });
 
     this.itemCodeForEdit.itemCategoryId = item.itemCategory.id;
@@ -189,5 +191,12 @@ export class ItemCreateComponent implements OnInit {
     } else {
       this.isProductionType = false;
     }
+  }
+
+  addItemCategory() {
+    this.router.navigate(['/master/itemCategory']);
+  }
+  addUnit() {
+    this.router.navigate(['/master/unit']);
   }
 }

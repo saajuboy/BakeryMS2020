@@ -89,6 +89,7 @@ namespace BakeryMS.API.Controllers.Master
             itemFromRepository.ItemCategory = catFromRepo;
             itemFromRepository.Unit = unitFromRepo;
             itemFromRepository.Type = itemForDetailDto.Type;
+            itemFromRepository.ReOrderLevel = itemForDetailDto.ReOrderLevel;
 
             if (itemForDetailDto.Type == 0)
             {

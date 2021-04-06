@@ -10,6 +10,7 @@ export interface Item {
 
     sellingPrice?: number;
     expireDays?: number;
+    reOrderLevel: number;
 }
 export interface ItemForDropdown {
     id: number;
