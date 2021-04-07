@@ -24,6 +24,8 @@ export class PurchaseOrderListComponent implements OnInit {
   grnInfo: GRNHeader = <GRNHeader>{};
   sortOrder = { one: false, two: false, three: false, four: false, five: false, six: false };
 
+  dueAmount: number = 0;
+
   constructor(private masterService: MasterService,
     private alertify: AlertifyService,
     private router: Router,
@@ -35,7 +37,7 @@ export class PurchaseOrderListComponent implements OnInit {
       this.purchaseOrders = result;
       this.purchaseOrders.sort((a, b) => b.id - a.id);
       // console.log(result);
-      console.log(this.purchaseOrders);
+      // console.log(this.purchaseOrders);
 
 
     }, error => {
@@ -78,10 +80,27 @@ export class PurchaseOrderListComponent implements OnInit {
   ShowGRNInfo(id: number) {
     this.inventoryService.getGRN(id).subscribe(result => {
       this.grnInfo = result;
-      console.log(this.grnInfo);
-      
+      // console.log(this.grnInfo);
+
       this.grnModal.show();
     });
+  }
+
+  payDueAmount() {
+    // console.log(this.grnInfo);
+    // console.log(this.dueAmount);
+    const grnTosend = Object.assign({}, this.grnInfo);
+    grnTosend.paidAmount = this.dueAmount;
+    this.inventoryService.payGRN(grnTosend).subscribe(result => {
+      this.alertify.success('Amount paid successfully');
+      this.dueAmount = 0;
+      this.grnModal.hide();
+    },
+      (res) => {
+        this.alertify.error('code ' + res.error.code + ' : ' + res.error.message);
+      }, () => {
+        this.ngOnInit();
+      });
   }
 
   sort(propertyNumber: number) {

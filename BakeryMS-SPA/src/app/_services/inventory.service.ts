@@ -37,6 +37,12 @@ export class InventoryService {
         return response.poDetail;
       }));
   }
+  getReorderPurchaseOrder(placeId, type): Observable<PurchaseOrderHeader> {
+    let params = new HttpParams();
+    params = params.append('placeId', placeId.toString());
+    params = params.append('type', type.toString());
+    return this.http.get<PurchaseOrderHeader>(this.baseUrl + 'purchaseOrder/GetReorderPurchaseOrder', { params });
+  }
   createPurchaseOrder(purchaseOrder: PurchaseOrderHeader) {
     let params = new HttpParams();
     params = params.append('isForSending', 'false');
@@ -69,6 +75,9 @@ export class InventoryService {
   }
   createGRN(grn: GRNHeader) {
     return this.http.post(this.baseUrl + 'GRN', grn);
+  }
+  payGRN(grn: GRNHeader) {
+    return this.http.post(this.baseUrl + 'GRN/PayDueGRNAmount', grn);
   }
 
 

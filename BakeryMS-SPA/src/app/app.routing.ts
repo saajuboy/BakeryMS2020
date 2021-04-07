@@ -132,6 +132,16 @@ export const routes: Routes = [
         }
       },
       {
+        path: 'inventory/purchaseOrder/reOrder/:placeId/:type',
+        runGuardsAndResolvers: 'always',
+        canActivate: [RoleGuard],
+        component: PurchaseOrderCreateComponent,
+        data: {
+          title: 'Edit Pur.Order',
+          allowedRoles: ['Admin', 'OutletManager', 'BakeryManager']
+        }
+      },
+      {
         path: 'inventory/itemAcceptance',
         runGuardsAndResolvers: 'always',
         canActivate: [RoleGuard],
@@ -178,6 +188,16 @@ export const routes: Routes = [
         component: ProductionOrderCreateComponent,
         data: {
           title: 'Edit Prod.Order',
+          allowedRoles: ['Admin', 'OutletManager', 'BakeryManager', 'Cashier']
+        }
+      },
+      {
+        path: 'manufacturing/productionOrder/reOrder/:placeId',
+        runGuardsAndResolvers: 'always',
+        canActivate: [RoleGuard],
+        component: ProductionOrderCreateComponent,
+        data: {
+          title: 'Prod.ReOrder',
           allowedRoles: ['Admin', 'OutletManager', 'BakeryManager', 'Cashier']
         }
       },

@@ -1,3 +1,4 @@
+using System.Security.Claims;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,6 +10,7 @@ using BakeryMS.API.Data;
 using BakeryMS.API.Data.Interfaces;
 using BakeryMS.API.Models;
 using BakeryMS.API.Models.Inventory;
+using BakeryMS.API.Models.POS;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -67,8 +69,7 @@ namespace BakeryMS.API.Controllers.Inventory
             {
                 PurchaseOrderHeaderId = gRNHeaderForDetailDto.PurchaseOrderHeaderId,
                 ReceivedDate = DateTime.Parse(gRNHeaderForDetailDto.ReceivedDate),
-                PaymentMode = gRNHeaderForDetailDto.PaymentMode,
-                PaidAmount = gRNHeaderForDetailDto.PaidAmount
+                PaymentMode = gRNHeaderForDetailDto.PaymentMode
             };
 
             IList<GRNDetail> grnDetailList = new List<GRNDetail>();
@@ -108,9 +109,30 @@ namespace BakeryMS.API.Controllers.Inventory
             }
 
             grnToCreate.TotalAmount = total;
+            if (grnToCreate.PaymentMode == 0)
+            {
+                grnToCreate.PaidAmount = total;
+            }
+            else
+            {
+                grnToCreate.PaidAmount = gRNHeaderForDetailDto.PaidAmount;
+            }
+
             grnToCreate.GRNDetails = grnDetailList;
 
             await _context.AddRangeAsync(grnToCreate);
+
+            await _context.AddRangeAsync(new Transaction
+            {
+                Description = "GRN" + purchaseOrder.PONumber,
+                Reference = "GRN",
+                BusinessPlace = purchaseOrder.BusinessPlace,
+                Credit = grnToCreate.PaidAmount,
+                Date = DateTime.Today,
+                Time = DateTime.Now.TimeOfDay,
+                Debit = 0,
+                UserId = int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier))
+            });
 
             await _context.AddRangeAsync(rawItemList);
 
@@ -124,6 +146,41 @@ namespace BakeryMS.API.Controllers.Inventory
 
             return BadRequest(new ErrorModel(3, 400, "Failed to Save GRN"));
 
+        }
+
+        [Route("[action]")]
+        [HttpPost]
+        public async Task<IActionResult> PayDueGRNAmount(GRNHeaderForDetailDto grnDto)
+        {
+            if (grnDto == null)
+                return BadRequest(new ErrorModel(1, 400, "Empty Body"));
+            var grn = await _context.GRNHeaders.Include(a => a.PurchaseOrderHeader).ThenInclude(a => a.BusinessPlace).FirstOrDefaultAsync(a => a.Id == grnDto.Id);
+            if (grn.PaymentMode == 0)
+                return BadRequest(new ErrorModel(2, 400, "GRN Already Paid"));
+
+            if (grnDto.PaidAmount > (grn.TotalAmount - grn.PaidAmount) || grnDto.PaidAmount <= 0)
+                return BadRequest(new ErrorModel(3, 400, "Paying amount Not valid"));
+
+            grn.PaidAmount += grnDto.PaidAmount;
+            if ((grn.TotalAmount - grn.PaidAmount) == 0)
+                grn.PaymentMode = 0;
+
+            await _context.Transactions.AddAsync(new Transaction
+            {
+                BusinessPlace = grn.PurchaseOrderHeader.BusinessPlace,
+                Date = DateTime.Today,
+                Time = DateTime.Now.TimeOfDay,
+                Description = "GRN" + grn.PurchaseOrderHeader.PONumber + " Due",
+                Reference = "GRN",
+                Credit = grnDto.PaidAmount,
+                Debit = 0,
+                UserId =int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier))
+            });
+
+            if(await _context.SaveChangesAsync()>0)
+            return Ok();
+
+            return BadRequest(new ErrorModel(4, 400, "Failed To Pay"));
         }
 
         private RawItems CreatRawItem(GRNDetailForDetailDto detail, BusinessPlace businessPlace, int purchaseOrderId)

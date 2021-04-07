@@ -18,6 +18,8 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using MimeKit;
 using MimeKit.Text;
+using BakeryMS.API.Common.Helpers;
+using Microsoft.EntityFrameworkCore;
 
 namespace BakeryMS.API.Controllers.Inventory
 {
@@ -227,6 +229,139 @@ namespace BakeryMS.API.Controllers.Inventory
 
 
             throw new System.Exception($"Updating item {id} failed on save");
+        }
+
+        [Route("[action]")]
+        [HttpGet]
+        public async Task<IActionResult> GetReorderPurchaseOrder(int placeId, int type)
+        {
+            if (placeId == 0)
+                return BadRequest(new ErrorModel(1, 400, "Valid Business Place Required"));
+            var place = await _context.BusinessPlaces.FindAsync(placeId);
+            if (place == null)
+                return BadRequest(new ErrorModel(1, 400, "Valid Business Place Required"));
+            if (type != 1 && type != 2)
+                return BadRequest(new ErrorModel(2, 400, "Valid Item Type Required"));
+
+            IList<RawItems> Items = new List<RawItems>();
+
+            switch (type)
+            {
+                case 1:
+                    var compItemsAll = await _context.CompanyItems.Distinct()
+                                    .Where(a => a.CurrentPlace == place && a.Item.IsDeleted == false)
+                                    .Include(a => a.CurrentPlace)
+                                    .Include(a => a.Item).ThenInclude(a => a.Unit).ToListAsync();
+
+                    foreach (var item in compItemsAll)
+                    {
+                        if (!Items.Any(a => a.ItemId == item.ItemId))
+                        {
+                            var totalAvailQty = compItemsAll.Where(a => a.ItemId == item.ItemId).Sum(a => a.AvailableQuantity);
+                            var reOrderLevel = compItemsAll.Where(a => a.ItemId == item.ItemId).FirstOrDefault().Item.ReOrderLevel;
+                            if (reOrderLevel > totalAvailQty)
+                            {
+                                Items.Add(new RawItems
+                                {
+                                    Id = item.Id,
+                                    ItemId = item.ItemId,
+                                    Item = item.Item,
+                                    AvailableQuantity = reOrderLevel,
+                                    CostPrice = item.CostPrice
+                                });
+                            }
+
+                        }
+                    }
+
+                    break;
+                case 2:
+
+                    var rawItemsAll = await _context.RawItems.Distinct()
+                                        .Where(a => a.CurrentPlace == place && a.Item.IsDeleted == false)
+                                        .Include(a => a.CurrentPlace)
+                                        .Include(a => a.Item).ThenInclude(a => a.Unit).ToListAsync();
+
+                    foreach (var item in rawItemsAll)
+                    {
+                        if (!Items.Any(a => a.ItemId == item.ItemId))
+                        {
+                            var totalAvailQty = rawItemsAll.Where(a => a.ItemId == item.ItemId).Sum(a => a.AvailableQuantity);
+                            var reOrderLevel = rawItemsAll.Where(a => a.ItemId == item.ItemId).FirstOrDefault().Item.ReOrderLevel;
+                            if (reOrderLevel > totalAvailQty)
+                            {
+                                Items.Add(new RawItems
+                                {
+                                    Id = item.Id,
+                                    ItemId = item.ItemId,
+                                    Item = item.Item,
+                                    AvailableQuantity = reOrderLevel,
+                                    CostPrice = item.CostPrice
+                                });
+                            }
+
+                        }
+                    }
+                    break;
+                default:
+                    compItemsAll = await _context.CompanyItems.Distinct()
+                                        .Where(a => a.CurrentPlace == place && a.Item.IsDeleted == false)
+                                        .Include(a => a.CurrentPlace)
+                                        .Include(a => a.Item).ThenInclude(a => a.Unit).ToListAsync();
+
+                    foreach (var item in compItemsAll)
+                    {
+                        if (!Items.Any(a => a.ItemId == item.ItemId))
+                        {
+                            var totalAvailQty = compItemsAll.Where(a => a.ItemId == item.ItemId).Sum(a => a.AvailableQuantity);
+                            var reOrderLevel = compItemsAll.Where(a => a.ItemId == item.ItemId).FirstOrDefault().Item.ReOrderLevel;
+                            if (reOrderLevel > totalAvailQty)
+                            {
+                                Items.Add(new RawItems
+                                {
+                                    Id = item.Id,
+                                    ItemId = item.ItemId,
+                                    Item = item.Item,
+                                    AvailableQuantity = reOrderLevel,
+                                    CostPrice = item.CostPrice
+                                });
+                            }
+
+                        }
+                    }
+                    break;
+            }
+
+            if (Items.Count == 0)
+                return BadRequest(new ErrorModel(3, 400, "No Reorders available"));
+
+            PurchaseOrderHeader purOrder = new PurchaseOrderHeader
+            {
+                BusinessPlace = place,
+                BusinessPlaceId = place.Id,
+                OrderDate = DateTime.Today,
+                DeliveryMethod = "Direct",
+                DeliveryDate = DateTime.Today.AddDays(1),
+                isFromOutlet = type == 1 ? true : false,
+                SupplierId = 0,
+                PurchaseOrderDetail = new List<PurchaseOrderDetail>()
+            };
+
+            foreach (var item in Items)
+            {
+                purOrder.PurchaseOrderDetail.Add(new PurchaseOrderDetail
+                {
+                    Item = item.Item,
+                    OrderQty = item.AvailableQuantity * 2,
+                    UnitPrice = item.CostPrice,
+                    LineTotal = item.AvailableQuantity * item.CostPrice * 2,
+                    DueDate = DateTime.Today.AddDays(1)
+                });
+            }
+
+            var purOrderToReturn = _mapper.Map<POHForDetailDto>(purOrder);
+
+            return Ok(purOrderToReturn);
         }
 
         [HttpDelete("{id}")]

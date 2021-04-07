@@ -24,6 +24,7 @@ export class AvailableItemsComponent implements OnInit {
   itemInfo: AvailableItemForList = <AvailableItemForList>{};
   sortOrder = { one: false, two: false, three: false, four: false, five: false, six: false };
   availORReorder: number = 0;
+  isNeedToReorder: boolean = false;
   // pageOfItems: Array<any>;
 
   constructor(private masterService: MasterService,
@@ -54,7 +55,8 @@ export class AvailableItemsComponent implements OnInit {
     if (this.availORReorder == 1) {
       this.invService.getReorderItems(this.businessPlace, this.type).subscribe((res) => {
         this.items = res;
-        console.log(this.items);
+        this.isNeedToReorder = this.items.some(a => a.isReorder === true);
+        // console.log(this.items);
 
       }, (result) => {
         this.alertify.warning(result.error.message + ' : ' + result.error.code);
@@ -62,28 +64,16 @@ export class AvailableItemsComponent implements OnInit {
     }
 
   }
-  addItem() {
-    this.router.navigateByUrl('/master/item/create');
-  }
+  reorder() {
+    if (this.availORReorder == 1 && this.isNeedToReorder === true) {
+      if (this.type == 0) {
+        this.router.navigate(['manufacturing/productionOrder/reOrder/' + this.businessPlace]);
+      }
+      if (this.type == 1 || this.type == 2) {
+        this.router.navigate(['inventory/purchaseOrder/reOrder/' + this.businessPlace + '/' + this.type]);
+      }
+    }
 
-  delete(id: number) {
-    this.alertify.confirm('Are you sure?',
-      'Are you sure you want to delete this item? This action cannot be undone',
-      () => {
-        this.masterService.deleteItem(id).subscribe((next) => {
-          this.alertify.success('Item deleted succesfully');
-          this.items = this.items.filter(function (obj) {
-            return obj.id !== id;
-          });
-        }, () => {
-          this.alertify.error('Failed to Delete Item');
-        });
-      },
-      () => { });
-
-  }
-  editItem(id: number) {
-    this.router.navigate(['master/item/edit', id]);
   }
   ShowItemInfo(id: number) {
     this.invService.getAvailableItem(id, this.type).subscribe((result) => {

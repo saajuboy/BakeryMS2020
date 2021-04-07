@@ -98,11 +98,18 @@ export class PurchaseOrderCreateComponent implements OnInit {
     // for edit Form
     this.route.paramMap.subscribe(params => {
       const pOID = +params.get('id');
+      const placeId = +params.get('placeId');
+      const type = +params.get('type');
 
+      // console.log(params);
       if (pOID) {
         this.getPurchaseOrder(pOID);
         this.isEditForm = true;
         this.PurchaseOrderID = pOID;
+      }
+
+      if (placeId && type) {
+        this.getReorderPurOrder(placeId, type);
       }
     });
 
@@ -363,6 +370,30 @@ export class PurchaseOrderCreateComponent implements OnInit {
 
     //   }
     // }
+  }
+
+  getReorderPurOrder(placeId: number, type: number) {
+    this.inventoryService.getReorderPurchaseOrder(placeId, type).subscribe(
+      (purOrder: PurchaseOrderHeader) => {
+        // console.log(purOrder);
+        
+        this.createEditPOForm(purOrder);
+      }, (res) => {
+        const status = res.error.status;
+        const code = res.error.code;
+        const message = res.error.message;
+
+        if (status === 400 && code !== 3) {
+          this.alertify.error(message + ': error code - ' + code);
+        } else if (status === 400 && code == 3) {
+          this.alertify.warning(message + ': error code - ' + code);
+          this.router.navigateByUrl('/inventory/item');
+        } else {
+          this.alertify.error('some error occured try again');
+        }
+      }, () => {
+
+      });
   }
 
   backToList() {

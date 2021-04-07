@@ -303,6 +303,25 @@
         </div>
       </div>
       <div class="modal-footer">
+        <input
+          *ngIf="grnInfo.paymentMode == 1"
+          style="width: 60%"
+          type="number"
+          class="form-control"
+          placeholder="0.00"
+          [max]="grnInfo.totalAmount - grnInfo.paidAmount"
+          [min]="0"
+          [(ngModel)]="dueAmount"
+        />
+        <button
+          *ngIf="grnInfo.paymentMode == 1"
+          style="width: 30%"
+          type="button"
+          class="btn btn-primary"
+          (click)="payDueAmount()"
+        >
+          Pay Due Amount
+        </button>
         <button
           type="button"
           class="btn btn-secondary"

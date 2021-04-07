@@ -465,6 +465,70 @@ namespace BakeryMS.API.Controllers.Manufacturing
             //cost of labour and other misc
             return prodItemCostList;
         }
+
+        [Route("[action]")]
+        [HttpGet]
+        public async Task<IActionResult> GetReorderProductionOrder(int placeId)
+        {
+            if (placeId == 0)
+                return BadRequest(new ErrorModel(1, 400, "Valid Business Place Required"));
+            var place = await _context.BusinessPlaces.FindAsync(placeId);
+            if (place == null)
+                return BadRequest(new ErrorModel(1, 400, "Valid Business Place Required"));
+
+            IList<ProductionItem> prodItems = new List<ProductionItem>();
+            var prodItemsAll = await _context.ProductionItems.Distinct()
+                .Where(a => a.CurrentPlace == place && a.Item.IsDeleted == false)
+                .Include(a => a.CurrentPlace)
+                .Include(a => a.Item).ThenInclude(a => a.Unit).ToListAsync();
+
+            foreach (var item in prodItemsAll)
+            {
+                if (!prodItems.Any(a => a.ItemId == item.ItemId))
+                {
+                    var totalAvailQty = prodItemsAll.Where(a => a.ItemId == item.ItemId).Sum(a => a.AvailableQuantity);
+                    var reOrderLevel = prodItemsAll.Where(a => a.ItemId == item.ItemId).FirstOrDefault().Item.ReOrderLevel;
+                    if (reOrderLevel > totalAvailQty)
+                    {
+                        prodItems.Add(new ProductionItem
+                        {
+                            Id = item.Id,
+                            ItemId = item.ItemId,
+                            Item = item.Item,
+                            AvailableQuantity = reOrderLevel
+                        });
+                    }
+
+                }
+            }
+
+            if (prodItems.Count == 0)
+                return BadRequest(new ErrorModel(2, 400, "No Reorders available"));
+
+            ProductionOrderHeader prodOrder = new ProductionOrderHeader
+            {
+                BusinessPlace = place,
+                EnteredDate = DateTime.Today,
+                Description = "Reorder",
+                RequiredDate = DateTime.Today.AddDays(1),
+                Session = await _context.ProductionSessions.OrderByDescending(a=>a.Id).FirstOrDefaultAsync(a => a.StartTime > DateTime.Now.TimeOfDay),
+                ProductionOrderDetails = new List<ProductionOrderDetail>()
+            };
+
+            foreach (var item in prodItems)
+            {
+                prodOrder.ProductionOrderDetails.Add(new ProductionOrderDetail
+                {
+                    Item = item.Item,
+                    ItemId = item.ItemId,
+                    Quantity = item.AvailableQuantity * 2
+                });
+            }
+
+            var prodOrderToReturn = _mapper.Map<ProdOrderHeaderForDetailDto>(prodOrder);
+
+            return Ok(prodOrderToReturn);
+        }
     }
 
 

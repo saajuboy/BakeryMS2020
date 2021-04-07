@@ -69,7 +69,7 @@ export class GRNComponent implements OnInit {
 
     this.invService.getPurchaseOrders(this.type, 1).subscribe((res) => {
       this.purchaseOrderList = res;
-      console.log(res);
+      // console.log(res);
 
     }, () => {
       this.alertify.error('some error occured, Contact admin');

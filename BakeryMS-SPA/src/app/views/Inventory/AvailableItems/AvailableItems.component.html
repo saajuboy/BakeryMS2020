@@ -31,7 +31,8 @@
       <div *ngIf="availORReorder == 1" class="col-md-2">
         <button
           class="btn btn-block btn-primary"
-          (click)="addItem()"
+          (click)="reorder()"
+          [disabled]="!isNeedToReorder"
           type="button"
         >
           Re Order
@@ -107,10 +108,10 @@
           </td>
           <td *ngIf="availORReorder == 1" class="p-1">
             <span *ngIf="item.isReorder == false" class="badge badge-success"
-              >Reorder not required</span
+              >Not required</span
             >
             <span *ngIf="item.isReorder == true" class="badge badge-danger"
-              >Reorder Required</span
+              >Required</span
             >
           </td>
         </tr>

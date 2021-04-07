@@ -61,6 +61,11 @@ export class ManufacturingService {
     }
     return this.http.get<ProductionOrderHeader[]>(this.baseUrl + 'productionOrder/GetPlanProductionOrders', { params });
   }
+  getReorderProductionOrder(placeId): Observable<ProductionOrderHeader> {
+    let params = new HttpParams();
+    params = params.append('placeId', placeId.toString());
+    return this.http.get<ProductionOrderHeader>(this.baseUrl + 'productionOrder/GetReorderProductionOrder', { params });
+  }
   createProductionOrder(productionOrder: ProductionOrderHeader) {
     return this.http.post(this.baseUrl + 'productionOrder', productionOrder);
   }

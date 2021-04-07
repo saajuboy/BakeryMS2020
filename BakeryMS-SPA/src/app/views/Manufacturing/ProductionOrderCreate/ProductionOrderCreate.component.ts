@@ -65,6 +65,7 @@ export class ProductionOrderCreateComponent implements OnInit {
 
     this.manufacturingService.getProductionSessions().subscribe(result => {
       this.productionSessions = result;
+      // console.log(result);
     }, error => {
       this.alertify.error(error);
     });
@@ -83,15 +84,21 @@ export class ProductionOrderCreateComponent implements OnInit {
     // for edit Form
     this.route.paramMap.subscribe(params => {
       const pOID = +params.get('id');
-
+      // console.log(params);
       if (pOID) {
         this.getProductionOrder(pOID);
         this.isEditForm = true;
         this.ProductionOrderID = pOID;
       }
+
+      const placeId = +params.get('placeId');
+      if (placeId) {
+        this.getReorderProdOrder(placeId);
+      }
     });
 
   }
+
 
   createProductionOrderForm() {
     this.pOCreateForm = this.fb.group({
@@ -306,6 +313,28 @@ export class ProductionOrderCreateComponent implements OnInit {
           this.alertify.error(message + ': error code - ' + code);
         } else if (status === 400 && code === 7) {
           this.alertify.warning(message + ': error code - ' + code);
+        } else {
+          this.alertify.error('some error occured try again');
+        }
+      }, () => {
+
+      });
+  }
+
+  getReorderProdOrder(placeId: number) {
+    this.manufacturingService.getReorderProductionOrder(placeId).subscribe(
+      (productionOrder: ProductionOrderHeader) => {
+        this.createEditPOForm(productionOrder);
+      }, (res) => {
+        const status = res.error.status;
+        const code = res.error.code;
+        const message = res.error.message;
+
+        if (status === 400 && code !== 2) {
+          this.alertify.error(message + ': error code - ' + code);
+        } else if (status === 400 && code == 2) {
+          this.alertify.warning(message + ': error code - ' + code);
+          this.router.navigateByUrl('/inventory/item');
         } else {
           this.alertify.error('some error occured try again');
         }
