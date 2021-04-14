@@ -134,6 +134,12 @@ namespace BakeryMS.API.Controllers.Sales
             var userid = User.FindFirstValue(ClaimTypes.NameIdentifier);
             saleToCreate.UserId = int.Parse(userid);
 
+            var customer = await _context.Customers.Where(a => a.Name == saleToCreate.CustomerName).FirstOrDefaultAsync();
+
+            if (customer != null)
+            {
+                customer.Debit += saleToCreate.Total;
+            }
 
             // update items table
 
@@ -170,7 +176,7 @@ namespace BakeryMS.API.Controllers.Sales
                     var transaction = await _context.Transactions.FirstOrDefaultAsync(a => a.Reference.Contains("Sales")
                     && a.Date == saleToCreate.Date
                     && a.BusinessPlaceId == saleToCreate.BusinessPlaceId);
-                    
+
                     transaction.Debit += saleToCreate.Total;
                 }
                 else

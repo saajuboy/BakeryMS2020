@@ -4,14 +4,16 @@ using BakeryMS.API.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace BakeryMS.API.Migrations
 {
     [DbContext(typeof(DataContext))]
-    partial class DataContextModelSnapshot : ModelSnapshot
+    [Migration("20210410004831_AddedCusAndNotiTable")]
+    partial class AddedCusAndNotiTable
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -130,15 +132,6 @@ namespace BakeryMS.API.Migrations
 
                     b.Property<string>("Contact")
                         .HasColumnType("nvarchar(max)");
-
-                    b.Property<decimal>("Credit")
-                        .HasColumnType("decimal(18,2)");
-
-                    b.Property<decimal>("Debit")
-                        .HasColumnType("decimal(18,2)");
-
-                    b.Property<bool>("IsDeleted")
-                        .HasColumnType("bit");
 
                     b.Property<bool>("IsRetail")
                         .HasColumnType("bit");
@@ -591,9 +584,6 @@ namespace BakeryMS.API.Migrations
                     b.Property<decimal>("ChangeAmount")
                         .HasColumnType("decimal(18,2)");
 
-                    b.Property<int?>("CustomerId")
-                        .HasColumnType("int");
-
                     b.Property<string>("CustomerName")
                         .HasColumnType("nvarchar(max)");
 
@@ -627,8 +617,6 @@ namespace BakeryMS.API.Migrations
                     b.HasKey("Id");
 
                     b.HasIndex("BusinessPlaceId");
-
-                    b.HasIndex("CustomerId");
 
                     b.HasIndex("UserId");
 
@@ -1296,10 +1284,6 @@ namespace BakeryMS.API.Migrations
                         .HasForeignKey("BusinessPlaceId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
-
-                    b.HasOne("BakeryMS.API.Models.Customer", "Customer")
-                        .WithMany()
-                        .HasForeignKey("CustomerId");
 
                     b.HasOne("BakeryMS.API.Models.Profile.User", "User")
                         .WithMany()

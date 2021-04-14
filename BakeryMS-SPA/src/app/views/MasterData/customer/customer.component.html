@@ -1,0 +1,287 @@
+<div class="card">
+  <div class="card-header">
+    <i class="fa fa-align-justify"></i> Customer List
+  </div>
+  <div class="card-body">
+    <div class="row">
+      <div class="input-group col-md-4 mb-3">
+        <div class="input-group-prepend">
+          <span class="input-group-text"><i class="icon-magnifier"></i></span>
+        </div>
+        <input
+          type="text"
+          class="form-control"
+          placeholder="Search"
+          autocomplete="off"
+          [(ngModel)]="search"
+        />
+      </div>
+      <div class="col-md-1">
+        <button
+          class="btn btn-pill btn-block btn-primary"
+          (click)="addCustomer()"
+          type="button"
+        >
+          Add
+        </button>
+      </div>
+    </div>
+
+    <table class="table table-bordered">
+      <thead>
+        <tr>
+          <th><i (click)="sort(1)" class="icon-chart"></i> Name</th>
+          <th><i (click)="sort(2)" class="icon-chart"></i> Address</th>
+          <th><i (click)="sort(3)" class="icon-chart"></i> Contact</th>
+          <th><i (click)="sort(4)" class="icon-chart"></i> Type</th>
+          <th style="width: 15%">Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let cus of customers | filter: search">
+          <td>{{ cus.name }}</td>
+          <td>{{ cus.address }}</td>
+          <td>{{ cus.contact }}</td>
+          <td>
+            <span *ngIf="cus.isRetail == false" class="badge badge-success"
+              >WholeSale</span
+            >
+            <span *ngIf="cus.isRetail == true" class="badge badge-primary"
+              >Retail</span
+            >
+          </td>
+          <td>
+            <button
+              class="btn btn-ghost-secondary"
+              (click)="editCustomer(cus.id)"
+              type="button"
+            >
+              <i class="icon-pencil"></i>
+            </button>
+            <button
+              (click)="ShowCustomerInfo(cus.id)"
+              class="btn btn-ghost-info"
+              type="button"
+            >
+              <i class="icon-info"></i>
+            </button>
+            <button
+              (click)="delete(cus.id)"
+              class="btn btn-ghost-danger"
+              type="button"
+            >
+              <i class="icon-close"></i>
+            </button>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+    <h3 *ngIf="customers.length === 0" class="text-center">No Data Found</h3>
+  </div>
+</div>
+
+<div
+  bsModal
+  #infoModal="bs-modal"
+  class="modal fade"
+  tabindex="-1"
+  role="dialog"
+  aria-labelledby="myModalLabel"
+  aria-hidden="true"
+>
+  <div class="modal-dialog modal-info" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h4 class="modal-title">Customer Info</h4>
+        <button
+          type="button"
+          class="close"
+          (click)="infoModal.hide()"
+          aria-label="Close"
+        >
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <div class="row mt-3">
+          <div class="col-md-6 font-weight-bold">Customer Name</div>
+          <div class="col-md-1">-</div>
+          <div class="col-md-5">{{ customerInfo.name }}</div>
+        </div>
+        <div class="row mt-2">
+          <div class="col-md-6 font-weight-bold">Contact</div>
+          <div class="col-md-1">-</div>
+          <div class="col-md-5">{{ customerInfo.contact }}</div>
+        </div>
+        <div class="row mt-2">
+          <div class="col-md-6 font-weight-bold">Address</div>
+          <div class="col-md-1">-</div>
+          <div class="col-md-5">{{ customerInfo.address }}</div>
+        </div>
+        <div class="row mt-2">
+          <div class="col-md-6 font-weight-bold">Type</div>
+          <div class="col-md-1">-</div>
+          <div class="col-md-5">
+            {{ customerInfo.isRetail === true ? "Retail" : "Wholesale" }}
+          </div>
+        </div>
+        <div *ngIf="customerInfo.debit" class="row mt-2">
+          <div class="col-md-6 font-weight-bold">Debit</div>
+          <div class="col-md-1">-</div>
+          <div class="col-md-5">
+            {{ customerInfo.debit ? customerInfo.debit : 0 }}
+          </div>
+        </div>
+        <div *ngIf="customerInfo.credit" class="row mt-2">
+          <div class="col-md-6 font-weight-bold">Credit</div>
+          <div class="col-md-1">-</div>
+          <div class="col-md-5">
+            {{ customerInfo.credit ? customerInfo.credit : 0 }}
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button
+          type="button"
+          class="btn btn-secondary"
+          (click)="infoModal.hide()"
+        >
+          Close
+        </button>
+      </div>
+    </div>
+    <!-- /.modal-content -->
+  </div>
+  <!-- /.modal-dialog -->
+</div>
+
+<div
+  bsModal
+  #primaryModal="bs-modal"
+  class="modal fade"
+  tabindex="-1"
+  role="dialog"
+  aria-labelledby="myModalLabel"
+  aria-hidden="true"
+>
+  <div class="modal-dialog modal-dialog-centered modal-primary" role="document">
+    <div class="modal-content">
+      <form [formGroup]="createForm" (ngSubmit)="createCustomer()">
+        <div class="modal-header">
+          <h4 class="modal-title">
+            {{ isEditForm === false ? "Add" : "Edit" }} Customer
+          </h4>
+          <button
+            type="button"
+            class="close"
+            (click)="addModal.hide()"
+            aria-label="Close"
+          >
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          <div class="row mt-3 ml-2 mr-2">
+            <div class="input-group">
+              <div class="input-group-prepend">
+                <span class="input-group-text">
+                  <i class="icon-pencil"></i> &nbsp; Name
+                </span>
+              </div>
+              <input
+                type="text"
+                [ngClass]="{
+                  'is-invalid': r.get('name').errors && r.get('name').touched,
+                  'is-valid':
+                    !r.get('name').errors &&
+                    (r.get('name').touched || r.get('name').value !== '')
+                }"
+                class="form-control"
+                placeholder="Name"
+                autocomplete="off"
+                formControlName="name"
+              />
+              <div class="invalid-feedback">name is required</div>
+            </div>
+          </div>
+          <div class="row mt-3 ml-2 mr-2">
+            <div class="input-group">
+              <div class="input-group-prepend">
+                <span class="input-group-text">
+                  <i class="icon-pencil"></i> &nbsp; Contact
+                </span>
+              </div>
+              <input
+                type="text"
+                class="form-control"
+                placeholder="Contact"
+                autocomplete="off"
+                formControlName="contact"
+              />
+            </div>
+          </div>
+          <div class="row mt-3 ml-2 mr-2">
+            <div class="input-group">
+              <div class="input-group-prepend">
+                <span class="input-group-text">
+                  <i class="icon-pencil"></i> &nbsp; Address
+                </span>
+              </div>
+              <input
+                type="text"
+                class="form-control"
+                placeholder="Address"
+                autocomplete="off"
+                formControlName="address"
+              />
+            </div>
+          </div>
+          <div class="row mt-3 ml-2 mr-2">
+            <div class="input-group">
+              <div class="input-group-prepend">
+                <span class="input-group-text">
+                  <i class="icon-pencil"></i> &nbsp; Type
+                </span>
+              </div>
+              <select
+                class="form-control"
+                [ngClass]="{
+                  'is-invalid':
+                    r.get('isRetail').errors && r.get('isRetail').touched,
+                  'is-valid':
+                    !r.get('isRetail').errors &&
+                    (r.get('isRetail').touched ||
+                      r.get('isRetail').value !== '')
+                }"
+                formControlName="isRetail"
+              >
+                <option value="true">Retail</option>
+                <option value="false">Wholesale</option>
+              </select>
+
+              <div class="invalid-feedback">customer type is required</div>
+            </div>
+          </div>
+<!-- 
+          <p>create form value : {{ createForm.getRawValue() | json }}</p>
+          <p>create form status : {{ createForm.status | json }}</p> -->
+        </div>
+        <div class="modal-footer">
+          <button
+            type="button"
+            class="btn btn-secondary"
+            (click)="addModal.hide()"
+          >
+            Close
+          </button>
+          <button [disabled]="!r.valid" type="submit" class="btn btn-primary">
+            {{ isEditForm === false ? "Create" : "Update" }}
+          </button>
+        </div>
+      </form>
+    </div>
+    <!-- /.modal-content -->
+  </div>
+  <!-- /.modal-dialog -->
+</div>
+<!-- /.modal -->

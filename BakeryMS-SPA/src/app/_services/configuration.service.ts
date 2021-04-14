@@ -3,7 +3,7 @@ import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { environment } from '../../environments/environment';
-import { Configuration, ConfigurationList } from '../_models/configuration';
+import { Configuration, ConfigurationList, Notification } from '../_models/configuration';
 
 @Injectable({
   providedIn: 'root'
@@ -30,4 +30,13 @@ export class ConfigurationService {
     return this.http.post(this.baseUrl + 'configurations/updateConfig', configs);
   }
 
+  getNotifications(): Observable<Notification[]> {
+    return this.http.get<Notification[]>(this.baseUrl + 'notifications');
+  }
+  getNotification(id): Observable<Notification> {
+    return this.http.get<Notification>(this.baseUrl + 'notifications/' + id);
+  }
+  getRecentNotification(): Observable<Notification[]> {
+    return this.http.get<Notification[]>(this.baseUrl + 'notifications/GetRecentNotifications');
+  }
 }

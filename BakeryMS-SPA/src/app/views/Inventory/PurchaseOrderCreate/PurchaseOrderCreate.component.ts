@@ -32,6 +32,8 @@ export class PurchaseOrderCreateComponent implements OnInit {
   isEditForm: boolean = false;
   PurchaseOrderID: number;
 
+  loading: boolean = false;
+
   get gettableRowArray(): FormArray {
     return this.pOCreateForm.get('poDetail') as FormArray;
   }
@@ -203,7 +205,7 @@ export class PurchaseOrderCreateComponent implements OnInit {
   async createPO(isForSending: boolean) {
     // set status,
     if (this.pOCreateForm.valid) {
-
+      this.loading = true;
       this.purchaseOrder = Object.assign({}, this.pOCreateForm.getRawValue());
 
       this.masterService.getSupplier(this.purchaseOrder.supplierId).subscribe((result) => {
@@ -222,7 +224,9 @@ export class PurchaseOrderCreateComponent implements OnInit {
             }, error => {
               this.alertify.error('failed to create');
               this.alertify.error('Some error occured :' + error.error);
+              this.loading = false;
             }, () => {
+              this.loading = false;
               this.backToList();
             });
 
@@ -237,7 +241,9 @@ export class PurchaseOrderCreateComponent implements OnInit {
             }, error => {
               this.alertify.error('failed to create');
               this.alertify.error('Some error occured :' + error.error);
+              this.loading = false;
             }, () => {
+              this.loading = false;
               this.backToList();
             });
             // this.alertify.success('successfully saved and sent');
@@ -251,7 +257,9 @@ export class PurchaseOrderCreateComponent implements OnInit {
             }, error => {
               this.alertify.error('failed to Update');
               this.alertify.error('Some error occured :' + error.error);
+              this.loading = false;
             }, () => {
+              this.loading = false;
               this.backToList();
             });
 
@@ -268,8 +276,10 @@ export class PurchaseOrderCreateComponent implements OnInit {
             }, error => {
               this.alertify.error('failed to update');
               this.alertify.error('Some error occured :' + error.error);
+              this.loading = false;
             }, () => {
               this.backToList();
+              this.loading = false;
             });
           }
         }
@@ -376,7 +386,7 @@ export class PurchaseOrderCreateComponent implements OnInit {
     this.inventoryService.getReorderPurchaseOrder(placeId, type).subscribe(
       (purOrder: PurchaseOrderHeader) => {
         // console.log(purOrder);
-        
+
         this.createEditPOForm(purOrder);
       }, (res) => {
         const status = res.error.status;

@@ -15,6 +15,8 @@ namespace BakeryMS.API.Models.POS
         public int UserId { get; set; }
         public User User { get; set; }
         public string CustomerName { get; set; }
+        public int? CustomerId { get; set; }
+        public Customer Customer { get; set; }
         public TimeSpan? Time { get; set; }
         [Column(TypeName = "decimal(18,2)")]
         public decimal Total { get; set; }

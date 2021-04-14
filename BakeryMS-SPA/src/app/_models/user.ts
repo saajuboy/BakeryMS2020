@@ -9,8 +9,19 @@ export interface User {
     gender: string;
     created: Date;
     lastActive: Date;
-    status:boolean;
+    status: boolean;
     // photoUrl: string;
 
     // photos?: Photo[];
+}
+export interface Customer {
+    id: number;
+    name: string;
+    address: string;
+    contact: string;
+    isRetail: boolean;
+    status: number;
+    debit: number;
+    credit: number;
+    typeName?: string;
 }

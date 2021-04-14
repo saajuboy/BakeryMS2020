@@ -7,6 +7,7 @@ import { BusinessPlace } from '../_models/businessPlace';
 import { Item, ItemCategory, ItemForDropdown, Unit } from '../_models/item';
 import { Machinery } from '../_models/machinery';
 import { Supplier, SupplierForDropdown } from '../_models/supplier';
+import { Customer } from '../_models/User';
 
 @Injectable({
   providedIn: 'root'
@@ -143,5 +144,21 @@ export class MasterService {
   }
   deleteMachinery(id: number) {
     return this.http.delete(this.baseUrl + 'machineries/' + id);
+  }
+
+  getCustomers(): Observable<Customer[]> {
+    return this.http.get<Customer[]>(this.baseUrl + 'Customers');
+  }
+  getCustomer(id): Observable<Customer> {
+    return this.http.get<Customer>(this.baseUrl + 'Customers/' + id);
+  }
+  CreateCustomer(customer: Customer) {
+    return this.http.post(this.baseUrl + 'Customers', customer);
+  }
+  updateCustomer(id: number, customer: Customer) {
+    return this.http.put(this.baseUrl + 'Customers/' + id, customer);
+  }
+  deleteCustomer(id: number) {
+    return this.http.delete(this.baseUrl + 'Customers/' + id);
   }
 }

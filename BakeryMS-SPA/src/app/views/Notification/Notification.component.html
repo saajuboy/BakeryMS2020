@@ -1,0 +1,121 @@
+<div class="card">
+  <div class="card-header">
+    <i class="fa fa-align-justify"></i> Notifications
+  </div>
+  <div class="card-body">
+    <div class="row">
+      <div class="input-group col-md-4 mb-3">
+        <div class="input-group-prepend">
+          <span class="input-group-text"><i class="icon-magnifier"></i></span>
+        </div>
+        <input
+          type="text"
+          class="form-control"
+          placeholder="Search"
+          autocomplete="off"
+          [(ngModel)]="search"
+        />
+      </div>
+      <!-- <div class="col-md-1">
+        <button
+          class="btn btn-pill btn-block btn-primary"
+          (click)="addCustomer()"
+          type="button"
+        >
+          Add
+        </button>
+      </div> -->
+    </div>
+
+    <table class="table table-bordered">
+      <thead>
+        <tr>
+          <th><i (click)="sort(1)" class="icon-chart"></i> Title</th>
+          <th><i (click)="sort(2)" class="icon-chart"></i> Date</th>
+          <th><i (click)="sort(3)" class="icon-chart"></i> Time</th>
+          <th><i (click)="sort(4)" class="icon-chart"></i> Read</th>
+          <th><i (click)="sort(5)" class="icon-chart"></i> Status</th>
+          <th style="width: 5%">Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let cus of notifications |filter:search">
+          <td>{{ cus.title }}</td>
+          <td>{{ cus.date }}</td>
+          <td>{{ cus.time }}</td>
+          <td>
+            <span *ngIf="cus.isRead == false" class="badge badge-primary"
+              >Not Read</span
+            >
+            <span *ngIf="cus.isRead == true" class="badge badge-secondary"
+              >Read</span
+            >
+          </td>
+          <td>
+            <span *ngIf="cus.status === 0" class="badge badge-success"
+              >Active</span
+            >
+            <span *ngIf="cus.status === 1" class="badge badge-secondary"
+              >Inactive</span
+            >
+          </td>
+          <td>
+            <button
+              (click)="ShowNotification(cus.id)"
+              class="btn btn-ghost-info"
+              type="button"
+            >
+              <i class="icon-info"></i>
+            </button>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+    <h3 *ngIf="notifications.length === 0" class="text-center">No Data Found</h3>
+  </div>
+</div>
+
+<div
+  bsModal
+  #infoModal="bs-modal"
+  class="modal fade"
+  tabindex="-1"
+  role="dialog"
+  aria-labelledby="myModalLabel"
+  aria-hidden="true"
+>
+  <div class="modal-dialog modal-info" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h4 class="modal-title">{{notification.title}}</h4>
+        <button
+          type="button"
+          class="close"
+          (click)="infoModal.hide()"
+          aria-label="Close"
+        >
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <div class="row mt-3 ml-3 mr-3">
+          <div class="font-weight-bold">{{notification.date+' '+ notification.time}}</div>
+        </div>
+        <div class="row mt-3 ml-3 mr-3">
+          <div >{{notification.message}}</div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button
+          type="button"
+          class="btn btn-secondary"
+          (click)="infoModal.hide()"
+        >
+          Close
+        </button>
+      </div>
+    </div>
+    <!-- /.modal-content -->
+  </div>
+  <!-- /.modal-dialog -->
+</div>

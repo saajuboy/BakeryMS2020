@@ -78,6 +78,9 @@ namespace BakeryMS.API.Common.Helpers
             CreateMap<Unit, UnitForDetailDto>();
             CreateMap<UnitForDetailDto, Unit>();
 
+            CreateMap<Customer, CustomerDto>();
+            CreateMap<CustomerDto, Customer>();
+
             //production order
             CreateMap<ProductionOrderHeader, ProdOrderHeaderForDetailDto>()
             .ForMember(dest => dest.Session, opt => opt.MapFrom(src => src.Session.Session))
@@ -256,6 +259,12 @@ namespace BakeryMS.API.Common.Helpers
             .ForMember(dest => dest.Date, opt => opt.MapFrom(src => src.Date.DashedDate()))
             .ForMember(dest => dest.UserName, opt => opt.MapFrom(src => src.User.Username))
             .ForMember(dest => dest.BusinessPlaceName, opt => opt.MapFrom(src => src.BusinessPlace.Name));
+
+            CreateMap<Notification, NotificationDto>()
+            .ForMember(dest => dest.Time, opt => opt.MapFrom(src => src.DateTime.ToShortTimeString()))
+            .ForMember(dest => dest.Date, opt => opt.MapFrom(src => src.DateTime.DashedDate()))
+            .ForMember(dest => dest.UserName, opt => opt.MapFrom(src => src.User.Username));
+            
         }
     }
 }

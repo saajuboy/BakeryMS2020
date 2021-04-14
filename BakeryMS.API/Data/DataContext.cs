@@ -60,6 +60,8 @@ namespace BakeryMS.API.Data
         public DbSet<Transaction> Transactions { get; set; }
 
         public DbSet<Configuration> Configurations { get; set; }
+        public DbSet<Customer> Customers { get; set; }
+        public DbSet<Notification> Notifications { get; set; }
 
     }
 }

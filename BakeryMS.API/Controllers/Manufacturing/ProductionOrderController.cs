@@ -378,6 +378,17 @@ namespace BakeryMS.API.Controllers.Manufacturing
             prodOrder.isProcessed = 1;
             _context.Update(prodOrder);
 
+            Notification noti = new Notification
+            {
+                Title = "Items Sent for prod order " + prodOrder.ProductionOrderNo,
+                Message = "Items for production order No - " + prodOrder.ProductionOrderNo + "  has been sent from " + plan.BusinessPlace.Name,
+                DateTime = DateTime.Now,
+                UserId = prodOrder.UserId,
+                Status = 0
+            };
+
+            _context.Add(noti);
+
             if (await _context.SaveChangesAsync() > 0)
             {
                 var prods = await _context.ProductionOrderHeaders.Where(a => a.PlanId == planId && (a.isProcessed == 0 || a.isProcessed == null)).ToListAsync();
@@ -511,7 +522,7 @@ namespace BakeryMS.API.Controllers.Manufacturing
                 EnteredDate = DateTime.Today,
                 Description = "Reorder",
                 RequiredDate = DateTime.Today.AddDays(1),
-                Session = await _context.ProductionSessions.OrderByDescending(a=>a.Id).FirstOrDefaultAsync(a => a.StartTime > DateTime.Now.TimeOfDay),
+                Session = await _context.ProductionSessions.OrderByDescending(a => a.Id).FirstOrDefaultAsync(a => a.StartTime > DateTime.Now.TimeOfDay),
                 ProductionOrderDetails = new List<ProductionOrderDetail>()
             };
 

@@ -46,6 +46,7 @@ import { Ng2SearchPipeModule } from 'ng2-search-filter';
 import { ModalModule } from 'ngx-bootstrap/modal';
 import { NgWizardConfig, NgWizardModule, THEME } from 'ng-wizard';
 import { JwPaginationModule } from 'jw-angular-pagination';
+import { TypeaheadModule } from 'ngx-bootstrap/typeahead';
 
 // Import services, guards
 import { AuthService } from './_services/auth.service';
@@ -91,6 +92,8 @@ import { SalesCreateComponent } from './views/POS/SalesCreate/SalesCreate.compon
 import { SalesListComponent } from './views/POS/SalesList/SalesList.component';
 import { ConfigurationComponent } from './views/Configuration/Configuration.component';
 import { TransactionsComponent } from './views/POS/Transactions/Transactions.component';
+import { CustomerComponent } from './views/MasterData/customer/customer.component';
+import { NotificationComponent } from './views/Notification/Notification.component';
 
 
 // token getter function to automatically intercept http requests
@@ -119,6 +122,7 @@ const ngWizardConfig: NgWizardConfig = {
     BsDropdownModule.forRoot(),
     ModalModule.forRoot(),
     TabsModule.forRoot(),
+    TypeaheadModule.forRoot(),
     Ng2SearchPipeModule,
     NgWizardModule.forRoot(ngWizardConfig),
     JwPaginationModule,
@@ -162,7 +166,9 @@ const ngWizardConfig: NgWizardConfig = {
     SalesCreateComponent,
     SalesListComponent,
     TransactionsComponent,
-    ConfigurationComponent
+    ConfigurationComponent,
+    CustomerComponent,
+    NotificationComponent
   ],
   providers: [{
     provide: LocationStrategy,

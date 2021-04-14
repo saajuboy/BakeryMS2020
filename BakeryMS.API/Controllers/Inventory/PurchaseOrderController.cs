@@ -117,7 +117,28 @@ namespace BakeryMS.API.Controllers.Inventory
                     }
                     else
                     {
-                        pOHFromRepository.Status = 0;
+                        var supFromRepo = pOHFromRepository.Supplier;
+                        pOHFromRepository.Status = 1;
+                        Notification noti = new Notification
+                        {
+                            Title = "Purchase Order No " + pOHFromRepository.PONumber + " Failed To send",
+                            Message = "purchase Order No "
+                            + pOHFromRepository.PONumber
+                            + " Failed To send , Supplier Detail are as Follows "
+                            + " Supplier Name  "
+                            + supFromRepo.Name
+                            + " Supplier Contact "
+                            + supFromRepo.ContactNumber
+                           + " Supplier email "
+                            + supFromRepo.Email
+                            + " Supplier Address "
+                            + supFromRepo.Address,
+                            DateTime = DateTime.Now,
+                            UserId = pOHFromRepository.UserId,
+                            Status = 0
+                        };
+
+                        _repository.Add(noti);
                     }
 
 
@@ -207,7 +228,27 @@ namespace BakeryMS.API.Controllers.Inventory
                 }
                 else
                 {
-                    pOHFromRepository.Status = 0;
+                    pOHFromRepository.Status = 1;
+                    Notification noti = new Notification
+                    {
+                        Title = "Purchase Order No " + pOHFromRepository.PONumber + " Failed To send",
+                        Message = "purchase Order No "
+                        + pOHFromRepository.PONumber
+                        + " Failed To send , Supplier Detail are as Follows "
+                        + " Supplier Name  "
+                        + supFromRepo.Name
+                        + " Supplier Contact "
+                        + supFromRepo.ContactNumber
+                       + " Supplier email "
+                        + supFromRepo.Email
+                        + " Supplier Address "
+                        + supFromRepo.Address,
+                        DateTime = DateTime.Now,
+                        UserId = pOHFromRepository.UserId,
+                        Status = 0
+                    };
+
+                    _repository.Add(noti);
                 }
             }
             else
@@ -407,15 +448,24 @@ namespace BakeryMS.API.Controllers.Inventory
 
             // send email
             using var smtp = new SmtpClient();
-            await smtp.ConnectAsync("smtp.gmail.com", 587, SecureSocketOptions.StartTls);
-            if (!smtp.IsConnected)
-                return false;
-            await smtp.AuthenticateAsync(username, password);
-            if (!smtp.IsAuthenticated)
-                return false;
-            await smtp.SendAsync(email);
+            try
+            {
+                await smtp.ConnectAsync("smtp.gmail.com", 587, SecureSocketOptions.StartTls);
+                if (!smtp.IsConnected)
+                    return false;
+                await smtp.AuthenticateAsync(username, password);
+                if (!smtp.IsAuthenticated)
+                    return false;
+                await smtp.SendAsync(email);
 
-            await smtp.DisconnectAsync(true);
+                await smtp.DisconnectAsync(true);
+
+            }
+            catch (System.Exception)
+            {
+                return false;
+            }
+
 
             return true;
         }

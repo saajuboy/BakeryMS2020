@@ -36,6 +36,8 @@ import { SalesCreateComponent } from './views/POS/SalesCreate/SalesCreate.compon
 import { SalesListComponent } from './views/POS/SalesList/SalesList.component';
 import { TransactionsComponent } from './views/POS/Transactions/Transactions.component';
 import { ConfigurationComponent } from './views/Configuration/Configuration.component';
+import { CustomerComponent } from './views/MasterData/customer/customer.component';
+import { NotificationComponent } from './views/Notification/Notification.component';
 
 
 export const routes: Routes = [
@@ -349,6 +351,16 @@ export const routes: Routes = [
         }
       },
       {
+        path: 'master/customer',
+        runGuardsAndResolvers: 'always',
+        canActivate: [RoleGuard],
+        component: CustomerComponent,
+        data: {
+          title: 'Customers',
+          allowedRoles: ['Admin', 'OutletManager', 'BakeryManager', 'Cashier']
+        }
+      },
+      {
         path: 'master/supplier',
         runGuardsAndResolvers: 'always',
         canActivate: [RoleGuard],
@@ -374,8 +386,17 @@ export const routes: Routes = [
         canActivate: [RoleGuard],
         component: ConfigurationComponent,
         data: {
-          title: 'Units',
+          title: 'Configuration',
           allowedRoles: ['Admin', 'OutletManager', 'BakeryManager', 'Cashier']
+        }
+      },
+      {
+        path: 'notification',
+        runGuardsAndResolvers: 'always',
+        canActivate: [AuthGuard],
+        component: NotificationComponent,
+        data: {
+          title: 'Notifications',
         }
       }
 

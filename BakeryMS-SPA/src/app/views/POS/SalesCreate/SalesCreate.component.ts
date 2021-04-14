@@ -2,8 +2,10 @@ import { Component, OnInit, ViewChild } from '@angular/core';
 import { jsPDF } from 'jspdf';
 import { ModalDirective } from 'ngx-bootstrap/modal';
 import { AvailableItemForList, SalesDetail, SalesDetailForPos, SalesHeader, SalesHeaderForPos } from '../../../_models/availableItems';
+import { Customer } from '../../../_models/User';
 import { AlertifyService } from '../../../_services/alertify.service';
 import { InventoryService } from '../../../_services/inventory.service';
+import { MasterService } from '../../../_services/master.service';
 import { PosService } from '../../../_services/pos.service';
 
 @Component({
@@ -22,10 +24,17 @@ export class SalesCreateComponent implements OnInit {
   saleToCreate: SalesHeader;
   filter: number = 0;
   businessPlaceId = 0;
-  constructor(private invService: InventoryService, private alertify: AlertifyService, private posService: PosService) { }
+  customersName: Customer[] = [];
+  isDiscountAllowed: boolean = false;
+
+  constructor(private invService: InventoryService,
+    private alertify: AlertifyService,
+    private posService: PosService,
+    private masterSvc: MasterService) { }
 
   ngOnInit() {
     this.getAvailableItems(0);
+    this.getCustomers();
     const date = new Date();
     this.sales.customerName = 'Cash Payee - ' + date.toDateString() + ' ' + date.toTimeString().substring(0, 5);
   }
@@ -56,7 +65,31 @@ export class SalesCreateComponent implements OnInit {
     }
 
   }
+  getCustomers() {
+    this.masterSvc.getCustomers().subscribe((res) => {
+      res.forEach(x => {
+        this.customersName.push(<Customer>{ name: x.name, typeName: x.isRetail ? 'Retail' : 'WholeSale' });
+      });
+    });
+  }
+  cusChange() {
 
+    this.calculatePriceAndTotal(this.sales);
+  }
+  discountEligibility() {
+    if (this.sales.salesDetails.length !== 0) {
+      if (this.customersName.some(a => a.name === this.sales.customerName)) {
+        this.isDiscountAllowed = true;
+      } else {
+        this.isDiscountAllowed = false;
+        this.sales.discount = 0;
+      }
+    } else {
+      this.isDiscountAllowed = false;
+      this.sales.discount = 0;
+    }
+
+  }
   filterChange() {
     this.getAvailableItems(this.filter);
   }
@@ -148,7 +181,7 @@ export class SalesCreateComponent implements OnInit {
     let total = 0;
     let discount = 0;
     // console.log(this.availableItems);
-
+    this.discountEligibility();
     sales.salesDetails.forEach(x => {
       const availableItem = this.availableItems.find(y => y.id === x.itemId && y.type === x.type);
       const avail = availableItem.availableQuantity + x.quantity;

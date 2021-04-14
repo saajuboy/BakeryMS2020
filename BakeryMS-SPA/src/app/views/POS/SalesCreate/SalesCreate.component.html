@@ -103,6 +103,12 @@
                       placeholder="Customer Name"
                       autocomplete="off"
                       [(ngModel)]="sales.customerName"
+                      [typeahead]="customersName"
+                      typeaheadOptionField="name"
+                      typeaheadGroupField="typeName"
+                      [isAnimated]="true"
+                      (change)="cusChange()"
+                      (typeaheadOnSelect)="cusChange()"
                     />
                   </div>
                 </div>
@@ -148,7 +154,7 @@
                 <div class="row">
                   <div class="col-md-6 pr-0">
                     <button
-                      [disabled]="sales.salesDetails.length === 0"
+                      [disabled]="!isDiscountAllowed"
                       class="btn btn-block btn-square btn-primary"
                       (click)="smallModal.show()"
                     >

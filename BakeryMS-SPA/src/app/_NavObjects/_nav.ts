@@ -199,17 +199,22 @@ export const navItems: INavData[] = [
       {
         name: 'Item Category',
         url: '/master/itemCategory',
-        icon: 'icon-fire '
+        icon: 'icon-list '
+      },
+      {
+        name: 'Customer',
+        url: '/master/customer',
+        icon: 'icon-list'
       },
       {
         name: 'Supplier',
         url: '/master/supplier',
-        icon: 'icon-fire '
+        icon: 'icon-list '
       },
       {
         name: 'Unit',
         url: '/master/unit',
-        icon: 'icon-fire '
+        icon: 'icon-list '
       }
     ]
   },
