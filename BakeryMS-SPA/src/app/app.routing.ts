@@ -38,6 +38,7 @@ import { TransactionsComponent } from './views/POS/Transactions/Transactions.com
 import { ConfigurationComponent } from './views/Configuration/Configuration.component';
 import { CustomerComponent } from './views/MasterData/customer/customer.component';
 import { NotificationComponent } from './views/Notification/Notification.component';
+import { MasterReportsComponent } from './views/Reports/masterReports/masterReports.component';
 
 
 export const routes: Routes = [
@@ -398,8 +399,16 @@ export const routes: Routes = [
         data: {
           title: 'Notifications',
         }
+      },
+      {
+        path: 'reports/master',
+        runGuardsAndResolvers: 'always',
+        canActivate: [AuthGuard],
+        component: MasterReportsComponent,
+        data: {
+          title: 'Master reports',
+        }
       }
-
     ]
   },
   { path: '**', component: P404Component }

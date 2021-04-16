@@ -171,13 +171,23 @@ export const navItems: INavData[] = [
   },
   {
     name: 'Reports',
-    url: '/inventory',
+    url: '/reports',
     icon: 'icon-docs ',
     children: [
       {
-        name: 'Purchase Order',
-        url: '/inventory/purchaseOrder',
-        icon: 'icon-fire '
+        name: 'Master Reports',
+        url: '/reports/master',
+        icon: 'icon-user-follow',
+      },
+      {
+        name: 'Inventory Reports',
+        url: '/reports/master',
+        icon: 'icon-list'
+      },
+      {
+        name: 'Manufacturing Reports',
+        url: '/reports/master',
+        icon: 'icon-wrench'
       }
     ]
   },

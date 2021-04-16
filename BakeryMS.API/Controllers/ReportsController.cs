@@ -7,6 +7,7 @@ using DinkToPdf;
 using DinkToPdf.Contracts;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using BakeryMS.API.Common.Helpers;
 
 namespace BakeryMS.API.Controllers
 {
@@ -17,31 +18,21 @@ namespace BakeryMS.API.Controllers
     {
         private readonly IConverter _converter;
         private readonly IReportRepository _reportRepository;
+        private readonly GlobalSettings _globalSettings;
+        private readonly ObjectSettings _objectSettings;
         public ReportsController(IConverter converter, IReportRepository reportRepository)
-        {
-            _reportRepository = reportRepository;
-            _converter = converter;
-
-        }
-
-        [HttpGet]
-        public async Task<IActionResult> GetPdf()
         {
             var globalSetings = new GlobalSettings
             {
                 ColorMode = ColorMode.Color,
                 Orientation = Orientation.Portrait,
                 PaperSize = PaperKind.A4,
-                Margins = new MarginSettings { Top = 5 },
-                DocumentTitle = "report123",
-                Out=@"E:\1bit Project 2020\Project\Bakery management System\BakeryMS.API\report.pdf"
+                Margins = new MarginSettings { Top = 5, Bottom = 5, Right = 3, Left = 3 }
             };
 
             var ObjectSettings = new ObjectSettings
             {
                 PagesCount = true,
-                HtmlContent = await _reportRepository.GetItemReportHtmlString(),
-                // Page = "https://github.com/rdvojmoc/DinkToPdf/issues/51",
                 WebSettings = {DefaultEncoding = "utf-8",
                 UserStyleSheet=Path.Combine(Directory.GetCurrentDirectory(),"assets","css","styles.css")},
                 HeaderSettings = { FontName = "Arial", FontSize = 9, Right = "Page [Page] of [toPage]", Line = true },
@@ -49,15 +40,63 @@ namespace BakeryMS.API.Controllers
 
             };
 
-            var pdf = new HtmlToPdfDocument
+            _objectSettings = ObjectSettings;
+            _globalSettings = globalSetings;
+            _reportRepository = reportRepository;
+            _converter = converter;
+
+        }
+
+        [Route("[action]")]
+        [HttpGet]
+        public async Task<IActionResult> GetMasterReport(int reportType, int? itemType, string wildCard)
+        {
+            if (reportType == 0)
             {
-                GlobalSettings = globalSetings,
-                Objects = { ObjectSettings }
-            };
+                _globalSettings.DocumentTitle = "item report";
+                _objectSettings.HtmlContent = await _reportRepository.GetItemReportHtmlString(itemType, wildCard);
+            }
+            if (reportType == 1)
+            {
+                _globalSettings.DocumentTitle = "Supplier report";
+                _objectSettings.HtmlContent = await _reportRepository.GetSupplierReportHtmlString(wildCard);
+            }
+            if (reportType == 2)
+            {
+                _globalSettings.DocumentTitle = "Customer report";
+                _objectSettings.HtmlContent = await _reportRepository.GetCustomerReportHtmlString(wildCard);
+            }
+            if (reportType == 3)
+            {
+                _globalSettings.DocumentTitle = "Business Place report";
+                _objectSettings.HtmlContent = await _reportRepository.GetBusinessPlaceReportHtmlString(wildCard);
+            }
+            if (reportType == 4)
+            {
+                _globalSettings.DocumentTitle = "Unit report";
+                _objectSettings.HtmlContent = await _reportRepository.GetUnitReportHtmlString(wildCard);
+            }
+            if (reportType == 5)
+            {
+                _globalSettings.DocumentTitle = "Item Category report";
+                _objectSettings.HtmlContent = await _reportRepository.GetItemCategoryReportHtmlString(wildCard);
+            }
 
-            var file = _converter.Convert(pdf);
 
-            return File(file, "application/pdf");
+            if (_objectSettings.HtmlContent != "" && _objectSettings.HtmlContent != null)
+            {
+                var pdf = new HtmlToPdfDocument
+                {
+                    GlobalSettings = _globalSettings,
+                    Objects = { _objectSettings }
+                };
+
+                var file = _converter.Convert(pdf);
+
+                return File(file, "application/pdf");
+            }
+
+            return BadRequest(new ErrorModel(1, 400, "Report Not Available"));
         }
     }
 }

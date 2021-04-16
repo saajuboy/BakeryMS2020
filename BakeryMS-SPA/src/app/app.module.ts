@@ -94,6 +94,7 @@ import { ConfigurationComponent } from './views/Configuration/Configuration.comp
 import { TransactionsComponent } from './views/POS/Transactions/Transactions.component';
 import { CustomerComponent } from './views/MasterData/customer/customer.component';
 import { NotificationComponent } from './views/Notification/Notification.component';
+import { MasterReportsComponent } from './views/Reports/masterReports/masterReports.component';
 
 
 // token getter function to automatically intercept http requests
@@ -168,7 +169,8 @@ const ngWizardConfig: NgWizardConfig = {
     TransactionsComponent,
     ConfigurationComponent,
     CustomerComponent,
-    NotificationComponent
+    NotificationComponent,
+    MasterReportsComponent
   ],
   providers: [{
     provide: LocationStrategy,
