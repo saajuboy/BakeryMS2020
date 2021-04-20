@@ -27,7 +27,7 @@ namespace BakeryMS.API.Controllers
                 ColorMode = ColorMode.Color,
                 Orientation = Orientation.Portrait,
                 PaperSize = PaperKind.A4,
-                Margins = new MarginSettings { Top = 5, Bottom = 5, Right = 3, Left = 3 }
+                Margins = new MarginSettings { Top = 10, Bottom = 10, Right = 8, Left = 8 }
             };
 
             var ObjectSettings = new ObjectSettings
@@ -82,7 +82,51 @@ namespace BakeryMS.API.Controllers
                 _objectSettings.HtmlContent = await _reportRepository.GetItemCategoryReportHtmlString(wildCard);
             }
 
+            return await PrintDoc();
+        }
 
+        [Route("[action]")]
+        [HttpGet]
+        public async Task<IActionResult> GetSalesReport(int reportType, int? range, string date, int? month, int? year, string wildCard)
+        {
+            range = range == null ? 0 : range;
+            var rangeText = range == 0 ? "Daily" : range == 1 ? "Monthly" : range == 2 ? "Yearly" : "";
+            if (reportType == 0)
+            {
+                _globalSettings.DocumentTitle = "Sales report" + rangeText;
+                _objectSettings.HtmlContent = await _reportRepository.GetSalesReportHtmlString(range, date, month, year, wildCard);
+            }
+            if (reportType == 1)
+            {
+                _globalSettings.DocumentTitle = "Expense report" + rangeText;
+                _objectSettings.HtmlContent = await _reportRepository.GetExpensesReportHtmlString(range, date, month, year, wildCard);
+            }
+            if (reportType == 2)
+            {
+                _globalSettings.DocumentTitle = "Expense/Income report" + rangeText;
+                _objectSettings.HtmlContent = await _reportRepository.GetExpenseIncomeReportHtmlString(range, date, month, year, wildCard);
+            }
+
+            return await PrintDoc();
+        }
+
+        [Route("[action]")]
+        [HttpGet]
+        public async Task<IActionResult> GetInventoryReport(int reportType, int? range, string date, int? month, int? year, string wildCard)
+        {
+            range = range == null ? 0 : range;
+            var rangeText = range == 0 ? "Daily" : range == 1 ? "Monthly" : range == 2 ? "Yearly" : "";
+            if (reportType == 0)
+            {
+                _globalSettings.DocumentTitle = "Stock report" + rangeText;
+                _objectSettings.HtmlContent = await _reportRepository.GetStockReportHtmlString(range, date, month, year, wildCard);
+            }
+
+            return await PrintDoc();
+        }
+
+        public async Task<IActionResult> PrintDoc()
+        {
             if (_objectSettings.HtmlContent != "" && _objectSettings.HtmlContent != null)
             {
                 var pdf = new HtmlToPdfDocument
@@ -91,7 +135,7 @@ namespace BakeryMS.API.Controllers
                     Objects = { _objectSettings }
                 };
 
-                var file = _converter.Convert(pdf);
+                var file = await Task.FromResult(_converter.Convert(pdf));
 
                 return File(file, "application/pdf");
             }

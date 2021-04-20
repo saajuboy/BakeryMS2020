@@ -177,17 +177,22 @@ export const navItems: INavData[] = [
       {
         name: 'Master Reports',
         url: '/reports/master',
-        icon: 'icon-user-follow',
+        icon: 'icon-list',
       },
       {
         name: 'Inventory Reports',
-        url: '/reports/master',
+        url: '/reports/inventory',
         icon: 'icon-list'
       },
       {
         name: 'Manufacturing Reports',
-        url: '/reports/master',
-        icon: 'icon-wrench'
+        url: '/reports/manufacuring',
+        icon: 'icon-list'
+      },
+      {
+        name: 'Sales Reports',
+        url: '/reports/sales',
+        icon: 'icon-list'
       }
     ]
   },

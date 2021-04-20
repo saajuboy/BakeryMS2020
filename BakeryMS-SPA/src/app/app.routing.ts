@@ -39,6 +39,9 @@ import { ConfigurationComponent } from './views/Configuration/Configuration.comp
 import { CustomerComponent } from './views/MasterData/customer/customer.component';
 import { NotificationComponent } from './views/Notification/Notification.component';
 import { MasterReportsComponent } from './views/Reports/masterReports/masterReports.component';
+import { SalesReportComponent } from './views/Reports/SalesReport/SalesReport.component';
+import { InventoryReportsComponent } from './views/Reports/inventoryReports/inventoryReports.component';
+import { ManufacturingReportsComponent } from './views/Reports/manufacturingReports/manufacturingReports.component';
 
 
 export const routes: Routes = [
@@ -407,6 +410,33 @@ export const routes: Routes = [
         component: MasterReportsComponent,
         data: {
           title: 'Master reports',
+        }
+      },
+      {
+        path: 'reports/sales',
+        runGuardsAndResolvers: 'always',
+        canActivate: [AuthGuard],
+        component: SalesReportComponent,
+        data: {
+          title: 'Sales reports',
+        }
+      },
+      {
+        path: 'reports/inventory',
+        runGuardsAndResolvers: 'always',
+        canActivate: [AuthGuard],
+        component: InventoryReportsComponent,
+        data: {
+          title: 'Inventory reports',
+        }
+      },
+      {
+        path: 'reports/manufacuring',
+        runGuardsAndResolvers: 'always',
+        canActivate: [AuthGuard],
+        component: ManufacturingReportsComponent,
+        data: {
+          title: 'Manufacturing reports',
         }
       }
     ]

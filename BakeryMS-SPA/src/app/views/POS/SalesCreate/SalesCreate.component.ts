@@ -162,7 +162,8 @@ export class SalesCreateComponent implements OnInit {
       this.billingModal.hide();
       this.clearSale();
     }, (res) => {
-      if (res.error.staus === 400) {
+      this.billingModal.hide();
+      if (res.error.status === 400) {
         this.alertify.error(res.error.message + ' : ' + res.error.code);
       }
     });

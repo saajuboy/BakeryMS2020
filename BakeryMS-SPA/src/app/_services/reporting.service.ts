@@ -14,8 +14,6 @@ export class ReportingService {
 
   // master
   getMasterReports(reportType: number, itemType?: number, wildCard?: string) {
-    // return this.http.get<User[]>(this.baseUrl + 'users', httpOptions);
-    // return this.http.get<User[]>(this.baseUrl + 'users');
     let headers = new HttpHeaders();
     let params = new HttpParams();
     headers = headers.set('Accept', 'application/pdf');
@@ -29,6 +27,56 @@ export class ReportingService {
     }
 
     return this.http.get(this.baseUrl + 'Reports/GetMasterReport', { headers: headers, responseType: 'blob', params: params });
+  }
+  getSalesReports(reportType: number, range?: number, date?: string, month?: number, year?: number, wildCard?: string) {
+    let headers = new HttpHeaders();
+    let params = new HttpParams();
+    headers = headers.set('Accept', 'application/pdf');
+
+    params = params.append('reportType', reportType.toString());
+
+    if (range) {
+      params = params.append('range', range.toString());
+    }
+    if (date && date != '') {
+      params = params.append('date', date);
+    }
+    if (month) {
+      params = params.append('month', month.toString());
+    }
+    if (year) {
+      params = params.append('year', year.toString());
+    }
+    if (wildCard && wildCard != '') {
+      params = params.append('wildCard', wildCard);
+    }
+
+    return this.http.get(this.baseUrl + 'Reports/GetSalesReport', { headers: headers, responseType: 'blob', params: params });
+  }
+  getInventoryReports(reportType: number, range?: number, date?: string, month?: number, year?: number, wildCard?: string) {
+    let headers = new HttpHeaders();
+    let params = new HttpParams();
+    headers = headers.set('Accept', 'application/pdf');
+
+    params = params.append('reportType', reportType.toString());
+
+    if (range) {
+      params = params.append('range', range.toString());
+    }
+    if (date && date != '') {
+      params = params.append('date', date);
+    }
+    if (month) {
+      params = params.append('month', month.toString());
+    }
+    if (year) {
+      params = params.append('year', year.toString());
+    }
+    if (wildCard && wildCard != '') {
+      params = params.append('wildCard', wildCard);
+    }
+
+    return this.http.get(this.baseUrl + 'Reports/GetInventoryReport', { headers: headers, responseType: 'blob', params: params });
   }
 
 }

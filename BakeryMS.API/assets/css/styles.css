@@ -49,3 +49,56 @@ table td {
   font-size: 16px;
   
 }
+
+.right {
+  position: absolute;
+  right: 150px;
+  width: 500px;
+  border: 3px solid #050505;
+  padding: 10px;
+  margin-top: 30px;
+}
+.summary{
+  width: 500px;
+}
+.key{
+  width:300px;
+  float: left;
+  font-family: Arial, Helvetica, sans-serif;
+  font-weight: bold;
+}
+.value{
+  float: right;
+  width: 200px;
+  font-family: Arial, Helvetica, sans-serif;
+  font-weight: bold;
+}
+
+.left {
+  position: relative;
+  left:50px ;
+  width: 800px;
+  padding: 10px;
+  margin-top: 30px;
+  margin-bottom: 60px;
+}
+.bodyHeader{
+  width: 800px;
+  position: relative;
+}
+.bodyKey{
+  width:200px;
+  float: left;
+  font-family: Arial, Helvetica, sans-serif;
+  font-weight: bold;
+  padding-top: 10px;
+  padding-bottom: 10px;
+}
+.bodyValue{
+  float: right;
+  width: 600px;
+  font-family: Arial, Helvetica, sans-serif;
+  font-weight: bold;
+  padding-top: 10px;
+  padding-bottom: 10px;
+}

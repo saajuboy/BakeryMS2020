@@ -214,13 +214,13 @@
           <div class="col-md-1">-</div>
           <div class="col-md-5">
             {{
-              itemInfo.type === 1
-                ? itemInfo.type === 2
-                  ? itemInfo.type === 3
-                    ? "Miscalleneous"
-                    : "Raw material"
-                  : "Company"
-                : "Production"
+              itemInfo.type == 0
+                ? "Production"
+                : itemInfo.type == 1
+                ? "Company"
+                : itemInfo.type == 2
+                ? "Raw material"
+                : "Miscalleneous"
             }}
           </div>
         </div>

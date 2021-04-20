@@ -10,6 +10,11 @@ namespace BakeryMS.API.Data.Interfaces
         Task<string> GetBusinessPlaceReportHtmlString(string wildCard);
         Task<string> GetUnitReportHtmlString(string wildCard);
         Task<string> GetItemCategoryReportHtmlString(string wildCard);
+        Task<string> GetSalesReportHtmlString(int? range, string date, int? month, int? year, string wildCard);
+        Task<string> GetExpensesReportHtmlString(int? range, string date, int? month, int? year, string wildCard);
+        Task<string> GetExpenseIncomeReportHtmlString(int? range, string date, int? month, int? year, string wildCard);
+        Task<string> GetStockReportHtmlString(int? range, string date, int? month, int? year, string wildCard);
+
 
     }
 }
