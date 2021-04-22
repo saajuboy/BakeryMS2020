@@ -909,6 +909,76 @@ namespace BakeryMS.API.Data.Repositories
             return "";
         }
 
+        public async Task<string> GetIngredientsReportHtmlString(int? itemId, string wildCard)
+        {
+            if (itemId != null)
+            {
+                var ingrQuery = _context.IngredientHeaders.Include(a => a.Item)
+                    .Include(a => a.IngredientsDetail)
+                    .ThenInclude(a => a.Item).ThenInclude(a => a.Unit)
+                    .AsQueryable();
+
+                if (itemId > 0)
+                    ingrQuery = ingrQuery.Where(a => a.ItemId == itemId);
+
+                if (wildCard != "" && wildCard != null)
+                    ingrQuery = ingrQuery.Where(a => a.Item.Description.Contains(wildCard) || a.Item.Name.Contains(wildCard) || a.Item.Code.Contains(wildCard));
+
+                var ingredients = await ingrQuery.ToListAsync();
+
+                var Html = "";
+
+                foreach (var ingredient in ingredients)
+                {
+                    List<string> bodykeyValue = new List<string>();
+
+                    bodykeyValue.Add(GetbodyKeyValueString("Item ", ingredient.Item.Name));
+                    bodykeyValue.Add(GetbodyKeyValueString("Description ", ingredient.Description));
+                    bodykeyValue.Add(GetbodyKeyValueString("Serving Size ", ingredient.ServingSize.ToString()));
+                    bodykeyValue.Add(GetbodyKeyValueString("Method ", ingredient.Method));
+
+                    var bodyHeaderString = GetBodyHeaderHtml(bodykeyValue);
+
+                    List<string> columns = new List<string>();
+                    columns.Add("No.");
+                    columns.Add("Item Code");
+                    columns.Add("Description");
+                    columns.Add("Quantity");
+
+                    string tableHeaderString = getTableHeader(columns);
+
+                    var tableBody = new StringBuilder();
+
+                    var num = 0;
+                    foreach (var item in ingredient.IngredientsDetail)
+                    {
+                        num = num + 1;
+                        tableBody.AppendFormat(@"<tr>");
+
+                        List<string> values = new List<string>();
+                        values.Add(num.ToString());
+                        values.Add(item.Item.Code);
+                        values.Add(item.Item.Name);
+                        values.Add(item.Quantity.ToString() + " "+ item.Item.Unit.Description);
+
+                        tableBody.AppendFormat(getTableBody(values));
+                        tableBody.AppendFormat(@"</tr>");
+                    }
+
+                    string tableBodystring = tableBody.ToString();
+                    Html = Html + bodyHeaderString + getTableHtml(tableHeaderString, tableBodystring);
+                }
+
+                var bodyHtml = Html;
+
+                var html = getHtml((itemId == 0 ? "All" : "") + " Ingredients Report", bodyHtml, DateTime.Today.ToShortDateString());
+
+                return html;
+            }
+
+            return "";
+        }
+
 
         private string getHtml(string title, string body, string date)
         {
@@ -1017,6 +1087,9 @@ namespace BakeryMS.API.Data.Repositories
             return html.ToString();
         }
 
-
+        public async Task<Item> GetItem(int id)
+        {
+            return await _context.Items.FirstOrDefaultAsync(a => a.Id == id);
+        }
     }
 }

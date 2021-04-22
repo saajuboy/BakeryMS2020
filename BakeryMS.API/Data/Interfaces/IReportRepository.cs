@@ -1,4 +1,5 @@
 using System.Threading.Tasks;
+using BakeryMS.API.Models;
 
 namespace BakeryMS.API.Data.Interfaces
 {
@@ -14,6 +15,8 @@ namespace BakeryMS.API.Data.Interfaces
         Task<string> GetExpensesReportHtmlString(int? range, string date, int? month, int? year, string wildCard);
         Task<string> GetExpenseIncomeReportHtmlString(int? range, string date, int? month, int? year, string wildCard);
         Task<string> GetStockReportHtmlString(int? range, string date, int? month, int? year, string wildCard);
+        Task<string> GetIngredientsReportHtmlString(int? itemId, string wildCard);
+        Task<Item> GetItem(int id);
 
 
     }

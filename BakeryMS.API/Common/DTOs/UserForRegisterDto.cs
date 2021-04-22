@@ -1,5 +1,7 @@
 using System;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using BakeryMS.API.Models.Profile;
 
 namespace BakeryMS.API.Common.DTOs
 {
@@ -27,5 +29,10 @@ namespace BakeryMS.API.Common.DTOs
         {
             Created = DateTime.Now;
         }
+    }
+
+    public class RoleListDto
+    {
+        public IList<Roles> Roles { get; set; }
     }
 }

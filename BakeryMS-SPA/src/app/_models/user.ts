@@ -25,3 +25,11 @@ export interface Customer {
     credit: number;
     typeName?: string;
 }
+
+export interface Role {
+    id: number;
+    roleName: string;
+}
+export interface RoleList {
+    roles: Role[];
+}

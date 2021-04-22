@@ -217,7 +217,7 @@ export class SalesListComponent implements OnInit {
     let count = 0;
     sales.salesDetails.forEach(x => {
       count += 1;
-      text = count + '. ' + x.itemName
+      text = count + '. ' + (x.itemName ? x.itemName : 'Unknown Item')
         .substring(0, 37);
       yPos += 10;
       doc.text(text, 210, yPos, {}, {});

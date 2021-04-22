@@ -125,6 +125,22 @@ namespace BakeryMS.API.Controllers
             return await PrintDoc();
         }
 
+        [Route("[action]")]
+        [HttpGet]
+        public async Task<IActionResult> GetManufacturingReport(int reportType, int? itemId, string wildCard)
+        {
+            itemId = itemId == null ? 0 : itemId;
+            var item = await _reportRepository.GetItem(itemId.Value);
+            var rangeText = itemId == 0 ? "All Items" : (item == null ? "" : item.Name);
+            if (reportType == 0)
+            {
+                _globalSettings.DocumentTitle = "Ingredients report:" + rangeText;
+                _objectSettings.HtmlContent = await _reportRepository.GetIngredientsReportHtmlString(itemId, wildCard);
+            }
+
+            return await PrintDoc();
+        }
+
         public async Task<IActionResult> PrintDoc()
         {
             if (_objectSettings.HtmlContent != "" && _objectSettings.HtmlContent != null)

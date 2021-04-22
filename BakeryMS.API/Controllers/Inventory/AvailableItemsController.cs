@@ -255,7 +255,7 @@ namespace BakeryMS.API.Controllers.Inventory
 
                 case 1:
                     var compItemsAll = await _context.CompanyItems
-                    .Where(a => a.CurrentPlace == place && a.Item.IsDeleted == false && a.AvailableQuantity > 0)
+                    .Where(a => a.CurrentPlace == place && a.Item.IsDeleted == false )
                     .Include(a => a.CurrentPlace)
                     .Include(a => a.Item).ThenInclude(a => a.Unit).ToListAsync();
 
@@ -286,7 +286,7 @@ namespace BakeryMS.API.Controllers.Inventory
                     break;
                 case 2:
                     var rawItemsAll = await _context.RawItems
-                    .Where(a => a.CurrentPlace == place && a.Item.IsDeleted == false && a.AvailableQuantity > 0)
+                    .Where(a => a.CurrentPlace == place && a.Item.IsDeleted == false)
                     .Include(a => a.CurrentPlace)
                     .Include(a => a.Item).ThenInclude(a => a.Unit).ToListAsync();
 

@@ -42,6 +42,7 @@ import { MasterReportsComponent } from './views/Reports/masterReports/masterRepo
 import { SalesReportComponent } from './views/Reports/SalesReport/SalesReport.component';
 import { InventoryReportsComponent } from './views/Reports/inventoryReports/inventoryReports.component';
 import { ManufacturingReportsComponent } from './views/Reports/manufacturingReports/manufacturingReports.component';
+import { ControlProcedureComponent } from './views/ControlProcedure/ControlProcedure.component';
 
 
 export const routes: Routes = [
@@ -288,6 +289,16 @@ export const routes: Routes = [
         }
       },
       {
+        path: 'quality/controlProcedure',
+        runGuardsAndResolvers: 'always',
+        canActivate: [RoleGuard],
+        component: ControlProcedureComponent,
+        data: {
+          title: 'Control Procedure',
+          allowedRoles: ['Admin', 'BakeryManager', 'OutletManager']
+        }
+      },
+      {
         path: 'user/register',
         runGuardsAndResolvers: 'always',
         canActivate: [AdminGuard],
@@ -299,7 +310,7 @@ export const routes: Routes = [
       {
         path: 'user/edit/:id',
         runGuardsAndResolvers: 'always',
-        canActivate: [AdminGuard],
+        canActivate: [AuthGuard],
         component: RegisterComponent,
         data: {
           title: 'Edit User'

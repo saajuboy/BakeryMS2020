@@ -110,7 +110,7 @@
           <div class="h1 text-muted text-right mb-4">
             <i class="icon-printer"></i>
           </div>
-          <div class="h4 mb-0">20</div>
+          <div class="h4 mb-0">{{ ordersRec }}</div>
           <small class="text-muted text-uppercase font-weight-bold"
             >Orders Received</small
           >
@@ -118,10 +118,7 @@
             <div
               class="progress-bar"
               role="progressbar"
-              style="width: 80%"
-              aria-valuenow="20"
-              aria-valuemin="0"
-              aria-valuemax="25"
+              [style]="'width: ' + (ordersRecMax * 100) / ordersRecMax + '%'"
             ></div>
           </div>
         </div>
@@ -134,7 +131,7 @@
           <div class="h1 text-muted text-right mb-4">
             <i class="icon-book-open"></i>
           </div>
-          <div class="h4 mb-0">6</div>
+          <div class="h4 mb-0">{{ordersHandle}}</div>
           <small class="text-muted text-uppercase font-weight-bold"
             >Orders To Handle</small
           >
@@ -142,10 +139,7 @@
             <div
               class="progress-bar"
               role="progressbar"
-              style="width: 70%"
-              aria-valuenow="6"
-              aria-valuemin="0"
-              aria-valuemax="10"
+              [style]="'width: ' + (ordersHandle * 100) / ordersHandleMax + '%'"
             ></div>
           </div>
         </div>
@@ -158,7 +152,7 @@
           <div class="h1 text-muted text-right mb-4">
             <i class="icon-people"></i>
           </div>
-          <div class="h4 mb-0">35</div>
+          <div class="h4 mb-0">{{workers}}</div>
           <small class="text-muted text-uppercase font-weight-bold"
             >Workers</small
           >
@@ -166,10 +160,7 @@
             <div
               class="progress-bar"
               role="progressbar"
-              style="width: 80%"
-              aria-valuenow="35"
-              aria-valuemin="0"
-              aria-valuemax="42"
+              [style]="'width: ' + (workers * 100) / workersmax + '%'"
             ></div>
           </div>
         </div>
@@ -181,7 +172,7 @@
           <div class="h1 text-muted text-right mb-4">
             <i class="icon-refresh"></i>
           </div>
-          <div class="h4 mb-0">8</div>
+          <div class="h4 mb-0">{{reorders}}</div>
           <small class="text-muted text-uppercase font-weight-bold"
             >Re Orders</small
           >
@@ -189,10 +180,7 @@
             <div
               class="progress-bar"
               role="progressbar"
-              style="width: 9%"
-              aria-valuenow="8"
-              aria-valuemin="0"
-              aria-valuemax="96"
+              [style]="'width: ' + (reorders * 100) / reordersMax + '%'"
             ></div>
           </div>
         </div>
@@ -235,9 +223,8 @@
         <div class="col-sm-5">
           <h4 class="card-title mb-0">Sales Chart</h4>
           <div class="small text-muted">November 2020</div>
-          <span  class="badge badge-success">Expense</span>
-          <span  class="badge badge-primary">Income</span>
-
+          <span class="badge badge-success">Expense</span>
+          <span class="badge badge-primary">Income</span>
         </div>
         <!-- <div class="col-sm-7 d-none d-md-block">
           <button type="button" class="btn btn-primary float-right">

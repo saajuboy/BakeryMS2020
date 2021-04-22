@@ -98,6 +98,7 @@ import { MasterReportsComponent } from './views/Reports/masterReports/masterRepo
 import { SalesReportComponent } from './views/Reports/SalesReport/SalesReport.component';
 import { InventoryReportsComponent } from './views/Reports/inventoryReports/inventoryReports.component';
 import { ManufacturingReportsComponent } from './views/Reports/manufacturingReports/manufacturingReports.component';
+import { ControlProcedureComponent } from './views/ControlProcedure/ControlProcedure.component';
 
 
 // token getter function to automatically intercept http requests
@@ -176,7 +177,8 @@ const ngWizardConfig: NgWizardConfig = {
     MasterReportsComponent,
     SalesReportComponent,
     InventoryReportsComponent,
-    ManufacturingReportsComponent
+    ManufacturingReportsComponent,
+    ControlProcedureComponent
   ],
   providers: [{
     provide: LocationStrategy,

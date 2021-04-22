@@ -1,8 +1,8 @@
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { environment } from '../../environments/environment';
-import { User } from '../_models/User';
+import { Role, RoleList, User } from '../_models/User';
 
 @Injectable({
   providedIn: 'root'
@@ -30,6 +30,22 @@ export class UserService {
   }
   deleteUser(id: number) {
     return this.http.delete(this.baseUrl + 'users/' + id);
+  }
+
+  getAvailableRoles(): Observable<Role[]> {
+    return this.http.get<Role[]>(this.baseUrl + 'users/GetAvailableRoles');
+  }
+  getRoles(id: number): Observable<Role[]> {
+    let params = new HttpParams();
+    params = params.append('userId', id.toString());
+    return this.http.get<Role[]>(this.baseUrl + 'users/GetRoles', { params });
+  }
+  updateRoles(id: number, roleLists: number[]) {
+    let params = new HttpParams();
+    params = params.append('userId', id.toString());
+    const roleList = <RoleList>{ roles: [] };
+    roleLists.forEach(x => roleList.roles.push(<Role>{ id: +x, roleName: '' }));
+    return this.http.post(this.baseUrl + 'users/UpdateRoles', roleList, { params });
   }
 
 }

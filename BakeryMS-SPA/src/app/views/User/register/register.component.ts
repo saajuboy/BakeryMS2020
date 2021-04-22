@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
-import { User } from '../../../_models/User';
+import { Role, User } from '../../../_models/User';
 import { AlertifyService } from '../../../_services/alertify.service';
 import { AuthService } from '../../../_services/auth.service';
 import { UserService } from '../../../_services/user.service';
@@ -15,8 +15,12 @@ export class RegisterComponent implements OnInit {
   user: User;
   registerForm: FormGroup;
   isEditForm: boolean = false;
+  isSelfEdit: boolean = false;
   userID: number;
   get r() { return this.registerForm; }
+
+  roles: number[] = [];
+  availableroles: Role[] = [];
 
   constructor(private authService: AuthService,
     private alertify: AlertifyService,
@@ -31,13 +35,24 @@ export class RegisterComponent implements OnInit {
     //for edit Form
     this.route.paramMap.subscribe(params => {
       const usrId = +params.get('id');
-      
+
       if (usrId) {
-        this.getUser(usrId);
-        this.isEditForm = true;
-        this.userID = usrId;
+        const curUSerId = this.authService.getuserId();
+        if (this.authService.isUserAdmin || curUSerId === usrId) {
+          this.getUser(usrId);
+          this.isEditForm = true;
+          this.userID = usrId;
+          this.getAvailableRoles();
+
+          this.isSelfEdit = curUSerId === usrId ? true : false;
+        }
+        else {
+          this.alertify.error("Un authorized");
+          this.router.navigate(['/dashboard']);
+        }
       }
     });
+
   }
   createRegisterForm() {
     this.registerForm = this.fb.group({
@@ -65,16 +80,24 @@ export class RegisterComponent implements OnInit {
           this.router.navigate(['/user/list']);
         });
       } else {
-        this.userService.updateUser(this.userID,this.user).subscribe(() => {
+        this.userService.updateUser(this.userID, this.user).subscribe(() => {
           this.alertify.success('user updated successfully');
+          if (this.isSelfEdit == false) {
+            this.userService.updateRoles(this.userID, this.roles).subscribe(
+              () => { this.alertify.success('Roles updated successfully'); },
+              (error: any) => { this.alertify.warning(error.error.message) }
+            )
+          }
         }, error => {
           this.alertify.error(error.error);
         },
-        () => {
-          this.router.navigate(['/user/list']);
-        });
+          () => {
+            this.router.navigate(['/user/list']);
+          });
         // this.alertify.success('updated Succes');
       }
+
+
 
 
       console.log(this.isEditForm);
@@ -90,7 +113,6 @@ export class RegisterComponent implements OnInit {
     this.userService.getUser(id).subscribe(
       (user: User) => this.createEditUserForm(user),
       (error: any) => { console.log(error); }
-
     );
   }
 
@@ -102,8 +124,13 @@ export class RegisterComponent implements OnInit {
       gender: user.gender
     });
   }
+  getAvailableRoles() {
+    this.userService.getAvailableRoles().subscribe((result) => {
+      this.availableroles = result;
+    });
 
-  backToList(){
+  }
+  backToList() {
     this.router.navigate(['/user/list']);
   }
 }

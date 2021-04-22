@@ -79,4 +79,30 @@ export class ReportingService {
     return this.http.get(this.baseUrl + 'Reports/GetInventoryReport', { headers: headers, responseType: 'blob', params: params });
   }
 
+  getManufacturingReports(reportType: number, itemId?: number, wildCard?: string) {
+    let headers = new HttpHeaders();
+    let params = new HttpParams();
+    headers = headers.set('Accept', 'application/pdf');
+
+    params = params.append('reportType', reportType.toString());
+
+    if (itemId) {
+      params = params.append('itemId', itemId.toString());
+    }
+    // if (date && date != '') {
+    //   params = params.append('date', date);
+    // }
+    // if (month) {
+    //   params = params.append('month', month.toString());
+    // }
+    // if (year) {
+    //   params = params.append('year', year.toString());
+    // }
+    if (wildCard && wildCard != '') {
+      params = params.append('wildCard', wildCard);
+    }
+
+    return this.http.get(this.baseUrl + 'Reports/GetManufacturingReport', { headers: headers, responseType: 'blob', params: params });
+  }
+
 }

@@ -4,6 +4,7 @@ import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { environment } from '../../environments/environment';
 import { BusinessPlace } from '../_models/businessPlace';
+import { ControlProcedure } from '../_models/configuration';
 import { Item, ItemCategory, ItemForDropdown, Unit } from '../_models/item';
 import { Machinery } from '../_models/machinery';
 import { Supplier, SupplierForDropdown } from '../_models/supplier';
@@ -160,5 +161,25 @@ export class MasterService {
   }
   deleteCustomer(id: number) {
     return this.http.delete(this.baseUrl + 'Customers/' + id);
+  }
+
+  getControlProcedures(placeId?: any): Observable<ControlProcedure[]> {
+    let params = new HttpParams();
+    if (+placeId > 0) {
+      params = params.append('placeId', placeId.toString());
+    }
+    return this.http.get<ControlProcedure[]>(this.baseUrl + 'controlProcedure', { params });
+  }
+  getControlProcedure(id): Observable<ControlProcedure> {
+    return this.http.get<ControlProcedure>(this.baseUrl + 'controlProcedure/' + id);
+  }
+  CreateControlProcedure(controlProcedure: ControlProcedure) {
+    return this.http.post(this.baseUrl + 'controlProcedure', controlProcedure);
+  }
+  updateControlProcedure(id: number, controlProcedure: ControlProcedure) {
+    return this.http.put(this.baseUrl + 'controlProcedure/' + id, controlProcedure);
+  }
+  deleteControlProcedure(id: number) {
+    return this.http.delete(this.baseUrl + 'controlProcedure/' + id);
   }
 }

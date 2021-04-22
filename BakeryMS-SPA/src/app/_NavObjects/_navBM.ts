@@ -5,36 +5,12 @@ export const navItems: INavData[] = [
         name: 'Dashboard',
         url: '/dashboard',
         icon: 'icon-speedometer'
-        // badge: {
-        //     variant: 'info',
-        //     text: 'NEW'
-        // }
     },
     {
         title: true,
         name: 'Main Navigation'
     },
-    // {
-    //     name: 'Colors',
-    //     url: '/theme/colors',
-    //     icon: 'icon-drop'
-    // },
-    // {
-    //     name: 'Typography',
-    //     url: '/theme/typography',
-    //     icon: 'icon-pencil'
-    // },
-    // {
-    //     title: true,
-    //     name: 'Components'
-    // },
-    // {
-    //     name: 'Test Module',
-    //     url: '/test',
-    //     icon: 'icon-puzzle',
-    //     roles: ['sdsd', 'dsdsd'],
-    //     attributes: { disabled: false }
-    // },
+
     {
         name: 'POS',
         url: '/pos',
@@ -63,7 +39,12 @@ export const navItems: INavData[] = [
         icon: 'icon-basket-loaded',
         children: [
             {
-                name: 'Purchase Order',
+                name: 'Available Items',
+                url: '/inventory/item',
+                icon: 'icon-social-dropbox ',
+            },
+            {
+                name: 'Purchase Order List',
                 url: '/inventory/purchaseOrder',
                 icon: 'icon-list'
             },
@@ -86,59 +67,38 @@ export const navItems: INavData[] = [
     },
     {
         name: 'Manufacturing',
-        url: '/inventory',
+        url: '/manufacturing',
         icon: 'icon-fire ',
         children: [
             {
-                name: 'Production Order',
+                name: 'Production Order List',
                 url: '/manufacturing/productionOrder',
-                icon: 'icon-briefcase',
-                children: [
-                    {
-                        name: 'Production Order List',
-                        url: '/manufacturing/productionOrder',
-                        icon: 'icon-list'
-                    },
-                    {
-                        name: 'Create Prod.Order',
-                        url: '/manufacturing/productionOrder/create',
-                        icon: 'icon-note'
-                    }
-                ]
+                icon: 'icon-list'
             },
             {
-                name: 'Production Plan',
+                name: 'Create Prod.Order',
+                url: '/manufacturing/productionOrder/create',
+                icon: 'icon-note'
+            },
+            {
+                name: 'Production Plan List',
                 url: '/manufacturing/productionPlan',
-                icon: 'icon-briefcase',
-                children: [
-                    {
-                        name: 'Production Plan List',
-                        url: '/manufacturing/productionPlan',
-                        icon: 'icon-list'
-                    },
-                    {
-                        name: 'Create Prod.Plan',
-                        url: '/manufacturing/productionPlan/create',
-                        icon: 'icon-note'
-                    }
-                ]
+                icon: 'icon-list'
             },
             {
-                name: 'Recipe',
+                name: 'Create Prod.Plan',
+                url: '/manufacturing/productionPlan/create',
+                icon: 'icon-note'
+            },
+            {
+                name: 'Ingredient List',
                 url: '/manufacturing/ingredient',
-                icon: 'icon-briefcase',
-                children: [
-                    {
-                        name: 'Ingredient List',
-                        url: '/manufacturing/ingredient',
-                        icon: 'icon-list'
-                    },
-                    {
-                        name: 'Create Ingredients',
-                        url: '/manufacturing/ingredient/create',
-                        icon: 'icon-note'
-                    }
-                ]
+                icon: 'icon-list'
+            },
+            {
+                name: 'Create Ingredients',
+                url: '/manufacturing/ingredient/create',
+                icon: 'icon-note'
             }
         ]
     },
@@ -148,17 +108,10 @@ export const navItems: INavData[] = [
         icon: 'icon-people ',
         children: [
             {
-                name: 'Employee',
+                name: 'Employees',
                 url: '/hr/employees',
                 icon: 'icon-people '
-            }
-        ]
-    },
-    {
-        name: 'Schedule Routine',
-        url: '/hr',
-        icon: 'icon-refresh ',
-        children: [
+            },
             {
                 name: 'Schedule Routines',
                 url: '/hr/routines',
@@ -172,33 +125,73 @@ export const navItems: INavData[] = [
         icon: 'icon-heart ',
         children: [
             {
-                name: 'Purchase Order',
-                url: '/inventory/purchaseOrder',
-                icon: 'icon-fire '
+                name: 'Control Procedure',
+                url: '/quality/controlProcedure',
+                icon: 'icon-heart '
             }
         ]
     },
     {
         name: 'Reports',
-        url: '/inventory',
+        url: '/reports',
         icon: 'icon-docs ',
         children: [
             {
-                name: 'Purchase Order',
-                url: '/inventory/purchaseOrder',
-                icon: 'icon-fire '
+                name: 'Master Reports',
+                url: '/reports/master',
+                icon: 'icon-list',
+            },
+            {
+                name: 'Inventory Reports',
+                url: '/reports/inventory',
+                icon: 'icon-list'
+            },
+            {
+                name: 'Manufacturing Reports',
+                url: '/reports/manufacuring',
+                icon: 'icon-list'
+            },
+            {
+                name: 'Sales Reports',
+                url: '/reports/sales',
+                icon: 'icon-list'
             }
         ]
     },
     {
         name: 'Master Data',
-        url: '/inventory',
+        url: '/Master',
         icon: 'icon-globe ',
         children: [
             {
-                name: 'Purchase Order',
-                url: '/inventory/purchaseOrder',
-                icon: 'icon-fire '
+                name: 'Item List',
+                url: '/master/item',
+                icon: 'icon-list'
+            },
+            {
+                name: 'Create Item',
+                url: '/master/item/create',
+                icon: 'icon-note'
+            },
+            {
+                name: 'Item Category',
+                url: '/master/itemCategory',
+                icon: 'icon-list '
+            },
+            {
+                name: 'Customer',
+                url: '/master/customer',
+                icon: 'icon-list'
+            },
+            {
+                name: 'Supplier',
+                url: '/master/supplier',
+                icon: 'icon-list '
+            },
+            {
+                name: 'Unit',
+                url: '/master/unit',
+                icon: 'icon-list '
             }
         ]
     },
@@ -211,16 +204,9 @@ export const navItems: INavData[] = [
     },
     {
         name: 'Configuration',
-        url: '/inventory',
-        icon: 'icon-settings ',
-        children: [
-            {
-                name: 'Purchase Order',
-                url: '/inventory/purchaseOrder',
-                icon: 'icon-fire '
-            }
-        ]
-    },
+        url: '/configuration',
+        icon: 'icon-settings '
+    }
     // {
     //     name: 'Pages',
     //     url: '/pages',

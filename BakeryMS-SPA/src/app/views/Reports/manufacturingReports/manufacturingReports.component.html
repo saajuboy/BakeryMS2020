@@ -1,3 +1,78 @@
-<p>
-  manufacturingReports works!
-</p>
+<div class="card">
+  <div class="card-header">
+    <i class="fa fa-align-justify"></i> Manufacturing Reports
+  </div>
+  <div class="card-body">
+    <div class="card">
+      <div class="card-header">
+        <div class="input-group col-md-5">
+          <select
+            (change)="reportTypeChanged()"
+            class="form-control"
+            [(ngModel)]="reportType"
+          >
+            <option [value]="0">Ingredients Report</option>
+          </select>
+        </div>
+      </div>
+      <div class="card-body">
+        <div class="row">
+          <div *ngIf="showRange" class="input-group col-md-3 mb-4">
+            <div class="input-group-prepend">
+              <span class="input-group-text">&nbsp; Item</span>
+            </div>
+            <select class="form-control" [(ngModel)]="reportRange">
+              <option [value]="0">All</option>
+              <option *ngFor="let item of items" [value]="item.id">
+                {{ item.name }}
+              </option>
+            </select>
+          </div>
+          <!-- <div
+            *ngIf="reportRange == 0"
+            class="input-group col-md-3 mb-4"
+          >
+            <div class="input-group-prepend">
+              <span class="input-group-text">&nbsp; Date</span>
+            </div>
+            <input type="date" [(ngModel)]="date" class="form-control" />
+          </div> -->
+          <!-- <div
+            *ngIf="reportRange == 1 "
+            class="input-group col-md-2 mb-4"
+          >
+            <div class="input-group-prepend">
+              <span class="input-group-text">&nbsp; Month</span>
+            </div>
+            <input type="number" [(ngModel)]="month" max="12" min="1" class="form-control" />
+          </div>
+          <div
+            *ngIf="(reportRange == 1 || reportRange == 2) "
+            class="input-group col-md-2 mb-4"
+          >
+            <div class="input-group-prepend">
+              <span class="input-group-text">&nbsp; Year</span>
+            </div>
+            <input type="number" [(ngModel)]="year" max="2100" min="2000" class="form-control" />
+          </div> -->
+          <div *ngIf="showWildCard" class="input-group col-md-3 mb-4">
+            <div class="input-group-prepend">
+              <span class="input-group-text">&nbsp; WildCard</span>
+            </div>
+            <input type="text" class="form-control" [(ngModel)]="wildCard" />
+          </div>
+        </div>
+      </div>
+      <div class="card-footer d-flex">
+        <button (click)="getReport()" class="btn btn-primary float-right">
+          Print
+        </button>
+        <div class="col-md-1">
+          <div *ngIf="loading" class="spinner-grow text-success" role="status">
+            <span class="sr-only">Loading...</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

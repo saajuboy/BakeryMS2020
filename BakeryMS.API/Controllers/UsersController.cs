@@ -9,6 +9,10 @@ using BakeryMS.API.Data.Interfaces;
 using BakeryMS.API.Common.DTOs;
 using AutoMapper;
 using System.Collections.Generic;
+using BakeryMS.API.Data;
+using Microsoft.EntityFrameworkCore;
+using BakeryMS.API.Models.Profile;
+using BakeryMS.API.Common.Helpers;
 
 namespace BakeryMS.API.Controllers
 {
@@ -19,8 +23,10 @@ namespace BakeryMS.API.Controllers
     {
         private readonly IUserRepository _repository;
         private readonly IMapper _mapper;
-        public UsersController(IUserRepository repository, IMapper mapper)
+        private readonly DataContext _context;
+        public UsersController(IUserRepository repository, IMapper mapper, DataContext context)
         {
+            _context = context;
             _mapper = mapper;
             _repository = repository;
 
@@ -98,10 +104,75 @@ namespace BakeryMS.API.Controllers
         [Authorize(Roles = "Admin")]
         public async Task<IActionResult> DeleteUser(int id)
         {
-            if(await _repository.DeleteUser(id))
-            return Ok();
+            if (await _repository.DeleteUser(id))
+                return Ok();
 
             throw new System.Exception($"Failed to delet user {id}");
+        }
+
+        [Route("[action]")]
+        [HttpGet]
+        public async Task<IActionResult> GetAvailableRoles()
+        {
+            var roles = await _context.Roles.ToListAsync();
+
+            return Ok(roles);
+        }
+
+        [Route("[action]")]
+        [HttpGet]
+        public async Task<IActionResult> GetRoles(int userId)
+        {
+            var rolesmapping = await _context.UserRolesMappings.Where(a => a.User.Id == userId).Include(a => a.Roles).ToListAsync();
+
+            List<Roles> roles = new List<Roles>();
+            foreach (var role in rolesmapping)
+            {
+                roles.Add(new Roles
+                {
+                    Id = role.Roles.Id,
+                    RoleName = role.Roles.RoleName
+                });
+            }
+
+            return Ok(roles);
+        }
+
+        [Route("[action]")]
+        [HttpPost]
+        public async Task<IActionResult> UpdateRoles([FromQuery] int userId, [FromBody] RoleListDto roleList)
+        {
+            if (roleList.Roles == null)
+                return BadRequest(new ErrorModel(1, 400, "Empty Body"));
+                
+            var user = await _context.Users.FirstOrDefaultAsync(a => a.Id == userId);
+            if (user == null)
+                return BadRequest(new ErrorModel(1, 400, "Invalid  User"));
+                
+            var roleMappingsFromRepo = await _context.UserRolesMappings.Where(a => a.User == user).ToListAsync();
+
+            foreach (var role in roleMappingsFromRepo)
+            {
+                _context.Remove(role);
+            }
+            roleMappingsFromRepo.Clear();
+
+            foreach (var item in roleList.Roles)
+            {
+                var role = await _context.Roles.FirstOrDefaultAsync(a => a.Id == item.Id);
+                roleMappingsFromRepo.Add(new UserRolesMapping
+                {
+                    Roles = role,
+                    User = user
+                });
+            }
+
+            await _context.AddRangeAsync(roleMappingsFromRepo);
+
+            if (await _context.SaveChangesAsync() > 0)
+                return Ok();
+
+            return BadRequest(new ErrorModel(1, 400, "No changes were made for Roles"));
         }
     }
 }

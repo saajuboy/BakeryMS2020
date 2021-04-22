@@ -264,7 +264,12 @@ namespace BakeryMS.API.Common.Helpers
             .ForMember(dest => dest.Time, opt => opt.MapFrom(src => src.DateTime.ToShortTimeString()))
             .ForMember(dest => dest.Date, opt => opt.MapFrom(src => src.DateTime.DashedDate()))
             .ForMember(dest => dest.UserName, opt => opt.MapFrom(src => src.User.Username));
-            
+
+            CreateMap<ControlProcedureDto, ControlProcedure>();
+            CreateMap<ControlProcedure, ControlProcedureDto>()
+            .ForMember(dest => dest.BusinessPlaceName, opt => opt.MapFrom(src => src.BusinessPlace.Name));
+
+
         }
     }
 }

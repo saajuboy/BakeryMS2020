@@ -2,6 +2,8 @@ import { Component, ViewChild } from '@angular/core';
 import { navItems as navAdmin } from '../../_NavObjects/_nav';
 import { navItems as navBakeryManager } from '../../_NavObjects/_navBM';
 import { navItems as navOutletManager } from '../../_NavObjects/_navOM';
+import { navItems as navCashier } from '../../_NavObjects/_navCash';
+import { navItems as navUser } from '../../_NavObjects/_navUser';
 import { AlertifyService } from '../../_services/alertify.service';
 import { Router } from '@angular/router';
 import { AuthService } from '../../_services/auth.service';
@@ -26,6 +28,8 @@ export class DefaultLayoutComponent {
   notiCount: number = 0;
   notiNotReadCount: number = 0;
   notification: Notification = <Notification>{};
+  userId: number;
+  userName:string;
 
   subscription: Subscription;
 
@@ -36,7 +40,8 @@ export class DefaultLayoutComponent {
 
     this.setNavItem(auth);
     this.getNotifications();
-
+    this.userId = auth.getuserId();
+    this.userName =auth.getuserName();
   }
   toggleMinimize(e) {
     this.sidebarMinimized = e;
@@ -49,6 +54,10 @@ export class DefaultLayoutComponent {
       this.navItems = navOutletManager;
     } else if (auth.isUserBakeryManager()) {
       this.navItems = navBakeryManager;
+    } else if (auth.isUserCashier()) {
+      this.navItems = navCashier;
+    } else {
+      this.navItems = navUser;
     }
   }
 

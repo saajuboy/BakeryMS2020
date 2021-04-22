@@ -21,3 +21,30 @@ export interface Notification {
     userName: string;
     status: number;
 }
+
+export interface Dashboard {
+    expense: number[];
+    income: number[];
+    net: number[];
+
+    orderReceived: number;
+    maxOrders: number;
+
+    ordersHandled: number;
+    maxOrdersToHandle: number;
+
+    reorders: number;
+    maxItems: number;
+
+    workers: number;
+    workersMax: number;
+
+}
+
+export interface ControlProcedure {
+    id: number;
+    name: string;
+    description: string;
+    businessPlaceName: string;
+    businessPlaceId: string;
+}

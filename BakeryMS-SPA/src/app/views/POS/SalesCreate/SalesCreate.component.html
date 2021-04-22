@@ -159,7 +159,7 @@
                       (click)="smallModal.show()"
                     >
                       Discount Rs.
-                      {{ sales.discount ? sales.discount : 0 }}
+                      {{ sales.discount ? sales.discount.toFixed(2) : 0 }}
                     </button>
                   </div>
                   <div class="col-md-6 pl-0">
@@ -270,7 +270,7 @@
           <div class="row mt-3 ml-2 mr-2">
             <div class="input-group">
               <h3>
-                Change - Rs. {{ sales.changeAmount ? sales.changeAmount : 0 }}
+                Change - Rs. {{ sales.changeAmount ? sales.changeAmount.toFixed(2) : 0 }}
               </h3>
             </div>
           </div>

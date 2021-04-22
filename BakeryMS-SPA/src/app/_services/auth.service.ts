@@ -87,5 +87,9 @@ export class AuthService {
     const id = this.decodedToken.nameid;
     return +id;
   }
+  getuserName(): string {
+    const name = this.decodedToken.unique_name;
+    return name;
+  }
 
 }

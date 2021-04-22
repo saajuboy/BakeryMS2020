@@ -1,160 +1,184 @@
 import { INavData } from '@coreui/angular';
 
 export const navItems: INavData[] = [
-    {
-        name: 'Dashboard',
-        url: '/dashboard',
-        icon: 'icon-speedometer'
-    },
-    {
-        title: true,
-        name: 'Main Navigation'
-    },
-    {
-        name: 'POS',
-        url: '/pos',
-        icon: 'icon-wallet',
-        children: [
-            {
-                name: 'Sales',
-                url: '/pos/sales/create',
-                icon: 'icon-note'
-            },
-            {
-                name: 'Sales List',
-                url: '/pos/sales',
-                icon: 'icon-list'
-            },
-            {
-                name: 'Transactions',
-                url: '/pos/transactions',
-                icon: 'icon-list'
-            }
-        ]
-    },
-    {
-        name: 'Inventory',
-        url: '/inventory',
-        icon: 'icon-basket-loaded',
-        children: [
-            {
-                name: 'Purchase Order',
-                url: '/inventory/purchaseOrder',
-                icon: 'icon-list'
-            },
-            {
-                name: 'Create Pur.Order',
-                url: '/inventory/purchaseOrder/create',
-                icon: 'icon-note'
-            },
-            {
-                name: 'Goods Rec.Note',
-                url: '/inventory/grn',
-                icon: 'icon-check'
-            }
-        ]
-    },
-    {
-        name: 'Manufacturing',
-        url: '/inventory',
-        icon: 'icon-fire ',
-        children: [
-            {
-                name: 'Production Order',
-                url: '/manufacturing/productionOrder',
-                icon: 'icon-briefcase',
-                children: [
-                    {
-                        name: 'Production Order List',
-                        url: '/manufacturing/productionOrder',
-                        icon: 'icon-list'
-                    },
-                    {
-                        name: 'Create Prod.Order',
-                        url: '/manufacturing/productionOrder/create',
-                        icon: 'icon-note'
-                    }
-                ]
-            }
-        ]
-    },
-    {
-        name: 'Employee Management',
-        url: '/hr',
-        icon: 'icon-people ',
-        children: [
-            {
-                name: 'Employee',
-                url: '/hr/employees',
-                icon: 'icon-people '
-            }
-        ]
-    },
-    {
-        name: 'Schedule Routine',
-        url: '/hr',
-        icon: 'icon-refresh ',
-        children: [
-            {
-                name: 'Schedule Routines',
-                url: '/hr/routines',
-                icon: 'icon-fire '
-            }
-        ]
-    },
-    {
-        name: 'Quality Control',
-        url: '/inventory',
-        icon: 'icon-heart ',
-        children: [
-            {
-                name: 'Purchase Order',
-                url: '/inventory/purchaseOrder',
-                icon: 'icon-fire '
-            }
-        ]
-    },
-    {
-        name: 'Reports',
-        url: '/inventory',
-        icon: 'icon-docs ',
-        children: [
-            {
-                name: 'Purchase Order',
-                url: '/inventory/purchaseOrder',
-                icon: 'icon-fire '
-            }
-        ]
-    },
-    {
-        name: 'Master Data',
-        url: '/inventory',
-        icon: 'icon-globe ',
-        children: [
-            {
-                name: 'Purchase Order',
-                url: '/inventory/purchaseOrder',
-                icon: 'icon-fire '
-            }
-        ]
-    },
-    {
-        divider: true
-    },
-    {
-        title: true,
-        name: 'System',
-    },
-    {
-        name: 'Configuration',
-        url: '/inventory',
-        icon: 'icon-settings ',
-        children: [
-            {
-                name: 'Purchase Order',
-                url: '/inventory/purchaseOrder',
-                icon: 'icon-fire '
-            }
-        ]
-    }
+  {
+    name: 'Dashboard',
+    url: '/dashboard',
+    icon: 'icon-speedometer'
+  },
+  {
+    title: true,
+    name: 'Main Navigation'
+  },
+  {
+    name: 'POS',
+    url: '/pos',
+    icon: 'icon-wallet',
+    children: [
+      {
+        name: 'Sales',
+        url: '/pos/sales/create',
+        icon: 'icon-note'
+      },
+      {
+        name: 'Sales List',
+        url: '/pos/sales',
+        icon: 'icon-list'
+      },
+      {
+        name: 'Transactions',
+        url: '/pos/transactions',
+        icon: 'icon-list'
+      }
+    ]
+  },
+  {
+    name: 'Inventory',
+    url: '/inventory',
+    icon: 'icon-basket-loaded',
+    children: [
+      {
+        name: 'Available Items',
+        url: '/inventory/item',
+        icon: 'icon-social-dropbox ',
+      },
+      {
+        name: 'Purchase Order List',
+        url: '/inventory/purchaseOrder',
+        icon: 'icon-list'
+      },
+      {
+        name: 'Create Pur.Order',
+        url: '/inventory/purchaseOrder/create',
+        icon: 'icon-note'
+      },
+      {
+        name: 'Goods Rec.Note',
+        url: '/inventory/grn',
+        icon: 'icon-check'
+      }
+    ]
+  },
+  {
+    name: 'Manufacturing',
+    url: '/manufacturing',
+    icon: 'icon-fire ',
+    children: [
+      {
+        name: 'Production Order List',
+        url: '/manufacturing/productionOrder',
+        icon: 'icon-list'
+      },
+      {
+        name: 'Create Prod.Order',
+        url: '/manufacturing/productionOrder/create',
+        icon: 'icon-note'
+      }
+    ]
+  },
+  {
+    name: 'Employee Management',
+    url: '/hr',
+    icon: 'icon-people ',
+    children: [
+      {
+        name: 'Employees',
+        url: '/hr/employees',
+        icon: 'icon-people '
+      },
+      {
+        name: 'Schedule Routines',
+        url: '/hr/routines',
+        icon: 'icon-fire '
+      }
+    ]
+  },
+  {
+    name: 'Quality Control',
+    url: '/inventory',
+    icon: 'icon-heart ',
+    children: [
+      {
+        name: 'Control Procedure',
+        url: '/quality/controlProcedure',
+        icon: 'icon-heart '
+      }
+    ]
+  },
+  {
+    name: 'Reports',
+    url: '/reports',
+    icon: 'icon-docs ',
+    children: [
+      {
+        name: 'Master Reports',
+        url: '/reports/master',
+        icon: 'icon-list',
+      },
+      {
+        name: 'Inventory Reports',
+        url: '/reports/inventory',
+        icon: 'icon-list'
+      },
+      {
+        name: 'Manufacturing Reports',
+        url: '/reports/manufacuring',
+        icon: 'icon-list'
+      },
+      {
+        name: 'Sales Reports',
+        url: '/reports/sales',
+        icon: 'icon-list'
+      }
+    ]
+  },
+  {
+    name: 'Master Data',
+    url: '/Master',
+    icon: 'icon-globe ',
+    children: [
+      {
+        name: 'Item List',
+        url: '/master/item',
+        icon: 'icon-list'
+      },
+      {
+        name: 'Create Item',
+        url: '/master/item/create',
+        icon: 'icon-note'
+      },
+      {
+        name: 'Item Category',
+        url: '/master/itemCategory',
+        icon: 'icon-list '
+      },
+      {
+        name: 'Customer',
+        url: '/master/customer',
+        icon: 'icon-list'
+      },
+      {
+        name: 'Supplier',
+        url: '/master/supplier',
+        icon: 'icon-list '
+      },
+      {
+        name: 'Unit',
+        url: '/master/unit',
+        icon: 'icon-list '
+      }
+    ]
+  },
+  {
+    divider: true
+  },
+  {
+    title: true,
+    name: 'System',
+  },
+  {
+    name: 'Configuration',
+    url: '/configuration',
+    icon: 'icon-settings '
+  }
 ];

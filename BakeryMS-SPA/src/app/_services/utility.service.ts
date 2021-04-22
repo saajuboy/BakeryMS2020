@@ -28,5 +28,12 @@ export class UtilityService {
     const currentDate = new Date();
     return currentDate.toISOString().substring(0, 10);
   }
+  addDateReturningDateString(date: Date, days: number) {
+    if (date === undefined) {
+      date = new Date();
+    }
+    date.setDate(date.getDate() + days);
+    return date.toDateString();
+  }
 
 }

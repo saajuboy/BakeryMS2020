@@ -1,9 +1,9 @@
 <!-- <div class="container"> -->
-  <style>
-    .input-group-text {
+<style>
+  .input-group-text {
     display: table;
   }
-  </style>
+</style>
 <div class="row">
   <div class="col-md-12 mx-auto">
     <div class="card mx-4">
@@ -241,9 +241,37 @@
               </select>
             </div>
           </div>
+          <div *ngIf="isSelfEdit === false && isEditForm === true" class="row">
+            <div class="input-group col-md-6 mb-3">
+              <div class="input-group-prepend">
+                <span class="input-group-text"
+                  ><i class="fa fa-tick">Roles</i></span
+                >
+              </div>
+              <select
+                id="multiple-select"
+                name="multiple-select"
+                class="form-control"
+                size="3"
+                multiple
+                [(ngModel)]="roles"
+                [ngModelOptions]="{ standalone: true }"
+              >
+                <option *ngFor="let role of availableroles" [value]="role.id">
+                  {{ role.roleName }}
+                </option>
+              </select>
+            </div>
+          </div>
           <div class="row">
             <div class="col-md-2">
-              <button type="button" class="btn btn-block btn-primary" (click)="backToList()">Back to list</button>
+              <button
+                type="button"
+                class="btn btn-block btn-primary"
+                (click)="backToList()"
+              >
+                Back to list
+              </button>
             </div>
             <div class="col-md-7"></div>
             <div class="col-md-3">
